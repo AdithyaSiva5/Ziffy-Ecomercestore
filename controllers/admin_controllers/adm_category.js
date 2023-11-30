@@ -90,7 +90,7 @@ module.exports.blockCategory = async (req, res) => {
     Idcategory = req.params.categoryId;
     console.log(Idcategory);
     const updatedStatus = await categoryCollection.updateOne(
-      { _id: Idcategory },
+      { _id: Idcategory  }, 
       { $set: { categoryStatus: "Block" } }
     );
     res.redirect("/admin/category-list");
