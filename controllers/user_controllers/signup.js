@@ -1,15 +1,41 @@
-const nodemailer = require('nodemailer');
 require("dotenv").config();
+const nodemailer = require("nodemailer");
+const userCollection = require("../../models/user_schema");
+
+module.exports.postUserLogin = async (req, res) => {
+  try {
+    const email = await userCollection.findOne({ email: req.body.email });
+    const phoneNumber = await userCollection.findOne({
+      password: req.body.phoneNumber,
+    });
+    if (email) {
+      res.status(200).json({ error: "Email already Exist" });
+    } else if (phoneNumber) {
+      res.status(200).json({ error: "Phone Number Already Exists" });
+    } else {
+      await userCollection.create({
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        status: "Unblock",
+      });
+      res.render("user-login", { message: "User sign up successfully" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString(); // Generates a 6-digit OTP
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 const sendOTP = async (email, generatedOTP) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
       secure: false,
       requireTLS: true,
       auth: {
@@ -38,9 +64,9 @@ const sendOTP = async (email, generatedOTP) => {
 };
 
 //to verify OTP
-const verifyOTP = (userOTP , generateOTP) =>{
-    return userOTP === generateOTP;
-}
+const verifyOTP = (userOTP, generateOTP) => {
+  return userOTP === generateOTP;
+};
 
 //to send OTP
 module.exports.getSendOtp = async (req, res) => {
@@ -65,7 +91,7 @@ module.exports.postVerifyOtp = (req, res) => {
     const { userOTP, generatedOTP } = req.body;
     const isVerified = verifyOTP(userOTP, generatedOTP);
 
-    if (isVerified) { 
+    if (isVerified) {
       res.status(200).json({ message: "OTP verified successfully" });
     } else {
       res.status(400).json({ error: "Invalid OTP" });

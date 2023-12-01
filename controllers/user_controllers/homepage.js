@@ -13,9 +13,6 @@ module.exports.getUserRoute = async (req,res) => {
 }
 
 
-
-
-
 //logout
 module.exports.getLogout = (req,res) =>{
 res.clearCookie("token")

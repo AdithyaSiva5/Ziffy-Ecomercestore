@@ -36,6 +36,7 @@ app.use(
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
+
 const PORT = process.env.PORT || 3000;
 const MONGO = process.env.MONGO || "mongodb://127.0.0.1:27017/zifyshopping";
 
@@ -48,3 +49,4 @@ app.listen(PORT, async (req, res) => {
     console.log(err);
   }
 });
+ 
