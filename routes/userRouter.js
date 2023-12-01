@@ -15,14 +15,15 @@ userRouter.get("/logout", homepageControll.getLogout);
 
 //login
 userRouter.get("/login",loginControll.getLogin)
-userRouter.get("/post-login",loginControll.postLogin)
+userRouter.post("/post-login",loginControll.postLogin)
 
-
+ 
 //signup
 userRouter.get("/signup",signupControll.getUserSignup);
 userRouter.post("/post-signup", signupControll.postUserLogin);
 userRouter.get("/send-otp",signupControll.getSendOtp);
 userRouter.post("/verify-otp",signupControll.postVerifyOtp)
+
 
 module.exports = userRouter;
 

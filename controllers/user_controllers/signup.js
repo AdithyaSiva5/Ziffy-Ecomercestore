@@ -1,4 +1,3 @@
-require("dotenv").config();
 const nodemailer = require("nodemailer");
 const userCollection = require("../../models/user_schema");
 
@@ -8,6 +7,7 @@ module.exports.postUserLogin = async (req, res) => {
     const phoneNumber = await userCollection.findOne({
       password: req.body.phoneNumber,
     });
+
     if (email) {
       res.status(200).json({ error: "Email already Exist" });
     } else if (phoneNumber) {

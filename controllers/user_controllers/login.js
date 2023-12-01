@@ -8,19 +8,19 @@ secretkey = process.env.JWT_KEY;
 //getting login page
 module.exports.getLogin=(req,res)=>{
     if(req.cookies.logindata){
-        res.render("/")
+         res.render("/") 
     }else{
-
         res.render("user-login")
     }
 }
 
 module.exports.postLogin = async(req,res)=>{
-    const logindata = await userCollection.find({ email : req.body.email});
+
+    const logindata = await userCollection.findOne({ email : req.body.email});
     if(!logindata){
-        res.status(200).json({ error : "Email is not Registered"})
+        res.status(200).json({ error : "Email is not Registered"});
     } else if (logindata){
-        if(logindata.status === "blocked"){
+        if(logindata.status === "Block"){
             res.status(200).json({error : "User is Blocked"})
         }else if(req.body.password !== logindata.password){
             res.status(200).json({error : "Incorrect Password"})
