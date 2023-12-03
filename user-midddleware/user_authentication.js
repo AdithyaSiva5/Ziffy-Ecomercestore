@@ -1,4 +1,4 @@
-const userCollection = require("../models/user-schema");
+const userCollection = require("../models/user_schema");
 const jwt = require("jsonwebtoken");
 const cookieparser = require("cookie-parser");
 require("dotenv").config();
