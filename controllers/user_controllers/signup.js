@@ -1,26 +1,35 @@
 const nodemailer = require("nodemailer");
 const userCollection = require("../../models/user_schema");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
-module.exports.postUserLogin = async (req, res) => {
+module.exports.postUserSignup = async (req, res) => {
   try {
     const email = await userCollection.findOne({ email: req.body.email });
     const phoneNumber = await userCollection.findOne({
-      password: req.body.phoneNumber,
+      phoneNumber: req.body.phoneNumber,
     });
+    const password = req.body.password;
 
     if (email) {
       res.status(200).json({ error: "Email already Exist" });
     } else if (phoneNumber) {
       res.status(200).json({ error: "Phone Number Already Exists" });
     } else {
+          bcrypt.hash(password, saltRounds, async(err, hash)=>{
+      if(err){
+        console.error('Error hashing password:', err);
+        return;
+      }
       await userCollection.create({
         username: req.body.username,
-        password: req.body.password,
+        password: hash,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         status: "Unblock",
       });
       res.render("user-login", { message: "User sign up successfully" });
+    });
     }
   } catch (error) {
     console.log(error);
@@ -71,15 +80,27 @@ const verifyOTP = (userOTP, generateOTP) => {
 //to send OTP
 module.exports.getSendOtp = async (req, res) => {
   try {
-    const email = req.query.email;
-    const generatedOTP = generateOTP();
-    const success = await sendOTP(email, generatedOTP);
+        const email1 = req.query.email;
+        const email= await userCollection.findOne({ email: req.query.email });
+        const phoneNumber= await userCollection.findOne({
+          phoneNumber: req.query.phoneNumber,
+        });
+        console.log(email+phoneNumber)
+        if(email){
+          res.status(200).json({ error: "Email already Exist" });
+        }else if(phoneNumber){
+          res.status(200).json({ error: "Number already Exist" });
+        }else{
 
-    if (success) {
-      res.status(200).json({ message: "OTP sent to email successfully" });
-    } else {
-      res.status(500).json({ error: "Failed to send OTP email" });
-    }
+          const generatedOTP = generateOTP();
+          const success = await sendOTP(email1, generatedOTP);
+          if (success) {
+            res.status(200).json({ message: "OTP sent to email successfully" });
+          } else {
+            res.status(500).json({ error: "Failed to send OTP email" });
+          }
+        }
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

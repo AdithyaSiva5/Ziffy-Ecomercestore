@@ -15,20 +15,20 @@ module.exports.verifyUser = (req,res,next)=>{
 
 }
 
-module.exports.checkBlockedStatus = async (req,res,next) =>{
-    try{
-        const userId = req.user._id;
-        const user = await userCollection.findById(userId);
+module.exports.checkBlockedStatus = async (req, res, next) => {
+  try {
+    const emailId = req.user;
+    const user = await userCollection.findOne({email : emailId});
 
-        if(user.status === "Block"){
-            res.clearCookie("token");
-            res.clearCookie("loggedIn");
-            return res.status(403).render("user-login",{subreddit : "Your acc has been blocked"})
-        }
-    next();
-    }catch(error){
-        console.log(error)
-        res.status(500).send("Internal Server Error");
+    if (user.status === "Block") {
+      res.clearCookie("token");
+      res.clearCookie("loggedIn");
+      return res.status(403).render("user-login", { subreddit: "Your account has been blocked" });
     }
 
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 };

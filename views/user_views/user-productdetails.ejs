@@ -830,14 +830,11 @@
                                             <img class="product-image" src="/<%= productdata.productImg[0] %>" alt="Product Image">
                                             <!-- THUMBNAILS -->
                                             <div class="slider-nav-thumbnails pl-15 pr-15">
-                                                <div data-image="/<%= productdata.productImg[0] %>" class="thumbnail"><img
-                                                        src="/<%= productdata.productImg[0] %>" alt="product image"></div>
-                                                <div data-image="/<%= productdata.productImg[1] %>" class="thumbnail"><img
-                                                        src="/<%= productdata.productImg[1] %>" alt="product image"></div>
-                                                <div data-image="/<%= productdata.productImg[2] %>" class="thumbnail"><img
-                                                        src="/<%= productdata.productImg[2] %>" alt="product image"></div>
-                                                <div data-image="/<%= productdata.productImg[3] %>" class="thumbnail"><img
-                                                        src="/<%= productdata.productImg[3] %>" alt="product image"></div>
+                        <%productdata.productImg.forEach((image)=>{%>
+                                                <div data-image="/<%= image %>" class="thumbnail"><img
+                                                        src="/<%= image %>" alt="product image"></div>
+
+                        <%})%>
                                             </div>
                                         </div>
                                         <!-- End Gallery -->

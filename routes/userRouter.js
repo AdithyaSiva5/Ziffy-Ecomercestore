@@ -21,7 +21,7 @@ userRouter.post("/post-login",loginControll.postLogin)
  
 //signup
 userRouter.get("/signup",signupControll.getUserSignup);
-userRouter.post("/post-signup", signupControll.postUserLogin);
+userRouter.post("/post-signup", signupControll.postUserSignup);
 userRouter.get("/send-otp",signupControll.getSendOtp);
 userRouter.post("/verify-otp",signupControll.postVerifyOtp)
 
@@ -38,3 +38,9 @@ userRouter.get(
 module.exports = userRouter;
 
 
+// userRouter.get(
+//   "/product-details/:productId",
+//   userMiddleware.verifyUser,
+//   userMiddleware.checkBlockedStatus,
+//   productControll.productDetails
+// );
