@@ -7,6 +7,7 @@ const loginControll = require('../controllers/user_controllers/login');
 const signupControll = require("../controllers/user_controllers/signup")
 const homepageControll = require("../controllers/user_controllers/homepage");
 const productControll = require("../controllers/user_controllers/productdetails");
+const forgetpassword = require("../controllers/user_controllers/forgetpassword")
 
 userRouter.use(cookieparser());
 
@@ -32,7 +33,13 @@ userRouter.get(
   userMiddleware.verifyUser,
   userMiddleware.checkBlockedStatus,
   productControll.productDetails
-);
+); 
+
+
+//forgetpassword
+userRouter.get("/forgetpassword",forgetpassword.forgetpass);
+userRouter.post("/post-sentotp", forgetpassword.postforget);
+userRouter.post("/post-forgetpassword", forgetpassword.postreset);
 
 
 module.exports = userRouter;
