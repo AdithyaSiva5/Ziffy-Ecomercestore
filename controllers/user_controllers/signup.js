@@ -75,6 +75,7 @@ const sendOTP = async (email, generatedOTP) => {
 //to verify OTP
 const verifyOTP = (userOTP, generateOTP) => {
   return userOTP === generateOTP;
+  
 };
 
 //to send OTP
@@ -110,6 +111,7 @@ module.exports.getSendOtp = async (req, res) => {
 module.exports.postVerifyOtp = (req, res) => {
   try {
     const { userOTP, generatedOTP } = req.body;
+    console.log(userOTP)
     const isVerified = verifyOTP(userOTP, generatedOTP);
 
     if (isVerified) {

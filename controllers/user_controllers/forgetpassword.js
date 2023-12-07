@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer");
 const userCollection = require("../../models/user_schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+let generatedOTP; 
 module.exports.forgetpass = async (req, res) => {
   res.render("forget-password");
 };
@@ -24,10 +25,7 @@ const sendOTP = async (email, generatedOTP) => {
     });
 
     const mailOptions = {
-      from: {
-        name: "Zify",
-        address: process.env.EMAIL_USER,
-      },
+      from: `"Zify" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Account verification mail",
       text: `Your OTP for Changing Password is: ${generatedOTP}`,
@@ -43,28 +41,28 @@ const sendOTP = async (email, generatedOTP) => {
 };
 
 //to verify OTP
-const verifyOTP = (userOTP, generatedOTP) => {
-  return userOTP === generatedOTP;
+const verifyOTP = (otpInput, generatedOTP) => {
+  return otpInput === generatedOTP;
+  
 };
 
 module.exports.postforget = async (req, res) => {
   try {
-    
-    const data = await userCollection.findOne({
+    const email = req.body.email;
+    const newPassword = req.body.password;
+        const data = await userCollection.findOne({
       email: req.body.email,
     });
+    const isSameAsPrevious = await bcrypt.compare(newPassword, data.password);
     if (!data) {
       res.status(200).json({ error: "Email is not Registered" });
     } else if (req.body.password !== req.body.confirmpassword) {
       res.status(200).json({ error: "Both passwords are not the same" });
-    } else {    
-                // console.log("Hello");
-                const generatedOTP = generateOTP();
-                const email = req.body.email;
-                console.log(req.body.password)
-                console.log(generatedOTP);
+    } else if (isSameAsPrevious) {
+      res.status(200).json({ error: "This is the old password" });
+    }{    
+                generatedOTP = generateOTP();
                 const success = sendOTP(email, generatedOTP);
-                console.log(success);
                 if (success) {
                   res
                     .status(200)
@@ -81,22 +79,27 @@ module.exports.postforget = async (req, res) => {
 
 module.exports.postreset= async(req,res)=>{
   try {
+
     email=req.body.email;
     password=req.body.password;
-    const { userOTP, generatedOTP } = req.body;
-    const isVerified = verifyOTP(userOTP, generatedOTP);
+    const otpInput = req.body.otpInput;
+   
+    const isVerified = verifyOTP(otpInput, generatedOTP);
 
     if (isVerified) {
-      res.render("user-login", { message: "Successfully Changes Password" });
       const hashedPassword = await bcrypt.hash(password, saltRounds);  
       await userCollection.updateOne(
         { email: email },
         { $set: { password: hashedPassword } }
-      );    
-      // res.render("user-login", { message: "User sign up successfully" });
+        );    
+        console.log("Verified Successfully")
+        res.status(200).json({ message: "Otp Verified Successfully" });
+      
+    
 
-    } else {
-      res.status(400).json({ error: "Invalid OTP" });
+    } else {  
+      console.log(" the otp is "+generatedOTP)
+      res.status(200).json({ error: "Invalid OTP" });
     }
     
   } catch (error) {
