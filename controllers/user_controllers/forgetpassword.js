@@ -49,8 +49,7 @@ const verifyOTP = (userOTP, generatedOTP) => {
 
 module.exports.postforget = async (req, res) => {
   try {
-    const password = req.body.password;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);  
+    
     const data = await userCollection.findOne({
       email: req.body.email,
     });
@@ -58,9 +57,7 @@ module.exports.postforget = async (req, res) => {
       res.status(200).json({ error: "Email is not Registered" });
     } else if (req.body.password !== req.body.confirmpassword) {
       res.status(200).json({ error: "Both passwords are not the same" });
-    } else if(hashedPassword){
-      res.status(200).json({ error: "This is your old password" }); 
-    }else{    
+    } else {    
                 // console.log("Hello");
                 const generatedOTP = generateOTP();
                 const email = req.body.email;
@@ -90,12 +87,13 @@ module.exports.postreset= async(req,res)=>{
     const isVerified = verifyOTP(userOTP, generatedOTP);
 
     if (isVerified) {
-      res.status(200).json({ message: "OTP verified successfully" });
+      res.render("user-login", { message: "Successfully Changes Password" });
       const hashedPassword = await bcrypt.hash(password, saltRounds);  
       await userCollection.updateOne(
         { email: email },
         { $set: { password: hashedPassword } }
       );    
+      // res.render("user-login", { message: "User sign up successfully" });
 
     } else {
       res.status(400).json({ error: "Invalid OTP" });
