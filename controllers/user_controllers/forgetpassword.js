@@ -72,7 +72,9 @@ module.exports.postforget = async (req, res) => {
                 }
       
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 

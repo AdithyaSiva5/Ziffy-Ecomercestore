@@ -18,28 +18,16 @@
                                               <%=locals.subreddit%>
                                             </h5>
                                         </div>
-                                        <form action="/admin/admin-dash" method="post">
+                                        <form method="post" > 
                                             <div class="form-group">
-                                                <input type="text" required="" name="email" placeholder="Your Email">
+                                                <input type="text" required="" id="email" name="email"  placeholder="Your Email">
                                             </div>
                                             <div class="form-group">
-                                                <input required="" type="password" name="password" placeholder="Password">
+                                                <input required="" type="password" id="password" name="password"  placeholder="Password">
                                             </div>
-                                            <!-- <div class="login_footer form-group">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                                        <label class="form-check-label" for="exampleCheckbox1"><span>Remember me</span></label>
-                                                    </div>
-                                                </div>
-                                                <a class="text-muted" href="#">Forgot password?</a>
-                                            </div> -->
+            
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
-                                            <!-- </div>
-                                            <div class="form-group">
-                                               <p>Don't have an account? <span><a href="#"> Sign up</a></span></p>
-                                            </div> -->
+                                                <button id="submitBtn" type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
 
                                         </form>
                                     </div>
@@ -58,7 +46,7 @@
             <div class="preloader-inner position-relative">
                 <div class="text-center">
                     <h5 class="mb-5">Now Loading</h5>
-                    <div class="loader">
+                    <div class="loader"> 
                         <div class="bar bar1"></div>
                         <div class="bar bar2"></div>
                         <div class="bar bar3"></div>
@@ -67,7 +55,75 @@
             </div>
         </div>
     </div>
+    <script>
+        // document.getElementById('submitBtn').addEventListener('onclick', async function (event) {
+        //     event.preventDefault();
+
+        //     const email = document.getElementById('email').value;
+        //     const password = document.getElementById('password').value;
+            const submitButton = document.getElementById("submitBtn");
+            submitButton.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // Get form values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            console.log(email);
+            console.log(password);
+
+    
+            // Perform client-side validation if needed
+    
+            // Send a request to your server
+            fetch("/admin/admin-dash", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response from the server
+                if (data.error) {
+                    // Display error using Swal
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'error',
+                        title: data.error,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else if(data.message) {
+                    // If successful, you can redirect or perform other actions
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'success',
+                        title: "Login successfull",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // Example: Redirect to the homepage
+                    window.location.href = "/admin/admin-dashboard";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Handle other errors if needed
+            });
+        
+        });
+
+        
+        // });
+    </script>
     <!-- Vendor JS-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="/userAssets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/userAssets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/userAssets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

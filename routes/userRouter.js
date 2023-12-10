@@ -13,7 +13,7 @@ userRouter.use(cookieparser());
 
 //homepage
 userRouter.get(
-  "/",
+  "/", 
   homepageControll.getUserRoute,
   userMiddleware.verifyUser,
   userMiddleware.checkBlockedStatus
@@ -45,9 +45,3 @@ userRouter.post("/post-forgetpassword", forgetpassword.postreset);
 
 module.exports = userRouter;
 
-// userRouter.get(
-//   "/product-details/:productId",
-//   userMiddleware.verifyUser,
-//   userMiddleware.checkBlockedStatus,
-//   productControll.productDetails
-// );

@@ -43,3 +43,10 @@ module.exports.unblockUser = async (req, res) => {
     console.error(error);
   }
 };
+
+
+module.exports.getlogout = async(req,res)=>{
+    res.clearCookie("admintoken");
+    res.clearCookie("loggedIn");
+    res.redirect("/admin");
+}
