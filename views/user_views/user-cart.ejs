@@ -777,69 +777,83 @@
         </section>
     </main>
         <script>
-            document.addEventListener("DOMContentLoaded",()=>{
+ document.addEventListener("DOMContentLoaded", () => {
 
-            const quantityButtons = document.querySelectorAll(".detail-qty");
-            quantityButtons.forEach(qunty => {
-                const qtyval = qunty.querySelector(".qty-val")    
-                const qtyup = qunty.querySelector(".qty-up")    
-                const qtydown = qunty.querySelector(".qty-down")    
-                const productId = qunty.getAttribute("data-product-id")
-                const subtotal =  document.querySelector(".cart-total")
-                const grandTotal =  document.querySelector("#grandTotal")
-                
+const quantityButtons = document.querySelectorAll(".detail-qty");
+quantityButtons.forEach(qty => {
+  const qtyval = qty.querySelector(".qty-val");
+  const qtyup = qty.querySelector(".qty-up");
+  const qtydown = qty.querySelector(".qty-down");
+  const productId = qty.getAttribute("data-product-id");
+  const subtotal = qty.closest("tr").querySelector(".cart-total");
+  const grandTotal = document.querySelector("#grandTotal");
 
-                qtyup.addEventListener("click",(event)=>{
-                    event.preventDefault();
-                    const newQuantity = parseInt(qtyval.textContent,10)+ 1;
-                    qtyval.textContent = newQuantity;
-                    fetch(`/update-quantity`, {
-                    method: "POST",
-                headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ quantity: newQuantity, productId: productId  })
-        }).then(response => response.json()).then(data => {
-            
-            if (data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
-                qtyval.textContent = data.newQuantity;
-                subtotal.textContent = data.subTotal;
-                grandTotal.textContent = `₹${data.totalPrice}`
-            }else{
-            
-            }
+  qtyup.addEventListener("click", (event) => {
+    event.preventDefault();
+    const newQuantity = parseInt(qtyval.textContent, 10) + 1;
+    qtyval.textContent = newQuantity;
 
-        }).catch(error => {
-            console.log("Error updating quantity:", error);
-        });
-                    
-        })
-                qtydown.addEventListener("click",(event)=>{
-                    event.preventDefault();
-                    const newQuantity = parseInt(qtyval.textContent , 10)- 1;
-                    if(newQuantity<1){
-                        newQuantity = 1;
-                    }
-                    qtyval.textContent = newQuantity;
-                    fetch(`/update-quantity`, {
-            method: "POST",
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ quantity: newQuantity, productId: productId  })
-        }).then(response => response.json()).then(data => {
-            if (data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
-                qtyval.textContent = data.newQuantity;
-                subtotal.textContent = data.subTotal;
-                grandTotal.textContent = `₹${data.totalPrice}`
-            }
-        }).catch(error => {
-            console.log("Error updating quantity:", error);
-        });
-                })
-            })
+    fetch(`/update-quantity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quantity: newQuantity, productId }),
     })
+      .then(response => response.json())
+      .then(data => {
+        if (data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
+          qtyval.textContent = data.newQuantity;
+          subtotal.textContent = data.subTotal;
+          grandTotal.textContent = `₹${data.totalPrice}`;
+        } else {
+          console.error("Error updating quantity", data);
+        }
 
+        if (data.stock < data.newQuantity) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops!",
+            text: "Sorry, only " + data.stock + " items are available.",
+        });
+        qtyval.textContent = data.stock;
+    }
+      })
+      
+      .catch(error => {
+        console.error("Error updating quantity:", error);
+      });
+  });
+
+  qtydown.addEventListener("click", (event) => {
+    event.preventDefault();
+    const newQuantity = Math.max(1, parseInt(qtyval.textContent, 10) - 1);
+    qtyval.textContent = newQuantity;
+
+    fetch(`/update-quantity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quantity: newQuantity, productId }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
+          qtyval.textContent = data.newQuantity;
+          subtotal.textContent = data.subTotal;
+          grandTotal.textContent = `₹${data.totalPrice}`;
+        } else {
+          console.error("Error updating quantity", data);
+        }
+      })
+      .catch(error => {
+        console.error("Error updating quantity:", error);
+      });
+  });
+});
+
+});
 
 
         </script>
