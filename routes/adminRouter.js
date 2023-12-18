@@ -49,7 +49,7 @@ adminRouter.get(
 );
 adminRouter.post(
   "/postEdit-category/:categoryId",
-  adminMiddleware.verifyAdmin,
+  adminMiddleware.verifyAdmin, 
   categoryControll.updateCategory
 );
 adminRouter.get(

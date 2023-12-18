@@ -163,7 +163,7 @@
                 </ul>
             </div>
         </header>
-        <section class="content-main">
+        <section class="content-main"> 
             <div class="content-header">
                 <h3 class="content-title">Edit Category </h3>   
                 <!-- <div>
@@ -175,15 +175,16 @@
                     <!-- <h4>Edit</h4> -->
 
                     <div class="col-md-12">
-                        <form method="post" action="/admin/postEdit-category/<%= categorydata._id %>">
+                        <form method="post"  id="category-Form">
                             <div class="form-group">
                                 <input type="text" required="" name="catgName" placeholder="Category name" value="<%= categorydata.catgName %>">
                             </div>
                             <div class="form-group">
                                 <input type="text" required="" name="catgDiscription" placeholder="Type discription" value="<%= categorydata.catgDiscription %>">
                             </div>
-                            <div class="form-group text-center">
-                                <button type="submit" class="btn-fill-out btn-primary" name="catgsubmit">Confirm Edit</button>  
+                            <input type="hidden" name="catg_id" value="<%= categorydata._id %>">
+                            <div class="form-group text-center" >
+                                <button type="submit" class="btn-fill-out btn-primary" name="catgsubmit" id="submitbutton" >Confirm Edit</button>  
                             </div>
                         </form>
                     </div>
@@ -214,6 +215,77 @@
             </div>
         </footer>
     </main>
+    <script>
+        
+         document.addEventListener("DOMContentLoaded", function () {
+            
+            const catagoryform = document.getElementById("category-Form");
+            const category = document.querySelector("input[name='catg_id']");
+            catagoryform.addEventListener("submit",async (event)=>{
+                event.preventDefault();
+                const catgNameInput = document.querySelector("input[name='catgName']");
+                const catgDiscriptionInput = document.querySelector("input[name='catgDiscription']");
+
+                const catgName = catgNameInput.value.trim();
+                const catgDiscription = catgDiscriptionInput.value.trim();
+                categoryId = category.value;
+
+                console.log("----------------"+categoryId+"  ==  "+category)
+                if (!catgName || !catgDiscription) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please fill out all fields and ensure they are not whitespace only.',
+                });
+                return;
+            }
+            const formData = {
+            catgName: catgName,
+            catgDiscription: catgDiscription,
+        }; 
+        const response = await fetch(`/admin/postEdit-category/${categoryId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+        
+        const data = await response.json();
+        console.log("1");
+        if (data.message) {
+            Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+            setTimeout(() => {
+                window.location.href = "/admin/category-list" 
+            }, 1500);
+             
+        } else if(data.error) {
+            Swal.fire({
+                icon: "error",
+                title: data.error,
+                text: "OOps" || "Unknown Error",
+                footer: '<a href="#">Why do I have this issue?</a>',
+                timer: 1500
+            });
+            console.log("3");
+        }    
+             
+            })
+               
+         });
+         // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1500);
+            // window.location.href = "/admin/category-list";
+            // const data = await response.json();
+    </script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

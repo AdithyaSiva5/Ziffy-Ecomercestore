@@ -8,7 +8,7 @@ module.exports.verifyAdmin = (req, res, next) => {
   const verifyToken = jwt.verify(
     admintoken,
     process.env.ADMIN_JWT_KEY,
-    (err, decoded) => {
+    (err, decoded) => { 
       if (err) {
         return res.redirect("/admin");
       }

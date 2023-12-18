@@ -181,62 +181,64 @@
                             <form action="/admin/postadd-product" method="post" enctype="multipart/form-data" id="productForm">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Enter name" class="form-control" id="productName" name="productName">
+                                    <input type="text" placeholder="Enter name" class="form-control" id="productName" name="productName" required>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Product Description</label>
-                                    <textarea placeholder="Enter description" class="form-control" rows="4" id="productDiscription" name="productDiscription"></textarea>
+                                    <textarea placeholder="Enter description" class="form-control" rows="4" id="productDiscription" name="productDiscription" required></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Regular price</label>
                                             <div class="row gx-2">
-                                                <input placeholder="₹" type="number" class="form-control" id="regularPrice" name="regularPrice">
+                                                <input placeholder="₹" type="number" class="form-control" id="regularPrice" name="regularPrice" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Selling price</label>
-                                            <input placeholder="₹" type="number" class="form-control" id="sellingPrice" name="sellingPrice">
+                                            <input placeholder="₹" type="number" class="form-control" id="sellingPrice" name="sellingPrice" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-select" id="productStatus" name="productStatus">
-                                            <option disabled selected>Select status</option>
-                                            <option>Block</option>
-                                            <option>Unblock</option>
+                                        <label class="form-label" for="productStatus">Status</label>
+                                        <select class="form-select" id="productStatus" name="productStatus" required>
+                                            <option value="" disabled selected>Select status</option>
+                                            <option value="Block">Block</option>
+                                            <option value="Unblock">Unblock</option>
                                         </select>
                                     </div>
+                                    
                                 </div>
                                 <div class="row gx-2">
                                     <label class="form-label">Category</label>
-                                    <select class="form-select" id="category" name="productCategory">
-                                        <option disabled selected>Select a category</option>
+                                    <select class="form-select" id="category" name="productCategory" required>
+                                        <option disabled selected value="">Select a category</option>
                                         <% categories.forEach(category => {%> 
                                             <option value="<%= category.catgName %>"><%= category.catgName %></option> 
                                         <%}) %>
                                     </select>
                                 </div>
+                                
                                 <div class="mb-4">
                                     <label class="form-label">Brand</label>
-                                    <input type="text" placeholder="Enter brand" class="form-control" id="productBrand" name="productBrand">
+                                    <input type="text" placeholder="Enter brand" class="form-control" id="productBrand" name="productBrand" required>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Size (in ml)</label>
                                             <div class="row gx-2">
-                                                <input placeholder="Enter size" type="number" class="form-control" id="productSize" name="productSize">
+                                                <input placeholder="Enter size" type="number" class="form-control" id="productSize" name="productSize" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Stock</label>
-                                            <input placeholder="Enter stock" type="number" class="form-control" id="productStock" name="productStock">
+                                            <input placeholder="Enter stock" type="number" class="form-control" id="productStock" name="productStock" required> 
                                         </div>
                                     </div>
                                 </div>

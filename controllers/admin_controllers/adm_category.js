@@ -58,10 +58,20 @@ module.exports.updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const catagory = await categoryCollection.findById(categoryId);
-    catagory.catgName = req.body.catgName;
-    catagory.catgDiscription = req.body.catgDiscription;
-    await catagory.save();
-    res.redirect("/admin/category-list");
+    const oldcate = req.body.catgName;
+    const ifexist = await categoryCollection.findOne({
+      catgName : oldcate,
+      _id: { $ne: categoryId },
+    });
+    if (ifexist) {
+      res.status(200).json({ error: "Name With Same Category Exist" });
+    } else {
+      catagory.catgName = req.body.catgName;
+      catagory.catgDiscription = req.body.catgDiscription;
+      await catagory.save();
+      res.status(200).json({ message: "Data Updated" });
+    }
+    // res.redirect("/admin/category-list");
   } catch (error) {
     console.error(error);
   }
