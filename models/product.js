@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     require: true,
     type: String,
   },
-  productBand: {
+  productBrand: {
     require: true,
     type: String,
   },

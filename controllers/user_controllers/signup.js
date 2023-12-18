@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const userCollection = require("../../models/user_schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
+let generatedOTP;
 module.exports.postUserSignup = async (req, res) => {
   try {
     const email = await userCollection.findOne({ email: req.body.email });
@@ -73,8 +73,8 @@ const sendOTP = async (email, generatedOTP) => {
 };
 
 //to verify OTP
-const verifyOTP = (userOTP, generateOTP) => {
-  return userOTP === generateOTP;
+const verifyOTP = (otpInput, generateOTP) => {
+  return otpInput === generateOTP;
   
 };
 
@@ -93,7 +93,7 @@ module.exports.getSendOtp = async (req, res) => {
           res.status(200).json({ error: "Number already Exist" });
         }else{
 
-          const generatedOTP = generateOTP();
+          generatedOTP = generateOTP();
           const success = await sendOTP(email1, generatedOTP);
           if (success) {
             res.status(200).json({ message: "OTP sent to email successfully" });
@@ -110,14 +110,16 @@ module.exports.getSendOtp = async (req, res) => {
 
 module.exports.postVerifyOtp = (req, res) => {
   try {
-    const { userOTP, generatedOTP } = req.body;
-    console.log(userOTP)
-    const isVerified = verifyOTP(userOTP, generatedOTP);
+
+    
+    const otpInput = req.body.otpInput;
+    console.log(`generated otp : ${generatedOTP} and otp is : ${otpInput}`);
+    const isVerified = verifyOTP(otpInput, generatedOTP);
 
     if (isVerified) {
       res.status(200).json({ message: "OTP verified successfully" });
     } else {
-      res.status(400).json({ error: "Invalid OTP" });
+       res.status(200).json({ error: "Invalid OTP" });
     }
   } catch (error) {
     console.error(error);

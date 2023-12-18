@@ -81,7 +81,6 @@ module.exports.updateCategory = async (req, res) => {
 module.exports.deleteCategory = async (req, res) => {
   try {
     const catagoryId = req.params.categoryId;
-    console.log(catagoryId);
     const result = await categoryCollection.deleteOne({ _id: catagoryId });
 
     if (result.deletedCount === 1) {
@@ -92,13 +91,12 @@ module.exports.deleteCategory = async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-};
+}; 
 
 // block category
 module.exports.blockCategory = async (req, res) => {
   try {
     Idcategory = req.params.categoryId;
-    console.log(Idcategory);
     const updatedStatus = await categoryCollection.updateOne(
       { _id: Idcategory  }, 
       { $set: { categoryStatus: "Block" } }

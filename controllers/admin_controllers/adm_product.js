@@ -120,16 +120,22 @@ module.exports.updateProduct = async (req, res) => {
     } = req.body;
 
     // Get newly uploaded photos
+    const newproductImg = req.files;
     const productImg = req.files;
-    const newPhotos = productImg.map((element) => ({
-      name: element.filename,
-      path: element.path,
-    }));
-    const picPaths = newPhotos.map((photo) => photo.path);
-    // Include old photos that weren't edited
-    const updatedPhotos = existingProduct.productImg.map((oldPhoto, index) =>
-      picPaths[index] ? picPaths[index] : oldPhoto
-    );
+    const arr = [];
+    const existingImages = existingProduct.productImg;
+ 
+    if (newproductImg) {
+      for (const element of newproductImg) {
+        const filePath = `uploads/cropperd_${element.originalname}`;
+        const cropped = await sharp(element.path)
+          .resize({ width: 300, height: 300, fit: 'cover' })
+          .toFile(filePath);
+        arr.push(filePath);
+      }
+    }
+
+    const updatedProductImg = [...existingImages, ...arr];
 
     const updatedData = {
       productName,
@@ -141,7 +147,7 @@ module.exports.updateProduct = async (req, res) => {
       productSize,
       productStock,
       productStatus,
-      productImg: updatedPhotos,
+      productImg: updatedProductImg,
     };
     const updatedProduct = await productCollection.findByIdAndUpdate(
       editId,

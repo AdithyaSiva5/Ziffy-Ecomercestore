@@ -200,6 +200,10 @@
                 showError('phoneNumberError', 'Phone number must be a number with exactly 10 digits');
                 return false;
             }
+            if (!/^(?!([0-9])\1+$)[1-9]\d{9}$/.test(phoneNumber)) {
+                showError('phoneNumberError', 'Phone number must be a number with exactly 10 digits and no repeated digits');
+                return false;
+            }
 
             return true; // Placeholder, replace with your actual validation logic
         }
@@ -229,39 +233,47 @@
 
             // const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
             const otpInput = document.querySelector('input[name="otpInput"]').value;
-            fetch(`/verify-otp?otpInput=${otpInput}`,{
-                method: "POST"})
-            
-            .then((Response) => {
-                if(!Response.ok) {
-                    throw new Error(`HTTP error! status: ${Response.status}`)
+            fetch("/verify-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({otpInput})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                return Response.json();
+                return response.json();
             })
-            .then((data)=>{
-                
-                console.log("Response from serve", data)
-                Swal.fire({
-                    position: 'top-center',
-                    icon: 'success',
-                    title: 'OTP verified succssfully',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                // startResendTimer()
-                submitButton.disabled = false;
-
+            .then(data => {
+                // Handle the response from the server
+                if (data.error) {
+                    // User already exists, display error message
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'error',
+                        title: data.error, 
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    // If successful, you can redirect or perform other actions
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    submitButton.disabled = false;
+                }
+                resetButton.disabled = false
             })
-            .catch((error)=>{
-                console.error("Invalid OTP",error);
-                Swal.fire({
-                position: 'top-center',
-                icon: 'error',
-                title: "Invalid OTP",
-                showConfirmButton: false,
-                timer: 1500
+            .catch(error => {
+                console.error("Error:", error);
+                // Handle other errors if needed
             });
-            })
         }) 
         function startResendTimer(){
             let remainingTime = 5;
@@ -320,6 +332,7 @@
                     });
                     // startResendTimer();
                     verifyOTPBtn.disabled = false; 
+                    submitButton.disabled = false
                     document.getElementById('username').readOnly = true;
                     document.getElementById('email').readOnly = true;
                     document.getElementById('password').readOnly = true;

@@ -137,6 +137,7 @@ adminRouter.get(
 );
 
 //logout
-adminRouter.get("/logout", usermanageControll.getlogout);
+adminRouter.get("/admin/logout", usermanageControll.getlogout);
 
 module.exports = adminRouter;
+  

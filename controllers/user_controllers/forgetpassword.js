@@ -96,10 +96,7 @@ module.exports.postreset= async(req,res)=>{
         );    
         console.log("Verified Successfully")
         res.status(200).json({ message: "Otp Verified Successfully" });
-      
-    
-
-    } else {  
+      } else {  
       console.log(" the otp is "+generatedOTP)
       res.status(200).json({ error: "Invalid OTP" });
     }
