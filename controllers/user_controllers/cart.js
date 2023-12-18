@@ -80,16 +80,14 @@ module.exports.updateQuantity = async (req,res) => {
     const productId = req.body.productId;
     const newQuantity = req.body.quantity;
     const user = await userCollection.findOne({ email: req.user})
+    await cartCollection.updateOne(
+      { userId: user._id, "products._id": productId },
+      { $set: { "products.$.quantity": newQuantity } }
+    );
     const cart = await cartCollection.findOne({ userId: user._id }).populate({
       path: "products.productId",
       model: productCollection,
     });
-
-     await cartCollection.updateOne(
-       { userId: user._id, "products._id": productId },
-       { $set: { "products.$.quantity": newQuantity } }
-     );
-     
     const updatedProduct = cart.products.find(
       (product) => product._id.toString() === productId.toString());
       
