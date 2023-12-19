@@ -30,7 +30,7 @@ adminRouter.get(
 
 //homepage
 adminRouter.post("/admin-dash", loginControll.getAdminDashboard);
-// adminRouter.post("/index", loginControll.getAdminDashboard);
+
 //category
 adminRouter.get(
   "/category-list",

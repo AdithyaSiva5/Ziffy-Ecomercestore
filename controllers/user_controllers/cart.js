@@ -113,3 +113,14 @@ module.exports.updateQuantity = async (req,res) => {
     console.log("error in updating quantity", error); 
   }
 }
+module.exports.removeFromCart = async(req,res)=>{
+  try {
+     const user = await userCollection.findOne({ email: req.user }); 
+    const productId = req.params.productId;
+    await cartCollection.updateOne({ userId: user._id },{ $pull: {products: { productId: productId,}}});
+    res.status(200).json({message : "Data removed successfully"})
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+}

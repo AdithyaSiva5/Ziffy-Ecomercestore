@@ -10,16 +10,12 @@ const productControll = require("../controllers/user_controllers/productdetails"
 const forgetpassword = require("../controllers/user_controllers/forgetpassword");
 const cart = require("../controllers/user_controllers/cart")
 const account = require("../controllers/user_controllers/account")
+const checkoutpage = require("../controllers/user_controllers/checkout")
 
 userRouter.use(cookieparser());
 
 //homepage
-userRouter.get(
-  "/", 
-  homepageControll.getUserRoute,
-  userMiddleware.verifyUser,
-  userMiddleware.checkBlockedStatus
-);
+userRouter.get("/", homepageControll.getUserRoute,userMiddleware.verifyUser,userMiddleware.checkBlockedStatus);
 userRouter.get("/logout", homepageControll.getLogout);
 
 //login
@@ -33,12 +29,7 @@ userRouter.get("/send-otp", signupControll.getSendOtp);
 userRouter.post("/verify-otp", signupControll.postVerifyOtp);
 
 //products
-userRouter.get(
-  "/product-details/:productId",
-  userMiddleware.verifyUser,
-  userMiddleware.checkBlockedStatus,
-  productControll.productDetails
-);
+userRouter.get("/product-details/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productDetails);
 
 //forgetpassword
 userRouter.get("/forgetpassword", forgetpassword.forgetpass);
@@ -47,19 +38,15 @@ userRouter.post("/post-forgetpassword", forgetpassword.postreset);
 
 
 //cart
-userRouter.get(
-  "/cart",
-  userMiddleware.verifyUser,
-  cart.getcart
-);
-userRouter.post("/addToCart", userMiddleware.verifyUser, cart.gettocart);
-userRouter.post("/update-quantity" , userMiddleware.verifyUser , cart.updateQuantity);
+userRouter.get("/cart",userMiddleware.verifyUser,cart.getcart);
+userRouter.post("/addToCart", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, cart.gettocart);
+userRouter.post("/update-quantity",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,cart.updateQuantity);
+userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,cart.removeFromCart);
 
-module.exports = userRouter;
+//checkout
+userRouter.get("/checkout", userMiddleware.verifyUser, checkoutpage.getcheckout);
 
 //User account
-userRouter.get(
-  "/user-account",
-  userMiddleware.verifyUser,
-  account.getUserAccount
-);
+userRouter.get("/user-account",userMiddleware.verifyUser,account.getUserAccount);
+
+module.exports = userRouter;
