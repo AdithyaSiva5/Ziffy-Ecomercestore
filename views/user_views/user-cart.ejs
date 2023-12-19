@@ -802,7 +802,15 @@ quantityButtons.forEach(qty => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
+        if (data.stock < data.newQuantity || data.error) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops!",
+            text: "Sorry, only " + data.stock + " items are available.",
+        });
+        qtyval.textContent = data.stock;
+        
+    }else if(data.newQuantity !== undefined && data.subTotal !== undefined && data.stock !== undefined && data.totalPrice !== undefined) {
           qtyval.textContent = data.newQuantity;
           subtotal.textContent = data.subTotal;
           grandTotal.textContent = `₹${data.totalPrice}`;
@@ -810,14 +818,7 @@ quantityButtons.forEach(qty => {
           console.error("Error updating quantity", data);
         }
 
-        if (data.stock < data.newQuantity) {
-        Swal.fire({
-            icon: "error",
-            title: "Oops!",
-            text: "Sorry, only " + data.stock + " items are available.",
-        });
-        qtyval.textContent = data.stock;
-    }
+        
       })
       
       .catch(error => {

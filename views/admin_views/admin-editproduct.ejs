@@ -206,9 +206,9 @@
                                 <div class="col-lg-4">
                                     <label class="form-label" for="productStatus">Status</label>
                                     <select class="form-select" id="productStatus" name="productStatus" required>
-                                        <option value="" disabled selected>Select status</option>
+                                        <option value="" disabled>Select status</option>
                                         <option value="Block">Block</option>
-                                        <option value="Unblock">Unblock</option>
+                                        <option value="Unblock" selected>Unblock</option>
                                     </select>
                                 </div>
                             </div>+
@@ -289,7 +289,7 @@
                         <img src="/adminAssets/imgs/theme/upload.svg" alt="">
                         <div class="row">
                             <div class="col-md-9">
-                                <input class="form-control" required type="file" name="productImg" accept="image/*" multiple onchange="previewImage(event)">
+                                <input class="form-control" type="file" name="productImg" accept="image/*" multiple onchange="previewImage(event)">
                                 <div id="preview-container" class="d-flex flex-wrap"></div>
                             </div>
                         </div>

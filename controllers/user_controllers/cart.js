@@ -92,9 +92,15 @@ module.exports.updateQuantity = async (req,res) => {
       (product) => product._id.toString() === productId.toString());
       
 //calculating all amounts...
-    const totalPrice = calculateTotalPrice(cart);
-    const subTotal = updatedProduct.productId.sellingPrice * updatedProduct.quantity;
+    var totalPrice = calculateTotalPrice(cart);
+    var subTotal = updatedProduct.productId.sellingPrice * updatedProduct.quantity;
     const stock = updatedProduct.productId.productStock;
+    if (newQuantity > updatedProduct.productId.productStock) {
+       await cartCollection.updateOne(
+         { userId: user._id, "products._id": productId },
+         { $set: { "products.$.quantity": stock } }
+       );
+    }
     return res.status(200).json({
       newQuantity: updatedProduct.quantity,
       subTotal,
