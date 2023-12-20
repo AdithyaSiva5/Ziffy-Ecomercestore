@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const multer = require("multer");
-//const {uploads} = require("../multer-middleware/multer_middleware")
+
 
 const categoryCollection = require("../../models/category");
 const productCollection = require("../../models/product");

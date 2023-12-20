@@ -20,18 +20,9 @@ app.use(cookieparser());
 app.use(express.static(path.join(__dirname, "/public")));
 app.set("view engine", "ejs");
 app.use("/uploads", express.static("uploads"));
-app.set("views", [
-  path.join(__dirname, "/views/admin_views"),
-  path.join(__dirname, "/views/user_views"),
-]);
+app.set("views", [path.join(__dirname, "/views/admin_views"),path.join(__dirname, "/views/user_views"),]);
 
-app.use(
-  session({
-    secret: uuidv4(),
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(session({secret: uuidv4(),resave: false,saveUninitialized: false,}));
 
 app.use("/", userRouter);
 app.use("/admin", adminRouter);

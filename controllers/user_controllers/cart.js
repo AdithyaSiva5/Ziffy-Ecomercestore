@@ -19,11 +19,7 @@ module.exports.gettocart = async(req,res)=>{
               products : [],
           })
         }
-        const existingProductIndex = userCart.products.findIndex(
-          (product) =>
-            product.productId.toString().toLowerCase() ===
-            productId.toLowerCase()
-        );
+        const existingProductIndex = userCart.products.findIndex((product) =>product.productId.toString().toLowerCase() ===productId.toLowerCase());
         if(existingProductIndex !== -1){
           userCart.products[existingProductIndex].quantity += 1;
         }else{
