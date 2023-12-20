@@ -279,8 +279,8 @@
                             const img = document.createElement("img");
                             img.src = e.target.result;
                             img.className = "img-thumbnail mr-2";
-                            img.style.maxWidth = "275px"; // Set the width of the preview image
-                            img.style.height = "200px"; // Set the height of the preview image
+                            img.style.maxWidth = "275px"; 
+                            img.style.height = "200px"; 
                             preview.appendChild(img);
                         };
             
@@ -288,8 +288,44 @@
                     }
                 }
             
-                // Attach the previewImages function to the file input change event
+            
                 document.getElementById("productImg").addEventListener("change", previewImages);
+
+    document.addEventListener("DOMContentLoaded", function () {
+                const productForm = document.getElementById("productForm");
+
+                productForm.addEventListener("submit", function (event) {
+                if (!validateForm()) {
+                    event.preventDefault(); 
+                }
+                });
+
+    function validateForm() {
+            const productName = document.getElementById("productName").value;
+            const productDescription = document.getElementById("productDiscription").value;
+            const regularPrice = document.getElementById("regularPrice").value;
+            const sellingPrice = document.getElementById("sellingPrice").value;
+            const productStatus = document.getElementById("productStatus").value;
+            const category = document.getElementById("category").value;
+            const productBrand = document.getElementById("productBrand").value;
+            const productSize = document.getElementById("productSize").value;
+            const productStock = document.getElementById("productStock").value;
+            const productImg = document.getElementById("productImg").value;
+
+      if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || !productImg.trim()) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'All fields are required!',
+        });
+        return false;
+      }
+
+
+      return true; 
+    }
+  });
+                
             </script>
 
             </div>
@@ -310,8 +346,9 @@
         </footer>
     </main>
 
-    
 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

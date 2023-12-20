@@ -60,13 +60,14 @@ module.exports.getcart = async (req, res,next) => {
         path: "products.productId",
         model: productCollection,
       });
-
-
       const user = await userCollection.findOne({ email: req.user });
       const cart = await cartCollection.findOne({ userId: user._id }).populate({
         path: "products.productId",
         model: productCollection,
       });
+      if (!userCart || userCart.products.length === 0) {
+        return res.render("user-cart", {loggedIn,userCart: null,grandtotal: 0, error: "Your cart is empty."});
+      }
       grandtotal = calculateTotalPrice(cart)
     res.render("user-cart", { loggedIn,userCart,grandtotal, error: null   });
   } catch (error) {

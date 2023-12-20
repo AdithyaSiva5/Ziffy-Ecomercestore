@@ -38,7 +38,7 @@
                                     <li><i class="fi-rs-user"></i><a href="/login">Log In</a></li>
                                     <li><i class="fi-rs-user"></i><a href="/signup">Sign Up</a></li>
                                 <% }else{  %>
-                                    <li><i class="fi-rs-user"></i><a href="#">Account</a></li>
+                                    <li><i class="fi-rs-user"></i><a href="/user-account">Account</a></li>
                                     <li><i class="fi-rs-user"></i><a href="/logout">Logout</a></li>
                                     
                                 <%  } %>
@@ -239,8 +239,8 @@
                                             <h4>Total <span>$4000.00</span></h4>
                                         </div>
                                         <div class="shopping-cart-button">
-                                            <a href="shop-cart.html">View cart</a>
-                                            <a href="shop-checkout.html">Checkout</a>
+                                            <a href="cart">View cart</a>
+                                            <a href="checkout">Checkout</a>
                                         </div>
                                     </div>
                                 </div>
@@ -449,7 +449,7 @@
                                             <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="page-login-register.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                            <a class="nav-link" href="logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -687,7 +687,7 @@
                         <h5 class="widget-title wow fadeIn animated">My Account</h5>
                         <ul class="footer-list wow fadeIn animated">
                             <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
+                            <li><a href="/cart">View Cart</a></li>
                             <li><a href="#">My Wishlist</a></li>
                             <li><a href="#">Track My Order</a></li>
                             <li><a href="#">Help</a></li>

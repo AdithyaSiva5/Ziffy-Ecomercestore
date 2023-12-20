@@ -178,7 +178,7 @@
                         <h4>Basic</h4>
                     </div>
                     <div class="card-body">
-                      <form action="/admin/postEdit-product/<%= productdata._id %>" method="post" enctype="multipart/form-data">
+                      <form action="/admin/postEdit-product/<%= productdata._id %>" method="post" enctype="multipart/form-data" id="productForm">
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Product Name</label>
                                 <input type="text" placeholder="Enter name" class="form-control" value="<%= productdata.productName %>" id="productName" name="productName" required>
@@ -250,39 +250,7 @@
                     <div class="card-header">
                         <h4>Media</h4>
                     </div>
-                    <!-- <div class="card-body">
-                        <div class="input-upload">
-                            <div class="input-upload">
-                              <img src="/<%= productdata.productImg[0] %>" alt="">
-                              <input class="form-control" type="file" name="productImg" >
-                          </div>
-                          <div class="input-upload">
-                              <img src="/<%=productdata.productImg[1]%>" alt="">
-                              <input class="form-control" type="file" name="productImg" >
-                          </div>
-                          <div class="input-upload">
-                              <img src="/<%=productdata.productImg[2]%>" alt="">
-                              <input class="form-control" type="file" name="productImg" >
-                          </div>
-                          <div class="input-upload">
-                              <img src="/<%=productdata.productImg[3]%>" alt="">
-                              <input class="form-control" type="file" name="productImg" >
-                          </div>
-                        </div>
-                    </div> -->
-                    <!-- <div class="card-body">
-                      <div id="imagePreview" class="input-upload">
-                        <img src="/adminAssets/imgs/theme/upload.svg" alt="">
-                          <% productdata.productImg.forEach(img => { %>
-                              <div>
-                                  <img src="/<%= img %>" alt="image">
-                                  <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                                  <input class="form-control" type="file" name="productImg" >
-                                  <div id="imagePreview" class="mt-2 d-flex flex-wrap"></div>
-                              </div>
-                          <% }) %>
-                      </div>
-                  </div> -->
+                   
 
                   <div class="card-body">
                     <div id="imagePreview" class="input-upload">
@@ -310,104 +278,68 @@
             </div>
         </form>
 
-        <!-- <script>
-            // Function to handle file input change event
-            function previewImages() {
-                const preview = document.getElementById("imagePreview");
-                const fileInput = document.getElementById("productImg");
-                const files = fileInput.files;
+        <script>
+            function previewImage(event) {
+                var input = event.target;
+                var previewContainer = document.getElementById('preview-container');
+                previewContainer.innerHTML = '';
         
-                preview.innerHTML = "";
-        
-                for (const file of files) {
-                    const reader = new FileReader();
-        
-                    reader.onload = function (e) {
-                        const img = document.createElement("img");
-                        img.src = e.target.result;
-                        img.className = "img-thumbnail mr-2";
-                        img.style.maxWidth = "270px"; // Set the width of the preview image
-                        img.style.height = "200px"; // Set the height of the preview image
-                        preview.appendChild(img);
-                    };
-        
-                    reader.readAsDataURL(file);
+                for (let i = 0; i < input.files.length; i++) {
+                    if (input.files[i]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var previewImage = document.createElement('img');
+                            previewImage.src = e.target.result;
+                            previewImage.classList.add('preview-image');
+                            previewContainer.appendChild(previewImage);
+                        };
+                        reader.readAsDataURL(input.files[i]);
+                    }
                 }
             }
         
-            // Attach the previewImages function to the file input change event
-            document.getElementById("productImg").addEventListener("change", previewImages);
-        </script> -->
-
-        <script>
-          //preview image
-            function previewImage(event) {
-            var input = event.target;
-            var previewContainer = document.getElementById('preview-container');
-            
-            // Clear existing preview images
-            previewContainer.innerHTML = '';
-
-
-            for (let i = 0; i < input.files.length; i++) {
-                if (input.files[i]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        // Create a new image element
-                        var previewImage = document.createElement('img');
-                        previewImage.src = e.target.result;
-                        previewImage.classList.add('preview-image');
-                        
-                        // Append the image to the preview container
-                        previewContainer.appendChild(previewImage);
+            document.addEventListener("DOMContentLoaded", function () {
+                const productForm = document.getElementById("productForm");
+        
+                productForm.addEventListener("submit", function (event) {
+                    if (!validateForm()) {
+                        event.preventDefault();
                     }
-                    reader.readAsDataURL(input.files[i]);
-                   }
-               }
-            }
+                });
+        
+                function validateForm() {
+                    console.log("validating form")
+                    const productName = document.getElementById("productName").value;
+                    const productDescription = document.getElementById("productDiscription").value;
+                    const regularPrice = document.getElementById("regularPrice").value;
+                    const sellingPrice = document.getElementById("sellingPrice").value;
+                    const productStatus = document.getElementById("productStatus").value;
+                    const category = document.getElementById("category").value;
+                    const productBrand = document.getElementById("productBrand").value;
+                    const productSize = document.getElementById("productSize").value;
+                    const productStock = document.getElementById("productStock").value;
+                    const productImg = document.getElementById("productImg");
+        
+                    if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || productImg.files.length === 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'All fields are required!',
+                        });
+                        return false;
+                    }
+        
+        
+                    return true;
+                }
+            });
         </script>
-
-        <!-- delete image -->
-        <!-- <script>
-            const deleteImageBtn = document.getElementById("deleteImageBtn")
-            deleteImageBtn.addEventListener("click", function() {
-
-                const productImg = document.querySelector('input[name="productImg"]').value;
-                const productId = 
-
-                fetch(`/admin/delete-image?productImg=${productImg}`, {
-                    method:'DELETE',
-                })
-                .then(response => {
-                    if(response.ok) {
-                        button.closest('.row').remove();
-                    } else {
-                        console.error('Failed to delete image');
-                    }
-                }) 
-                .catch  (error => {
-                    console.error('Error', error);
-                })
-            })
-        </script> -->
-
         </div>
-    </section> <!-- content-main end// -->
-    <footer class="main-footer font-xs">
-        <div class="row pb-30 pt-15">
-            <div class="col-sm-6">
-                <script>
-                document.write(new Date().getFullYear())
-                </script> ©, Evara - HTML Ecommerce Template .
-            </div>
-            <div class="col-sm-6">
-                <div class="text-sm-end">
-                    All rights reserved
-                </div>
-            </div>
-        </div>
-    </footer>
+    </section> 
+    
+
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
 <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
 <script src="/adminAssets/js/vendors/select2.min.js"></script>
