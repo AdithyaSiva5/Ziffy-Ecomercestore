@@ -36,6 +36,11 @@
                         <a href="page-error-404.html">Error 404</a>
                     </div> -->
                 </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                </li>
                 <!-- <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
@@ -230,7 +235,6 @@
                 const catgDiscription = catgDiscriptionInput.value.trim();
                 categoryId = category.value;
 
-                console.log("----------------"+categoryId+"  ==  "+category)
                 if (!catgName || !catgDiscription) {
                 Swal.fire({
                     icon: 'error',
@@ -252,7 +256,6 @@
         });
         
         const data = await response.json();
-        console.log("1");
         if (data.message) {
             Swal.fire({
                 position: "top-center",
@@ -273,7 +276,6 @@
                 footer: '<a href="#">Why do I have this issue?</a>',
                 timer: 1500
             });
-            console.log("3");
         }    
              
             })

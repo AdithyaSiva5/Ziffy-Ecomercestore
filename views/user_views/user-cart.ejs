@@ -721,17 +721,28 @@
                                             <% } %>
                                         </td>
                                         <td class="text-right" data-title="Cart">
-                                            <span class="cart-total"><%= product.productId.sellingPrice * Number(product.quantity) %></span>
+                                            <span class="cart-total"><%= Number(product.productId.sellingPrice) * Number(product.quantity) %></span>
                                           </td>
                                         <td class="action" data-title="Remove"><a href="javascript:void(0);" class="text-muted remove-item" data-product-id="<%= product.productId._id %>"><i class="fi-rs-trash" ></i></a></td>
                                     </tr>
                                     <% }); %>
                                     <% } else { %>
                                         <tr>
-                                          <td colspan="2">
-                                            <h4>No items in the cart</h4>                                             
+                                          <td colspan="6">
+                                            <br><br>
+                                            <div class = "text-start">
+                                                <h4>Your Cart is empty.</h4>
+
+                                            </div>
+                                            <br><br><br>
+                                            <div class="text-end">
+                                                <a class="btn" href="/"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                                              </div>                                             
                                           </td>
                                         </tr>
+                                        <!-- <div class="cart-action text-end">
+                                            <a class="btn" href="/"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                                          </div> -->
                                       <% } %>
                                 </tbody>
                             </table>
@@ -1022,7 +1033,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     </footer>
     <!-- Preloader Start -->
-    <div id="preloader-active">
+    <!-- <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
                 <div class="text-center">
@@ -1035,7 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 

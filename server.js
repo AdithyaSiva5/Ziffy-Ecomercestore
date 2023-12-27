@@ -7,12 +7,13 @@ const cookieparser = require("cookie-parser");
 const session = require("express-session");
 const nocache = require("nocache");
 const { v4: uuidv4 } = require("uuid");
+const moment = require("moment")
 
 const adminRouter = require("./routes/adminRouter");
 const userRouter = require("./routes/userRouter");
 
 const app = express();
-
+app.locals.moment = moment;
 app.use(nocache());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,4 +41,5 @@ app.listen(PORT, async (req, res) => {
     console.log(err);
   }
 });
+
  

@@ -11,6 +11,8 @@ const forgetpassword = require("../controllers/user_controllers/forgetpassword")
 const cart = require("../controllers/user_controllers/cart")
 const account = require("../controllers/user_controllers/account")
 const checkoutpage = require("../controllers/user_controllers/checkout")
+const address = require("../controllers/user_controllers/address")
+const orders = require("../controllers/user_controllers/order")
 
 userRouter.use(cookieparser());
 
@@ -44,9 +46,26 @@ userRouter.post("/update-quantity",userMiddleware.verifyUser,userMiddleware.chec
 userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,cart.removeFromCart);
 
 //checkout
-userRouter.get("/checkout", userMiddleware.verifyUser, checkoutpage.getcheckout);
+userRouter.get("/checkout", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,checkoutpage.getcheckout);
+
+
+//orders
+userRouter.get("/place-order-cod/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.orderViaCod);
+userRouter.get("/order-placed/:orderId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.getOrderPlaced);
+userRouter.get("/cancel-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.cancelOrder)
+userRouter.get("/return-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.returnOrder)
+
+
+
 
 //User account
-userRouter.get("/user-account",userMiddleware.verifyUser,account.getUserAccount);
+userRouter.get("/user-account",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,account.getUserAccount);
+userRouter.get("/view-order",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.viewOrders);
 
-module.exports = userRouter;
+
+//address
+userRouter.post("/post-add-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postAddAddress);
+userRouter.post("/post-edit-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postEditAddress);
+userRouter.get('/delete-address',userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.deleteAddress);
+
+module.exports = userRouter; 

@@ -5,13 +5,14 @@ const mongoose = require("mongoose");
 
 module.exports.gettocart = async(req,res)=>{
     try{
-        const userData = await userCollection.findOne({email : req.user})  
+        const userData = await userCollection.findOne({email : req.user})   
         const userId = userData.id;
         const { productId, quantity } = req.query; 
         const product = await productCollection.findOne({ _id: productId });
         if(product.stock<=0){
           return res.status(200).json({error : "Product is out of stock", isProductAdded: false})
         }
+        
         let userCart = await cartCollection.findOne({ userId })
         if(!userCart){
           userCart = new cartCollection({
@@ -31,7 +32,7 @@ module.exports.gettocart = async(req,res)=>{
     }catch(error){
         console.error("Error adding to cart:", error);
         res.status(500).json({
-          error: "Failed to add the product to the cart",
+          error: "Login to add to cart",
           isProductAdded: false,
         });
     }
@@ -50,21 +51,11 @@ module.exports.getcart = async (req, res,next) => {
   try {
     const loggedIn = req.cookies.loggedIn;
     const userData = await userCollection.findOne({ email: req.user });
-    const userCart = await cartCollection
-      .findOne({ userId: userData.id })
-      .populate({
-        path: "products.productId",
-        model: productCollection,
-      });
-      const user = await userCollection.findOne({ email: req.user });
-      const cart = await cartCollection.findOne({ userId: user._id }).populate({
-        path: "products.productId",
-        model: productCollection,
-      });
+    const userCart = await cartCollection.findOne({ userId: userData.id }).populate({path: "products.productId",model: productCollection,});
       if (!userCart || userCart.products.length === 0) {
-        return res.render("user-cart", {loggedIn,userCart: null,grandtotal: 0, error: "Your cart is empty."});
+        return res.render("user-cart", {loggedIn, userCart: null,grandtotal: 0, error: "Your cart is empty."});
       }
-      grandtotal = calculateTotalPrice(cart)
+      grandtotal = calculateTotalPrice(userCart);
     res.render("user-cart", { loggedIn,userCart,grandtotal, error: null   });
   } catch (error) {
     console.log(error);
@@ -108,7 +99,7 @@ module.exports.updateQuantity = async (req,res) => {
 
   } catch (error) {
     console.log("error in updating quantity", error); 
-  }
+  } 
 }
 module.exports.removeFromCart = async(req,res)=>{
   try {

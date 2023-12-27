@@ -818,27 +818,32 @@
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
-                    <!-- <div class="col-lg-12"> -->
-                        <!-- <div class="product-detail accordion-detail"> -->
+                    <div class="col-lg-12">
+                        <div class="product-detail accordion-detail">
 
                             
-                            <!-- <div class="row mb-50"> -->
-                                <div class="col-md-4 col-sm-12 col-xs-12">
-                                    <!-- Product Image Section -->
-                                    <div class="detail-gallery">
-                                        <div class="image-container">
-                                            <img class="product-image" src="/<%= productdata.productImg[0] %>" alt="Product Image">
-                                            <!-- THUMBNAILS -->
-                                            <div class="slider-nav-thumbnails pl-15 pr-15">
-                                                <%productdata.productImg.forEach((image)=>{%>
-                                                                        <div data-image="/<%= image %>" class="thumbnail"><img
-                                                                                src="/<%= image %>" alt="product image"></div>
-                        
-                                                <%})%>
-                                                                    </div>
+                            <div class="row mb-50">
+                                <div class="col-md-6 col-sm-12 col-xs-12 d-flex justify-content-center">
+                                    <div class="detail-gallery " style="width: 300px;height: 307px;">
+                                        <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                                        <!-- MAIN SLIDES -->
+                                        <div class="product-image-slider">
+                                            <% for (let i = 0; i < productdata.productImg.length; i++) { %>
+                                                <figure class="border-radius-10">
+                                                    <img src="/<%= productdata.productImg %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
+                                                </figure>
+                                                <% } %>   
                                         </div>
-                                        <!-- End Gallery -->
+                                        <!-- THUMBNAILS -->
+                                        <div class="slider-nav-thumbnails pl-15 pr-15">
+                                            <% for (let i = 0; i < productdata.productImg.length; i++) { %>
+                                                <div>
+                                                    <img src="/<%= productdata.productImg %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
+                                                </div>
+                                                <% } %>                                        </div>
                                     </div>
+                                    <!-- End Gallery -->
+                                    
                                 </div>
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info">
@@ -927,7 +932,7 @@
                                     </div>
                                     <!-- Detail Info -->
                                 </div>
-                            <!-- </div> -->
+                            </div>
                            
                             
 
@@ -1349,8 +1354,8 @@
                                     <h2 class="fw-600 mb-20">We're an Apple <br>Authorised Service Provider</h2>
                                 </div>
                             </div>
-                        <!-- </div> -->
-                    <!-- </div> -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1520,7 +1525,7 @@
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Failed to add the product to the cart",
+              text: data.error || "Failed to add the product to the cart",
               footer: '',
               timer: 1500
             });

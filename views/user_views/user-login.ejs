@@ -122,14 +122,20 @@
             const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
             if (!email.match(emailPattern)) {
                 showError('emailError', 'Invalid email address');
-                return false;
+                
             }
 
             // Validate password length
             if (password.length < 6) {
                 showError('passwordError', 'Password must be at least 6 characters');
-                return false;
+               
             }
+            const errorElements = document.querySelectorAll('.error-message');
+    for (const element of errorElements) {
+        if (element.textContent !== '') {
+            return false; // There are errors, prevent form submission
+        }
+    }
 
             return true; // Placeholder, replace with your actual validation logic
         }
@@ -137,6 +143,7 @@
         // Function to show error message
         function showError(elementId, message) {
             const errorElement = document.getElementById(elementId);
+            errorElement.style.color = 'red';   
             errorElement.textContent = message;
         }
 

@@ -7,6 +7,7 @@ const dashboardControll = require("../controllers/admin_controllers/adm_dashboar
 const productControll = require("../controllers/admin_controllers/adm_product");
 const categoryControll = require("../controllers/admin_controllers/adm_category");
 const usermanageControll = require("../controllers/admin_controllers/adm_usermanage");
+const orders = require("../controllers/admin_controllers/adm_orders")
 
 adminRouter.use("/public/uploads", express.static("public/uploads"));
 adminRouter.use("/uploads", express.static("uploads"));
@@ -32,109 +33,39 @@ adminRouter.get(
 adminRouter.post("/admin-dash", loginControll.getAdminDashboard);
 
 //category
-adminRouter.get(
-  "/category-list",
-  adminMiddleware.verifyAdmin,
-  categoryControll.getCategory
-);
-adminRouter.post(
-  "/add-category",
-  adminMiddleware.verifyAdmin,
-  categoryControll.postCategory
-);
-adminRouter.get(
-  "/edit-category/:categoryId",
-  adminMiddleware.verifyAdmin,
-  categoryControll.editCategory
-);
-adminRouter.post(
-  "/postEdit-category/:categoryId",
-  adminMiddleware.verifyAdmin, 
-  categoryControll.updateCategory
-);
-adminRouter.get(
-  "/delete-category/:categoryId",
-  adminMiddleware.verifyAdmin,
-  categoryControll.deleteCategory
-);
-adminRouter.post(
-  "/block-category/:categoryId",
-  adminMiddleware.verifyAdmin,
-  categoryControll.blockCategory
-);
-adminRouter.post(
-  "/unblock-category/:categoryId",
-  adminMiddleware.verifyAdmin,
-  categoryControll.unblockCategory
-);
+adminRouter.get("/category-list",adminMiddleware.verifyAdmin,categoryControll.getCategory);
+adminRouter.post(  "/add-category",  adminMiddleware.verifyAdmin,  categoryControll.postCategory);
+adminRouter.get(  "/edit-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.editCategory);
+adminRouter.post(  "/postEdit-category/:categoryId",  adminMiddleware.verifyAdmin,   categoryControll.updateCategory);
+adminRouter.get(  "/delete-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.deleteCategory);
+adminRouter.post(  "/block-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.blockCategory);
+adminRouter.post(  "/unblock-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.unblockCategory);
 
 //product
 
-adminRouter.get(
-  "/product-list",
-  adminMiddleware.verifyAdmin,
-  adminMiddleware.verifyAdmin,
-  productControll.getProductList
-);
-adminRouter.get(
-  "/add-product",
-  adminMiddleware.verifyAdmin,
-  productControll.getAddProduct
-);
-adminRouter.post(
-  "/postadd-product",
-  uploads.array("productImg"),
-  adminMiddleware.verifyAdmin,
-  productControll.postProduct
-);
-adminRouter.get(
-  "/delete-product/:productId",
-  adminMiddleware.verifyAdmin,
-  productControll.deleteProduct
-);
-adminRouter.get(
-  "/edit-product/:productId",
-  adminMiddleware.verifyAdmin,
-  productControll.editProduct
-);
-adminRouter.post(
-  "/postEdit-product/:productId",
-  adminMiddleware.verifyAdmin,
-  uploads.array("productImg"),
-  productControll.updateProduct
-);
-adminRouter.get(
-  "/block-product/:productId",
-  adminMiddleware.verifyAdmin,
-  productControll.blockProduct
-);
-adminRouter.get(
-  "/unblock-product/:productId",
-  adminMiddleware.verifyAdmin,
-  productControll.unblockProduct
-);
-adminRouter.get(
-  "/delete-image",
-  adminMiddleware.verifyAdmin,
-  productControll.deleteImage
-);
+adminRouter.get(  "/product-list",  adminMiddleware.verifyAdmin,  adminMiddleware.verifyAdmin,  productControll.getProductList);
+adminRouter.get(  "/add-product",  adminMiddleware.verifyAdmin,  productControll.getAddProduct);
+adminRouter.post(  "/postadd-product",  uploads.array("productImg"),  adminMiddleware.verifyAdmin,  productControll.postProduct);
+adminRouter.get(  "/delete-product/:productId",  adminMiddleware.verifyAdmin,  productControll.deleteProduct);
+adminRouter.get(  "/edit-product/:productId",  adminMiddleware.verifyAdmin,  productControll.editProduct);
+adminRouter.post(  "/postEdit-product/:productId",  adminMiddleware.verifyAdmin,  uploads.array("productImg"),  productControll.updateProduct);
+adminRouter.get(  "/block-product/:productId",  adminMiddleware.verifyAdmin,  productControll.blockProduct);
+adminRouter.get(  "/unblock-product/:productId",  adminMiddleware.verifyAdmin,  productControll.unblockProduct);
+adminRouter.get(  "/delete-image",  adminMiddleware.verifyAdmin,  productControll.deleteImage);
 
 // Manage User
-adminRouter.get(
-  "/user-manage",
-  adminMiddleware.verifyAdmin,
-  usermanageControll.getUsers
-);
-adminRouter.get(
-  "/block-user/:userId",
-  adminMiddleware.verifyAdmin,
-  usermanageControll.blockUser
-);
-adminRouter.get(
-  "/unblock-user/:userId",
-  adminMiddleware.verifyAdmin,
-  usermanageControll.unblockUser
-);
+adminRouter.get(  "/user-manage",  adminMiddleware.verifyAdmin,  usermanageControll.getUsers);
+adminRouter.get(  "/block-user/:userId",  adminMiddleware.verifyAdmin,  usermanageControll.blockUser);
+adminRouter.get(  "/unblock-user/:userId",  adminMiddleware.verifyAdmin,  usermanageControll.unblockUser);
+
+
+//order management
+adminRouter.get("/orders", adminMiddleware.verifyAdmin, orders.Orders);
+adminRouter.get("/view-order/:orderId", adminMiddleware.verifyAdmin , orders.viewOrder);
+adminRouter.get("/dispatch-order/:orderId", adminMiddleware.verifyAdmin , orders.dispatchOrder);
+adminRouter.get("/cancel-order/:orderId", adminMiddleware.verifyAdmin , orders.cancelOrder);
+adminRouter.get("/deliver-order/:orderId", adminMiddleware.verifyAdmin , orders.deliverOrder);
+
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 

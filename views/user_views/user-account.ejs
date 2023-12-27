@@ -203,47 +203,13 @@
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
+                                <a class="mini-cart-icon" href="/cart">
                                     <img alt="Evara" src="/userAssets/imgs/theme/icons/icon-cart.svg">
-                                    <span class="pro-count blue">2</span>
+                                    <% if (cartLength) { %>
+                                        <span class="pro-count blue"> <%= cartLength%> </span>
+                                      <%  } %>
                                 </a>
-                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                    <ul>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="/userAssets/imgs/shop/thumbnail-3.jpg"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
-                                                <h3><span>1 × </span>$800.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="/userAssets/imgs/shop/thumbnail-1.jpg"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Macbook Pro 2022</a></h4>
-                                                <h3><span>1 × </span>$3200.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="shopping-cart-footer">
-                                        <div class="shopping-cart-total">
-                                            <h4>Total <span>$4000.00</span></h4>
-                                        </div>
-                                        <div class="shopping-cart-button">
-                                            <a href="cart">View cart</a>
-                                            <a href="checkout">Checkout</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="header-action-icon d-block d-lg-none">
                                 <div class="burger-icon">
@@ -445,9 +411,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
-                                        </li>
+                                    
                                         <li class="nav-item">
                                             <a class="nav-link" href="logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
@@ -462,6 +426,7 @@
                                                 <h5 class="mb-0">Hello <%= userData.username ? userData.username.replace(/\b\w/g, c => c.toUpperCase()) : '' %></h5>
                                             </div>
                                             <div class="card-body">
+                                                <h3 class="mb-0">Welcome to the dashboard </h3>
                                                 <p>From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
                                             </div>
                                         </div>
@@ -474,9 +439,10 @@
                                             <div class="card-body">
                                                 <div class="table-responsive">
                                                     <table class="table">
+                                                        
+                                                        <% if(userOrders.length > 0) {%>
                                                         <thead>
                                                             <tr>
-                                                                <th>Order</th>
                                                                 <th>Date</th>
                                                                 <th>Status</th>
                                                                 <th>Total</th>
@@ -484,27 +450,19 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td>#1357</td>
-                                                                <td>March 45, 2020</td>
-                                                                <td>Processing</td>
-                                                                <td>$125.00 for 2 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2468</td>
-                                                                <td>June 29, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$364.00 for 5 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2366</td>
-                                                                <td>August 02, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$280.00 for 3 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
+                                                            <% userOrders.reverse().forEach(order => { %>
+                                                                <tr>
+                                                                    <td><%= moment(order.orderDate)  %></td> 
+                                                                    <td><%= order.orderStatus %></td> 
+                                                                    <td> ₹<%= order.totalAmount%> for <%= order.products.length %> item[s]</td>
+                                                                    <td><a href="/view-order?orderId=<%= order._id %>" class="btn-small d-block">View</a></td>
+                                                                </tr>
+                                                            <% }); %>
+                                                            <% }else { %>
+                                                                <div class="no-orders">
+                                                                    <h6>You have no orders.</h6>
+                                                                </div>
+                                                            <% } %>
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -537,34 +495,253 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                     <style>
+                                        .redcolor {
+                                                color: #ce1212; 
+                                            }
+                                     </style>
                                         <div class="row">
+                                            <% if(userAddress?.address.length > 0){ %>  
+                                            <% userAddress.address.forEach((address,index) => { %>
                                             <div class="col-lg-6">
-                                                <div class="card mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Billing Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address>3522 Interstate<br> 75 Business Spur,<br> Sault Ste. <br>Marie, MI 49783</address>
-                                                        <p>New York</p>
-                                                        <a href="#" class="btn-small">Edit</a>
+                                                
+                                                    
+                                                    <div class="card mb-3 mb-lg-0 mt-10">
+                                                        <div class="card-header">
+                                                            <h5 class="mb-0">Address <%= index+1 %></h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <p> <%= address.name %> </p>
+                                                            <address> <%= address.addressType %> </address>
+                                                            <p> <%= address.landMark %> </p>
+                                                            <p> <%= address.city %> </p>
+                                                            <p> <%= address.pincode %> </p>
+                                                            <p> <%= address.state %> </p>
+                                                            <p> <%= address.phone %>, <%= address.altPhone %> </p>
+                                                            <a data-bs-toggle="modal" class="text-success" data-bs-target="#addressModal" data-address-id="<%= address._id %>" data-daid="<%= address._id %>" onclick="editAddress('<%= address._id %>')">Edit</a>
+                                                            <span class="mx-3"></span>
+                                                            <a href="#" class="btn-small redcolor"  onclick="confirmDelete('<%= address._id %>')">Delete</a>
+
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <% }) %>
+                                                <% }else{ %>
+                                                    <h5 class="mt-30">No Saved Addresses</h5>
+                                                <% } %>
+                                             </div>
+                                        
+                                    </div>
+                                    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="addressModalLabel">Edit Address</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Shipping Address</h5>
+                                            <div class="modal-body">
+                                                <form method="post" action="/post-edit-address" id="myForm">
+                                                    <div class="ship_detail">
+                                                        <div id="collapseAddress" class="different_address">
+                                                            <div class="form-group">
+                                                                <input type="text"  name="name" id="username" placeholder="Name *">
+                                                                <div id="usernameError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="text" name="addressType" id="addressloc" placeholder="Address *">
+                                                                <div id="addressError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text" name="city" id="city" placeholder="City *">
+                                                                <div id="cityError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text" name="landMark" id="landmark" placeholder="Landmark *">
+                                                                <div id="landmarkError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text" name="state" id="state" placeholder="State *">
+                                                                <div id="stateError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number" name="pincode" id="postcode" placeholder="Postcode  *">
+                                                                <div id="postcodeError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number" name="phone" id="phoneNumber" placeholder="Phone Number  *">
+                                                                <div id="phoneNumberError" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number"  name="altPhone" id="altphone" placeholder="Alternative Phone Number  *">
+                                                                <div id="altphoneError" class="error"></div>
+                                                            </div>
+                                                            <div>
+                                                                <button type="submit" id="submitButton">Submit</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="card-body">
-                                                        <address>4299 Express Lane<br>
-                                                            Sarasota, <br>FL 34249 USA <br>Phone: 1.941.227.4444</address>
-                                                        <p>Sarasota</p>
-                                                        <a href="#" class="btn-small">Edit</a>
-                                                    </div>
-                                                </div>
+                                                </form>
                                             </div>
                                         </div>
+                                        </div>
                                     </div>
+                                    <div id="rendered-address" hidden><%- JSON.stringify(userAddress) %></div>
+                                    <script>
+                                   let currentAddressId;
+                                            const userAddress = JSON.parse(document.getElementById("rendered-address").textContent);
+                                            function editAddress(addressId)  {
+                                                currentAddressId = addressId;
+                                                userAddress.address.forEach((address) => {
+                                                    if(address._id == addressId){
+                                                        document.getElementById('username').value = address.name;
+                                                        document.getElementById('addressloc').value = address.addressType;
+                                                        document.getElementById('city').value = address.city;
+                                                        document.getElementById('landmark').value = address.landMark;
+                                                        document.getElementById('state').value = address.state;
+                                                        document.getElementById('postcode').value = address.pincode;
+                                                        document.getElementById('phoneNumber').value = address.phone;
+                                                        document.getElementById('altphone').value = address.altPhone;
+                                                        
+                                                    }
+                                                });
+                                                
+                                            }
+
+                                    
+                                document.addEventListener('DOMContentLoaded', function () {
+                                     // var dataAddressId = document.querySelector(`[data-address-id="${addressId}"]`).dataset.addressId;
+                                // console.log(dataAddressId);
+                                const form = document.getElementById('myForm');
+                               
+
+                                form.addEventListener('submit', function (event) {
+                                    event.preventDefault(); 
+
+                                    clearErrorMessages();
+
+                                    const name = validateField('username', 'Name cannot be blank.');
+                                    const addressType = validateField('addressloc', 'Address cannot be blank.');
+                                    const city = validateField('city', 'City cannot be blank.');
+                                    const landmark = validateField('landmark', 'Landmark cannot be blank.');
+                                    const state = validateField('state', 'State cannot be blank.');
+                                    const postcode = validateNumberField('postcode', 'Invalid postcode. It should be a 6-digit number.', 6);
+                                    const phoneNumber = validateNumberField('phoneNumber', 'Invalid phone number. It should be a 10-digit number and cannot start with 0.', 10, true);
+                                    const altPhone = validateNumberField('altphone', 'Invalid alternative phone number. It should be a 10-digit number and cannot start with 0.', 10, true);
+
+                                    if (name && addressType && city && landmark && state && postcode && phoneNumber && altPhone) {
+                                        const newData = {
+                                            name,
+                                            addressType,
+                                            city,
+                                            landmark,
+                                            state,
+                                            postcode,
+                                            phoneNumber,
+                                            altPhone,
+                                        };
+                                        
+                                        sendDataToServer(newData, currentAddressId);
+                                    }
+                                });
+                                 function sendDataToServer(data,addressId) {
+                                    
+                            const apiUrl = '/post-edit-address';
+
+                            fetch(apiUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ data, addressId }),
+                            })
+                            .then(response => response.json())
+                            .then(responseData => {
+                                if (responseData.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: responseData.message,
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                        willClose: () => {
+                                            const addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
+                                            setTimeout(() => {
+                                                // addressModal.hide();
+                                                window.location.href = `/user-account`;
+                                             }, 100);
+                                             
+                                        },
+                                    });
+                                } else {
+                                    console.error('Server response indicates failure:', responseData);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error sending data to server:', error);
+                            });
+                        }
+
+                                        function validateField(fieldId, errorMessage) {
+                                            const field = document.getElementById(fieldId);
+                                            const value = field.value.trim();
+
+                                            if (!value) {
+                                                displayErrorMessage(field, errorMessage);
+                                                return null;
+                                            }
+
+                                            return value;
+                                        }
+
+                                        function validateNumberField(fieldId, errorMessage, length, disallowZero) {
+                                            const field = document.getElementById(fieldId);
+                                            const value = field.value.trim();
+
+                                            if (disallowZero && value === '0') {
+                                                displayErrorMessage(field, errorMessage);
+                                                return null;
+                                            }
+
+                                            if (isNaN(value) || value.length !== length) {
+                                                displayErrorMessage(field, errorMessage);
+                                                return null;
+                                            }
+
+                                            return value;
+                                        }
+
+                                        function displayErrorMessage(field, errorMessage) {
+                                            const errorDiv = document.createElement('div');
+                                            errorDiv.classList.add('text-danger');
+                                            errorDiv.textContent = errorMessage;
+
+                                            field.parentNode.appendChild(errorDiv);
+                                        }
+
+                                        function clearErrorMessages() {
+                                            const errorMessages = document.querySelectorAll('.text-danger');
+                                            errorMessages.forEach(function (errorMessage) {
+                                                errorMessage.remove();
+                                            });
+                                        }
+                                    });
+                                    function confirmDelete(addressId) {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Are you sure?',
+                                            text: 'You won\'t be able to revert this!',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#d33',
+                                            cancelButtonColor: '#3085d6',
+                                            confirmButtonText: 'Yes, delete it!'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = `/delete-address?addressId=${addressId}`;
+                                            }
+                                        });
+                                    }
+
+                                  </script>
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
                                         <div class="card">
                                             <div class="card-header">
@@ -745,6 +922,9 @@
         </div>
     </div> -->
     <!-- Vendor JS-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="/userAssets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/userAssets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/userAssets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
