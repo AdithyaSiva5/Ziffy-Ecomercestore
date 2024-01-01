@@ -91,6 +91,7 @@ module.exports.returnOrder = async (req, res, next) => {
       });
       res.redirect(`/view-order/?orderId=${orderId}`);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   };

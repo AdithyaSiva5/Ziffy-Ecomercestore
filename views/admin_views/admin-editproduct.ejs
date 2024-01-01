@@ -268,13 +268,14 @@
                         </div>
                         <% productdata.productImg.forEach(img => { %>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <img src="/<%= img %>" alt="">
+                                <div class="col-md-6" >
+                                    <img src="/<%= img %>" alt="" >
                                 </div>
                                 <div class="col-md-6">
                                     <!-- <button type="button" class="btn btn-sm btn-danger" id="deleteImageBtn" name="deleteImageBtn">Delete</button> -->
                                     <a href="/admin/delete-image?productId=<%= productdata.id %>&image=<%= img%>" class="btn btn-sm btn-danger" id="deleteImageBtn" name="deleteImageBtn">Delete</a>
                                 </div>
+                                
                             </div>
                         <% }) %>
                     </div>

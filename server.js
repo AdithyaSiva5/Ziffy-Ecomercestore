@@ -15,22 +15,25 @@ const userRouter = require("./routes/userRouter");
 const app = express();
 app.locals.moment = moment;
 app.use(nocache());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieparser());
 app.use(express.static(path.join(__dirname, "/public")));
 app.set("view engine", "ejs");
 app.use("/uploads", express.static("uploads"));
 app.set("views", [path.join(__dirname, "/views/admin_views"),path.join(__dirname, "/views/user_views"),]);
 
+
+
 app.use(session({secret: uuidv4(),resave: false,saveUninitialized: false,}));
 
-app.use("/", userRouter);
 app.use("/admin", adminRouter);
+app.use("/", userRouter);
 
 
-const PORT = process.env.PORT || 3000;
-const MONGO = process.env.MONGO || "mongodb://127.0.0.1:27017/zifyshopping";
+
+const PORT = process.env.PORT ;
+const MONGO = process.env.MONGO ;
 
 app.listen(PORT, async (req, res) => {
   try {

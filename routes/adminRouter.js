@@ -9,6 +9,8 @@ const categoryControll = require("../controllers/admin_controllers/adm_category"
 const usermanageControll = require("../controllers/admin_controllers/adm_usermanage");
 const orders = require("../controllers/admin_controllers/adm_orders")
 const cropImage = require("../controllers/admin_controllers/adm_cropimage")
+const userError = require("../user-midddleware/error_handling");
+
 
 adminRouter.use("/public/uploads", express.static("public/uploads"));
 adminRouter.use("/uploads", express.static("uploads"));
@@ -68,11 +70,14 @@ adminRouter.get("/cancel-order/:orderId", adminMiddleware.verifyAdmin , orders.c
 adminRouter.get("/deliver-order/:orderId", adminMiddleware.verifyAdmin , orders.deliverOrder);
 
 //crop images
-adminRouter.get("/crop", adminMiddleware.verifyAdmin, cropImage.cropimage);
+adminRouter.get("/crop/:productId", adminMiddleware.verifyAdmin, cropImage.cropimage);
+adminRouter.post("/croppedimage",adminMiddleware.verifyAdmin, cropImage.PostCrop);
 
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 
+adminRouter.get("/*", userError.errorHandler2);
+
 
 module.exports = adminRouter;
   

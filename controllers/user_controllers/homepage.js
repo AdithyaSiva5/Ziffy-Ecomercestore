@@ -9,6 +9,7 @@ module.exports.getUserRoute = async (req,res) => {
         res.render("userIndex",{loggedIn,productdata : unblockedProducts});
     }catch(error){
         console.error(error);
+        next(error);
     }
 }
 

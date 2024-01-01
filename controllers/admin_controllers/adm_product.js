@@ -12,6 +12,7 @@ module.exports.getProductList = async (req, res) => {
     res.render("admin-productlist", { productdata });
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -25,6 +26,7 @@ module.exports.getAddProduct = async (req, res) => {
     res.render("admin-addproduct", { categories });
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -68,6 +70,7 @@ module.exports.postProduct = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -84,6 +87,7 @@ module.exports.deleteProduct = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -176,6 +180,7 @@ module.exports.blockProduct = async (req, res) => {
     res.redirect("/admin/product-list");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -191,6 +196,7 @@ module.exports.unblockProduct = async (req, res) => {
     res.redirect("/admin/product-list");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -210,6 +216,6 @@ module.exports.deleteImage = async (req, res) => {
     res.render("admin-editproduct", { productdata, categorydata });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };

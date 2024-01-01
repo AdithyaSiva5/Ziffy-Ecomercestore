@@ -13,6 +13,7 @@ const account = require("../controllers/user_controllers/account")
 const checkoutpage = require("../controllers/user_controllers/checkout")
 const address = require("../controllers/user_controllers/address")
 const orders = require("../controllers/user_controllers/order")
+const userError = require("../user-midddleware/error_handling")
 
 userRouter.use(cookieparser());
 
@@ -68,5 +69,14 @@ userRouter.get("/view-order",userMiddleware.verifyUser,userMiddleware.checkBlock
 userRouter.post("/post-add-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postAddAddress);
 userRouter.post("/post-edit-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postEditAddress);
 userRouter.get('/delete-address',userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.deleteAddress);
+
+
+//error handling
+userRouter.use(userError.errorHandler);
+userRouter.get('/*',userError.errorHandler2)
+
+
+
+
 
 module.exports = userRouter; 

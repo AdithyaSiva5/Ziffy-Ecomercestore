@@ -50,6 +50,7 @@ module.exports.stockchecking = async(req,res) =>{
        res.status(400).send("Your cart is empty.");
      }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    next(error);
   }
 }

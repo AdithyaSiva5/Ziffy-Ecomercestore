@@ -417,7 +417,7 @@
                                       <% orderDetails.products.forEach((item) => { %>
                                         
                                   <tr>
-                                      <td> <a href="/productDetails/<%= item.productId._id %>"><%= item.productId.productName %></a> </td>
+                                      <td> <a href="/product-details/<%= item.productId._id %>"><%= item.productId.productName %></a> </td>
                                       <td><%= moment(orderDetails.createdAt).format("MMM Do YY") %></td>
                                       <td><%= orderDetails.orderStatus %></td>
                                       <td><%= orderDetails.paymentStatus %></td>

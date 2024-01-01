@@ -11,6 +11,7 @@ module.exports.getUsers = async (req, res) => {
     res.render("admin-usermanage", { usercollection });
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -26,6 +27,7 @@ module.exports.blockUser = async (req, res) => {
     res.redirect("/admin/user-manage");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -33,7 +35,6 @@ module.exports.blockUser = async (req, res) => {
 module.exports.unblockUser = async (req, res) => {
   try {
     const Iduser = req.params.userId;
-    const newStatus = await userCollection.findById({ _id: Iduser });
     const updatedStatus = await userCollection.updateOne(
       { _id: Iduser },
       { $set: { status: "Unblock" } }
@@ -41,6 +42,7 @@ module.exports.unblockUser = async (req, res) => {
     res.redirect("/admin/user-manage");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 

@@ -18,6 +18,7 @@ module.exports.postAddAddress = async (req, res) => {
         res.redirect("/checkout");
     } catch (error) {
         console.log(error);
+        next(error);
     }
 
 };
@@ -43,6 +44,8 @@ module.exports.postEditAddress = async(req,res)=>{
     res.json({ success: true, message: "Address Updated" });
 
     } catch (error) {
+      console.log(error);
+      next(error);
         
     }
 }
@@ -63,6 +66,8 @@ module.exports.deleteAddress = async(req,res)=>{
       );
       res.redirect("/user-account");
     } catch (error) {
+      
+      console.log(error);
       next(error);
     }
 }

@@ -80,7 +80,8 @@ module.exports.postforget = async (req, res) => {
       
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    next(error);
   }
 };
 
@@ -110,7 +111,8 @@ module.exports.postreset= async(req,res)=>{
     }
     
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    next(error);
   }
 
 }

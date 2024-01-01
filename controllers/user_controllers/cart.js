@@ -62,7 +62,7 @@ module.exports.getcart = async (req, res,next) => {
     res.render("user-cart", { loggedIn,userCart,grandtotal, error: null   });
   } catch (error) {
     console.log(error);
-    // next("Error while loading cart");
+    next(error);
   }
 };
 
@@ -112,6 +112,6 @@ module.exports.removeFromCart = async(req,res)=>{
     res.status(200).json({message : "Data removed successfully"})
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    next(error);
   }
 }

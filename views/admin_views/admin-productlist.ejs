@@ -280,17 +280,27 @@
                                         <td><%= product.productStock %></td>
                                     <% }%>
                                     <td>
-                                        <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                                            <i class="material-icons md-edit"></i> Edit
+                                        <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm btn-info font-sm rounded">
+                                            Edit
                                         </a>
-                                        <a href="#" data-action="/admin/delete-product/<%= product._id %>" class="btn btn-sm font-sm btn-light rounded block-unblock-btn">
-                                            <i class="material-icons md-delete_forever"></i> Delete
+                                    
+                                        <a href="#" data-action="/admin/delete-product/<%= product._id %>" class="btn btn-sm btn-danger font-sm rounded block-unblock-btn">
+                                            Delete
                                         </a>
-                                        <% if(product.productStatus === 'Unblock') {%>
-                                            <a href="#" data-action="/admin/block-product/<%= product._id %>" class="btn btn-primary block-unblock-btn">Block</a>
-                                        <%} else if (product.productStatus === 'Block') {%> 
-                                            <a href="#" data-action="/admin/unblock-product/<%= product._id %>" class="btn btn-danger block-unblock-btn">Unblock</a>
-                                        <%} %>
+                                    
+                                        <% if (product.productStatus === 'Unblock') { %>
+                                            <a href="#" data-action="/admin/block-product/<%= product._id %>" class="btn btn-sm btn-warning block-unblock-btn">
+                                                Block
+                                            </a>
+                                        <% } else if (product.productStatus === 'Block') { %>
+                                            <a href="#" data-action="/admin/unblock-product/<%= product._id %>" class="btn btn-sm btn-success block-unblock-btn">
+                                                Unblock
+                                            </a>
+                                        <% } %>
+                                    
+                                        <a href="/admin/crop/<%= product._id %>" data-action="/admin/crop/<%= product._id %>" class="btn btn-sm btn-danger font-sm rounded" style="background-color: rgb(36, 129, 175); color: white;">
+                                            Crop
+                                        </a>
                                     </td>
                                 </tr>
                             <% }) %>

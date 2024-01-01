@@ -114,7 +114,7 @@ module.exports.getSendOtp = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    next(error);
   }
 };
 
@@ -133,7 +133,7 @@ module.exports.postVerifyOtp = (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    next(error);
   }
 };
 

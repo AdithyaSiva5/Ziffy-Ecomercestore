@@ -12,6 +12,7 @@ module.exports.getCategory = async (req, res) => {
     res.render("admin-categorylist", { categories });
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 module.exports.postCategory = async (req, res) => {
@@ -42,7 +43,8 @@ module.exports.postCategory = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    
   }
 };
 
@@ -74,6 +76,7 @@ module.exports.updateCategory = async (req, res) => {
     // res.redirect("/admin/category-list");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -90,6 +93,7 @@ module.exports.deleteCategory = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    next(error);
   }
 }; 
 
@@ -104,6 +108,7 @@ module.exports.blockCategory = async (req, res) => {
     res.redirect("/admin/category-list");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
@@ -119,5 +124,6 @@ module.exports.unblockCategory = async (req, res) => {
     res.redirect("/admin/category-list");
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };

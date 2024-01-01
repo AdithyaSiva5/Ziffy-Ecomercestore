@@ -29,6 +29,6 @@ module.exports.checkBlockedStatus = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    next(error);  
   }
 };

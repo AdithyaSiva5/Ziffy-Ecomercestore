@@ -52,6 +52,7 @@ module.exports.dispatchOrder = async (req, res) => {
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
+      next(error);
     }
 };
 module.exports.cancelOrder = async (req, res) => {
@@ -64,6 +65,7 @@ module.exports.cancelOrder = async (req, res) => {
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
+      next(error);
     }
 };
 module.exports.deliverOrder = async (req, res) => {
@@ -76,5 +78,6 @@ module.exports.deliverOrder = async (req, res) => {
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
+      next(error);
     }
 };
