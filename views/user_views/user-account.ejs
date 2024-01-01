@@ -501,6 +501,9 @@
                                             }
                                      </style>
                                         <div class="row">
+                                            <div class="mb-20">
+                                                <a data-bs-toggle="modal" data-bs-target="#addAddressModal">Add a new address</a>
+                                            </div>
                                             <% if(userAddress?.address.length > 0){ %>  
                                             <% userAddress.address.forEach((address,index) => { %>
                                             <div class="col-lg-6">
@@ -542,7 +545,7 @@
                                             <div class="modal-body">
                                                 <form method="post" action="/post-edit-address" id="myForm">
                                                     <div class="ship_detail">
-                                                        <div id="collapseAddress" class="different_address">
+                                                        <div id="collapseAddress" class="different_address"> 
                                                             <div class="form-group">
                                                                 <input type="text"  name="name" id="username" placeholder="Name *">
                                                                 <div id="usernameError" class="error"></div>
@@ -585,7 +588,161 @@
                                         </div>
                                         </div>
                                     </div>
+
+                                    <!-- ADD ADDRESS MODAL -->
+
+                                    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="addressModalLabel">Add Address</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="/post-add-address?source=account" id="myForm1">
+                                                    <div class="ship_detail">
+                                                        <div id="collapseAddress" class="different_address">
+                                                            <div class="form-group">
+                                                                <input type="text"   name="name" id="username1" placeholder="Name *">
+                                                                <div id="username1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="text"  name="addressType" id="address1" placeholder="Address *">
+                                                                <div id="address1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text"  name="city" id="city1" placeholder="City *">
+                                                                <div id="city1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text"  name="landMark" id="landmark1" placeholder="Landmark *">
+                                                                <div id="landmark1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="text"  name="state" id="state1" placeholder="State *">
+                                                                <div id="state1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number"  name="pincode" id="postcode1" placeholder="Postcode  *">
+                                                                <div id="postcode1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number"  name="phone" id="phoneNumber1" placeholder="Phone Number  *">
+                                                                <div id="phoneNumber1Error" class="error"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input  type="number"  name="altPhone" id="altphone1" placeholder="Alternative Phone Number  *">
+                                                                <div id="altphone1Error" class="error"></div>
+                                                            </div>
+                                                            <div>
+                                                                <button type="submit" id="submitButton2">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- add address modal ends here -->
                                     <div id="rendered-address" hidden><%- JSON.stringify(userAddress) %></div>
+                                    <!-- add address script  -->
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            const submitButton = document.getElementById('submitButton2');
+                                    
+                                            submitButton.addEventListener("click", (e) => {
+                                                if (!validateForm()) {
+                                                    e.preventDefault();
+                                                }else{
+                                                   
+                                                }
+                                            });
+                                           
+                                    
+                                            const validateForm = () => {
+                                                resetErrorMessages();
+                                    
+                                                const inputFields = [
+                                                    { id: 'username1', name: 'Username' },
+                                                    { id: 'address1', name: 'Address' },
+                                                    { id: 'city1', name: 'City' },
+                                                    { id: 'landmark1', name: 'Landmark' },
+                                                    { id: 'state1', name: 'State' },
+                                                    { id: 'postcode1', name: 'Postcode' },
+                                                    { id: 'phoneNumber1', name: 'Phone Number' },
+                                                    { id: 'altphone1', name: 'Alternative Phone Number' }
+                                                ];
+                                    
+                                                let isValid = true;
+                                    
+                                                inputFields.forEach(field => {
+                                                    const value = document.getElementById(`${field.id}`).value;
+                                                    const trimmedValue = value.trim();
+                                    
+                                                    if (value !== trimmedValue) {
+                                                        showError(`${field.id}Error`, `${field.name} cannot have whitespaces`);
+                                                        isValid = false;
+                                                    }
+                                    
+                                                    if (trimmedValue == "") {
+                                                        showError(`${field.id}Error`, `${field.name} cannot be empty`);
+                                                        isValid = false;
+                                                    }
+                                                });
+                                    
+                                                const phoneNumber = String(document.getElementById('phoneNumber1').value);
+                                                const altphone = String(document.getElementById('altphone1').value);
+                                                const postcode = String(document.getElementById('postcode1').value);
+
+                                    
+                                                if (isNaN(phoneNumber) || phoneNumber.length !== 10 || phoneNumber[0] === '0') {
+                                                    showError('phoneNumber1Error', 'Phone number must be a number with exactly 10 digits and should not start with 0');
+                                                    isValid = false;
+                                                }
+                                    
+                                                if (isNaN(altphone) || altphone.length !== 10 || altphone[0] === '0') {
+                                                    showError('altphone1Error', 'Alternative phone number must be a number with exactly 10 digits and should not start with 0');
+                                                    isValid = false;
+                                                }
+                                    
+                                                if (isNaN(postcode) || postcode.length !== 6) {
+                                                    showError('postcode1Error', 'Postcode must be a number with exactly 6 digits');
+                                                    isValid = false;
+                                                }
+                                    
+                                                if (phoneNumber === altphone) {
+                                                    showError('phoneNumber1Error', 'Phone number and alternative phone number should be different');
+                                                    showError('altphone1Error', 'Phone number and alternative phone number should be different');
+                                                    isValid = false;
+                                                }
+                                    
+                                                return isValid;
+                                            }
+                                            
+    
+                                    
+                                            function showError(elementId, message) {
+                                                const errorElement = document.getElementById(elementId);
+                                    
+                                                if (errorElement) {
+                                                    errorElement.textContent = message;
+                                                    errorElement.style.color = 'red';
+                                                } else {
+                                                    console.error(`Error element with ID '${elementId}' not found.`);
+                                                }
+                                            }
+                                    
+                                            function resetErrorMessages() {
+                                                const errorElements = document.querySelectorAll('.error');
+                                                errorElements.forEach((element) => {
+                                                    element.textContent = '';
+                                                });
+                                            }
+                                        });
+                                    </script>
+                                    <!-- add address script ends here -->
                                     <script>
                                    let currentAddressId;
                                             const userAddress = JSON.parse(document.getElementById("rendered-address").textContent);

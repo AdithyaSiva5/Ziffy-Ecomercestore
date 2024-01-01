@@ -15,13 +15,21 @@ module.exports.postAddAddress = async (req, res) => {
             await addressCollection.create({ userId : user._id , address : [{name,addressType, city, landMark, state, pincode, phone, altPhone}]});
     
         }
-        res.redirect("/checkout");
+         const isFromAccount = req.query.source === "account";
+         if (isFromAccount) {
+          res.redirect("user-account" );
+         } else {
+          res.redirect("checkout")
+         }
     } catch (error) {
         console.log(error);
         next(error);
     }
 
 };
+
+
+
 module.exports.postEditAddress = async(req,res)=>{
     try {
     const { data, addressId } = req.body;

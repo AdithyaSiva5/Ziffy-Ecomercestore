@@ -65,7 +65,7 @@ userRouter.get("/user-account",userMiddleware.verifyUser,userMiddleware.checkBlo
 userRouter.get("/view-order",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.viewOrders);
 
 
-//address
+//address 
 userRouter.post("/post-add-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postAddAddress);
 userRouter.post("/post-edit-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postEditAddress);
 userRouter.get('/delete-address',userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.deleteAddress);
