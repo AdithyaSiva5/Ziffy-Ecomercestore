@@ -3,8 +3,13 @@ const userCollection = require("../../models/user_schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 let generatedOTP;
+let otpTimer;
 module.exports.postUserSignup = async (req, res) => {
   try {
+
+        generatedOTP = null;
+        clearTimeout(otpTimer);
+
     const email = await userCollection.findOne({ email: req.body.email });
     const phoneNumber = await userCollection.findOne({
       phoneNumber: req.body.phoneNumber,
@@ -16,20 +21,20 @@ module.exports.postUserSignup = async (req, res) => {
     } else if (phoneNumber) {
       res.status(200).json({ error: "Phone Number Already Exists" });
     } else {
-          bcrypt.hash(password, saltRounds, async(err, hash)=>{
-      if(err){
-        console.error('Error hashing password:', err);
-        return;
-      }
-      await userCollection.create({
-        username: req.body.username,
-        password: hash,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        status: "Unblock",
+      bcrypt.hash(password, saltRounds, async (err, hash) => {
+        if (err) {
+          console.error("Error hashing password:", err);
+          return;
+        }
+        await userCollection.create({
+          username: req.body.username,
+          password: hash,
+          email: req.body.email,
+          phoneNumber: req.body.phoneNumber,
+          status: "Unblock",
+        });
+        res.render("user-login", { message: "User sign up successfully" });
       });
-      res.render("user-login", { message: "User sign up successfully" });
-    });
     }
   } catch (error) {
     console.log(error);
@@ -65,10 +70,10 @@ const sendOTP = async (email, generatedOTP) => {
 
     const info = await transporter.sendMail(mailOptions);
     console.log("Email has been sent: " + info.response);
-    return true; // Indicates success
+    return true; 
   } catch (error) {
     console.error(error);
-    return false; // Indicates failure
+    return false; 
   }
 };
 
@@ -81,12 +86,16 @@ const verifyOTP = (otpInput, generateOTP) => {
 //to send OTP
 module.exports.getSendOtp = async (req, res) => {
   try {
+        clearTimeout(otpTimer);
+         otpTimer = setTimeout(() => {
+           generatedOTP = null; 
+           console.log(generatedOTP);
+         }, 30000);
         const email1 = req.query.email;
         const email= await userCollection.findOne({ email: req.query.email });
         const phoneNumber= await userCollection.findOne({
           phoneNumber: req.query.phoneNumber,
         });
-        console.log(email+phoneNumber)
         if(email){
           res.status(200).json({ error: "Email already Exist" });
         }else if(phoneNumber){
@@ -94,6 +103,7 @@ module.exports.getSendOtp = async (req, res) => {
         }else{
 
           generatedOTP = generateOTP();
+          console.log(`the otp is ${generatedOTP}`);
           const success = await sendOTP(email1, generatedOTP);
           if (success) {
             res.status(200).json({ message: "OTP sent to email successfully" });
@@ -111,15 +121,15 @@ module.exports.getSendOtp = async (req, res) => {
 module.exports.postVerifyOtp = (req, res) => {
   try {
 
-    
     const otpInput = req.body.otpInput;
     console.log(`generated otp : ${generatedOTP} and otp is : ${otpInput}`);
     const isVerified = verifyOTP(otpInput, generatedOTP);
-
-    if (isVerified) {
+    if (generatedOTP == null) {
+      res.status(200).json({ error: "Otp Expired" });
+    } else if (isVerified) {
       res.status(200).json({ message: "OTP verified successfully" });
     } else {
-       res.status(200).json({ error: "Invalid OTP" });
+      res.status(200).json({ error: "Invalid OTP" });
     }
   } catch (error) {
     console.error(error);

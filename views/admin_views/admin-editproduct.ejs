@@ -262,7 +262,7 @@
                         <img src="/adminAssets/imgs/theme/upload.svg" alt="">
                         <div class="row">
                             <div class="col-md-9">
-                                <input class="form-control" type="file" name="productImg" accept="image/*" multiple onchange="previewImage(event)">
+                                <input class="form-control" type="file" id="productImg" name="productImg" accept="image/*" multiple onchange="previewImage(event)">
                                 <div id="preview-container" class="d-flex flex-wrap"></div>
                             </div>
                         </div>
@@ -306,34 +306,77 @@
             document.addEventListener("DOMContentLoaded", function () {
                 const productForm = document.getElementById("productForm");
         
-                productForm.addEventListener("submit", function (event) {
+                productForm.addEventListener("submit", function (event) { 
                     if (!validateForm()) {
                         event.preventDefault();
                     }
                 });
         
-                function validateForm() {
-                    console.log("validating form")
-                    const productName = document.getElementById("productName").value;
-                    const productDescription = document.getElementById("productDiscription").value;
-                    const regularPrice = document.getElementById("regularPrice").value;
-                    const sellingPrice = document.getElementById("sellingPrice").value;
-                    const productStatus = document.getElementById("productStatus").value;
-                    const category = document.getElementById("category").value;
-                    const productBrand = document.getElementById("productBrand").value;
-                    const productSize = document.getElementById("productSize").value;
-                    const productStock = document.getElementById("productStock").value;
-                    const productImg = document.getElementById("productImg");
-        
-                    if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || productImg.files.length === 0) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'All fields are required!',
-                        });
-                        return false;
-                    }
-        
+function validateForm() {
+    
+            const productName = document.getElementById("productName").value;
+            const productDescription = document.getElementById("productDiscription").value;
+            const regularPrice = parseFloat(document.getElementById("regularPrice").value);
+            const sellingPrice = parseFloat(document.getElementById("sellingPrice").value);
+            const productStatus = document.getElementById("productStatus").value;
+            const category = document.getElementById("category").value;
+            const productBrand = document.getElementById("productBrand").value;
+            const productSize = parseFloat(document.getElementById("productSize").value);
+            const productStock = document.getElementById("productStock").value;
+            const productImgInput = document.getElementById("productImg");
+            const productImgFiles = productImgInput.files;
+
+            console.log("Inputs captured");
+
+            // if (productImgFiles.length === 0) {
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Oops...',
+            //         text: 'Please select at least one image!',
+            //     });
+            //     return false;
+            // }
+            if (isNaN(regularPrice) || isNaN(sellingPrice) || isNaN(productSize) || isNaN(productStock)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Price, Size, and Stock must be numeric values!',
+                });
+                return false;
+            }
+            if (regularPrice <= 0 || sellingPrice <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Price must be more than zero!',
+                });
+                return false;
+            }
+            if (sellingPrice >= regularPrice) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Selling Price must be lesser than the Actual Price!',
+                });
+                return false;
+            }
+            if (productSize <= 0 || productStock < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Stock must be above zero or zero',
+                });
+                return false;
+            }
+    if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || productImg.files.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'All fields are required!',
+        });
+        return false;
+    }
+    console.log("Validation successful");
         
                     return true;
                 }

@@ -769,10 +769,14 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <a href="checkout" class="btn "> <i class="fi-rs-box-alt mr-10 "></i> Proceed To CheckOut</a>
+                                    <!-- <a href="javascript:void(0);" class="btn "> <i class="fi-rs-box-alt mr-10 " id="checkouta"></i> Proceed To CheckOut</a> -->
+                                    <button id="checkoutButton" class="btn">Proceed To CheckOut</button>
                                 </div>
                             </div>
                             <% } %>
+                            
+                           
+                            
                         </div>
                             <!-- <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a> -->
                             <% if (userCart && userCart.products.length > 0) { %>
@@ -787,6 +791,52 @@
             </div>
         </section>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var checkoutButton = document.querySelector('#checkoutButton');
+    
+            if (checkoutButton) {
+                console.log('Found the "Proceed To Checkout" button:', checkoutButton);
+    
+                checkoutButton.addEventListener('click', async function (event) {
+                    event.preventDefault();
+    
+                    try {
+                        const response = await fetch('/stockchecking', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+    
+                        if (response.ok) {
+                            window.location.href = '/checkout';
+                        } else {
+                            const data = await response.json();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Out of Stock',
+                                text: data.message || 'An error occurred.',
+                                timer: 1000,  
+                                showConfirmButton: false,
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred.',
+                        });
+                    }
+                });
+            } else {
+                console.error('Error: Could not find the "Proceed To Checkout" button.');
+            }
+        });
+    </script>
+    
+
         <script>
  document.addEventListener("DOMContentLoaded", () => {
 

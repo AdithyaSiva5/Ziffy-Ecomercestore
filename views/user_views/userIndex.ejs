@@ -2151,12 +2151,12 @@
                         })
                         .then((response) => response.json())
           .then((data) => {
-            if (data.isProductAdded) {
+            if (data.isProductAdded) { 
               console.log("Added to cart:", data);
               Swal.fire({
                 position: 'top-centre',
                 icon: 'success',
-                title: 'Added to cart',
+                title: data.message || "Added to the Cart",
                 showConfirmButton: false,
                 timer: 1500
               });
@@ -2165,7 +2165,7 @@
                 icon: "error",
                 title: "Oops...",
                 text: data.error || "Failed to add the product to the cart",
-                footer: '',
+                showConfirmButton: false,
                 timer: 1500
               });
             }

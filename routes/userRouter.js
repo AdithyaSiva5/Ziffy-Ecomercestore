@@ -47,6 +47,7 @@ userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,userMid
 
 //checkout
 userRouter.get("/checkout", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,checkoutpage.getcheckout);
+userRouter.get("/stockchecking", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,checkoutpage.stockchecking);
 
 
 //orders

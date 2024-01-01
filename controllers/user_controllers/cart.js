@@ -9,7 +9,7 @@ module.exports.gettocart = async(req,res)=>{
         const userId = userData.id;
         const { productId, quantity } = req.query; 
         const product = await productCollection.findOne({ _id: productId });
-        if(product.stock<=0){
+        if(product.productStock<=0){
           return res.status(200).json({error : "Product is out of stock", isProductAdded: false})
         }
         
@@ -23,11 +23,14 @@ module.exports.gettocart = async(req,res)=>{
         const existingProductIndex = userCart.products.findIndex((product) =>product.productId.toString().toLowerCase() ===productId.toLowerCase());
         if(existingProductIndex !== -1){
           userCart.products[existingProductIndex].quantity += 1;
+           await userCart.save();
+        res.status(200).json({message: "Quantity increased in the cart",isProductAdded : true})
         }else{
           userCart.products.push({productId: new mongoose.Types.ObjectId(productId),quantity : 1})
+           await userCart.save();
+        res.status(200).json({message: "Added to the Cart",isProductAdded : true})
         }
-        await userCart.save();
-        res.status(200).json({message: "Product added to the cart",isProductAdded : true})
+       
         
     }catch(error){
         console.error("Error adding to cart:", error);

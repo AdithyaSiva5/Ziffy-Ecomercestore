@@ -246,7 +246,7 @@
                                 </td>
                                 <td style="width: 20%;">
                                     <a href="/admin/edit-category/<%= category._id %>" class="btn btn-primary">Edit</a>
-                                    <a href="/admin/delete-category/<%= category._id %>" class="btn btn-primary">Delete</a>
+                                    <a href="#" class="btn btn-primary delete-category-btn" data-action="/admin/delete-category/<%= category._id %>">Delete</a>
                                     <!-- <% if(category.categoryStatus === 'Unblock') {%>
                                         <a href="#" data-action="/admin/block-category/<%= category._id %>" class="btn btn-primary block-unblock-btn">Block</a>
                                     <%} else if (category.categoryStatus === 'Block') {%> 
@@ -259,8 +259,33 @@
                     </tbody>
                 </table>
             </div>
-
             <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const deleteCategoryBtns = document.querySelectorAll(".delete-category-btn");
+                
+                    deleteCategoryBtns.forEach(btn => {
+                        btn.addEventListener("click", function (event) {
+                            event.preventDefault();
+                
+                            const deleteAction = this.getAttribute("data-action");
+                
+                            // Show a confirmation dialog
+                            Swal.fire({
+                                            title: 'Are you sure?',
+                                            text: "",
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#3085d6',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Yes, proceed!'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = deleteAction;
+                                            }
+                                        });
+                        });
+                    });
+                });
                 document.addEventListener("DOMContentLoaded", function () {
                   const catagoryform = document.querySelector("#category-Form");
                 

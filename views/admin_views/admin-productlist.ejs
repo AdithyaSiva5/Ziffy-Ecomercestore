@@ -283,7 +283,7 @@
                                         <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
                                             <i class="material-icons md-edit"></i> Edit
                                         </a>
-                                        <a href="/admin/delete-product/<%= product._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                        <a href="#" data-action="/admin/delete-product/<%= product._id %>" class="btn btn-sm font-sm btn-light rounded block-unblock-btn">
                                             <i class="material-icons md-delete_forever"></i> Delete
                                         </a>
                                         <% if(product.productStatus === 'Unblock') {%>

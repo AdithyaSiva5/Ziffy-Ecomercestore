@@ -3,6 +3,7 @@ const userCollection = require("../../models/user_schema");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 let generatedOTP; 
+let otpTimer;
 module.exports.forgetpass = async (req, res) => {
   res.render("forget-password");
 };
@@ -48,6 +49,11 @@ const verifyOTP = (otpInput, generatedOTP) => {
 
 module.exports.postforget = async (req, res) => {
   try {
+    clearTimeout(otpTimer);
+    otpTimer = setTimeout(() => {
+      generatedOTP = null;
+      console.log(generatedOTP);
+    }, 30000);
     const email = req.body.email;
     const newPassword = req.body.password;
         const data = await userCollection.findOne({
@@ -62,6 +68,7 @@ module.exports.postforget = async (req, res) => {
       res.status(200).json({ error: "This is the old password" });
     }{    
                 generatedOTP = generateOTP();
+                console.log(`the otp is ${generatedOTP}`);
                 const success = sendOTP(email, generatedOTP);
                 if (success) {
                   res
@@ -85,10 +92,11 @@ module.exports.postreset= async(req,res)=>{
     email=req.body.email;
     password=req.body.password;
     const otpInput = req.body.otpInput;
-   
+   console.log(`generated otp : ${generatedOTP} and otp is : ${otpInput}`);
     const isVerified = verifyOTP(otpInput, generatedOTP);
-
-    if (isVerified) {
+    if (generatedOTP == null) {
+      res.status(200).json({ error: "Otp Expired" });
+    }else if (isVerified) {
       const hashedPassword = await bcrypt.hash(password, saltRounds);  
       await userCollection.updateOne(
         { email: email },

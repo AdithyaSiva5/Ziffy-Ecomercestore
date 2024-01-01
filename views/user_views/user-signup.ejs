@@ -295,16 +295,18 @@ function validateForm() {
             });
         }) 
         function startResendTimer(){
-            let remainingTime = 5;
+            clearInterval(countdown);
+            let remainingTime = 25;
             timerElement.style.display = 'block';
             resendOTPButton.style.display = 'none';
             sendOTPButton.style.display = 'none';
 
             countdown = setInterval(()=>{
-                timerElement.textContent = `Resend OTP in ${remainingTime} seconds`;
+                timerElement.textContent = `OTP expiring in ${remainingTime} seconds`;
                 remainingTime--;
 
                 if(remainingTime<0){
+                    clearInterval(countdown);
             timerElement.style.display = 'none';
             resendOTPButton.style.display = 'block';
             sendOTPButton.style.display = 'none';
@@ -316,8 +318,7 @@ function validateForm() {
         resendOTPButton.addEventListener("click",  (e)=> {
           e.preventDefault();
 
-            // Validate the form before sending OTP
-            if (validateForm()) {
+          if (validateForm()) {
                 const email = document.querySelector('input[name="email"]').value;
                 const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
 
@@ -351,13 +352,12 @@ function validateForm() {
                     });
                     // startResendTimer();
                     verifyOTPBtn.disabled = false; 
-                    submitButton.disabled = false
                     document.getElementById('username').readOnly = true;
                     document.getElementById('email').readOnly = true;
                     document.getElementById('password').readOnly = true;
                     document.getElementById('confirmpassword').readOnly = true;
                     document.getElementById('phoneNumber').readOnly = true;      
-                    startResendTimer();  
+                    startResendTimer2();  
                     }
                     })
                     .catch((error) => {
@@ -365,7 +365,28 @@ function validateForm() {
                     });
             } 
         });
+        function startResendTimer2() {
+    clearInterval(countdown);
 
+    let remainingTime = 25;
+    timerElement.style.display = 'block';
+    resendOTPButton.style.display = 'none';
+    sendOTPButton.style.display = 'none';
+
+    countdown = setInterval(() => {
+        timerElement.textContent = `Resend OTP in ${remainingTime} seconds`;
+        remainingTime--;
+
+        if (remainingTime < 0) {
+            // Display the resend button after 25 seconds
+            timerElement.style.display = 'none';
+            resendOTPButton.style.display = 'block';
+            sendOTPButton.style.display = 'none';
+            clearInterval(countdown); // Clear the countdown after displaying the resend button
+        }
+
+    }, 1000);
+}
         
 
     </script>

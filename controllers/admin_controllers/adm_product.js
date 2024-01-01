@@ -38,7 +38,7 @@ module.exports.postProduct = async (req, res) => {
       for (const element of productImg) {
         const filePath = `uploads/cropperd_${element.originalname}`;
         const cropped = await sharp(element.path)
-          .resize({ width: 300, height: 300, fit: "cover" })
+          .resize({ width: 500, height: 500, fit: "cover" })
           .toFile(filePath);
         arr.push({ path: filePath });
         console.log(filePath);
@@ -129,7 +129,7 @@ module.exports.updateProduct = async (req, res) => {
       for (const element of newproductImg) {
         const filePath = `uploads/cropperd_${element.originalname}`;
         const cropped = await sharp(element.path)
-          .resize({ width: 300, height: 300, fit: 'cover' })
+          .resize({ width: 500, height: 500, fit: 'cover' })
           .toFile(filePath);
         arr.push(filePath);
       }

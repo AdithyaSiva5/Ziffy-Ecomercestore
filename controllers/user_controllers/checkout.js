@@ -31,3 +31,25 @@ module.exports.getcheckout = async (req, res) => {
     console.log(error)
   }
 };
+
+module.exports.stockchecking = async(req,res) =>{
+  try {
+    const userData = await userCollection.findOne({ email: req.user });
+    const userCart = await cartCollection.findOne({ userId: userData.id }).populate({path: "products.productId",model: productCollection,});
+     if (userCart && userCart.products.length > 0) {
+       const hasZeroStock = userCart.products.some(
+         (product) => product.productId.productStock === 0
+       );
+
+       if (hasZeroStock) {
+          res.status(400).json({ message: "Some products in your cart are out of stock." });
+       } else {
+         res.redirect("/checkout");
+       }
+     } else {
+       res.status(400).send("Your cart is empty.");
+     }
+  } catch (error) {
+    console.log(error)
+  }
+}

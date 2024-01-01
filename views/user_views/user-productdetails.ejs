@@ -824,13 +824,13 @@
                             
                             <div class="row mb-50">
                                 <div class="col-md-6 col-sm-12 col-xs-12 d-flex justify-content-center">
-                                    <div class="detail-gallery " style="width: 300px;height: 307px;">
+                                    <div class="detail-gallery " style="width: 400px;height: 500px;">
                                         <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                         <!-- MAIN SLIDES -->
                                         <div class="product-image-slider">
                                             <% for (let i = 0; i < productdata.productImg.length; i++) { %>
                                                 <figure class="border-radius-10">
-                                                    <img src="/<%= productdata.productImg %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
+                                                    <img src="/<%= productdata.productImg[i] %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
                                                 </figure>
                                                 <% } %>   
                                         </div>
@@ -838,7 +838,7 @@
                                         <div class="slider-nav-thumbnails pl-15 pr-15">
                                             <% for (let i = 0; i < productdata.productImg.length; i++) { %>
                                                 <div>
-                                                    <img src="/<%= productdata.productImg %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
+                                                    <img src="/<%= productdata.productImg[i] %>" alt="<%= productdata.productName %>" class="img-fluid" loading="lazy">
                                                 </div>
                                                 <% } %>                                        </div>
                                     </div>
@@ -1501,12 +1501,12 @@
                         })
                         .then((response) => response.json())
           .then((data) => {
-            if (data.isProductAdded) {
+            if (data.isProductAdded) { 
               console.log("Added to cart:", data);
               Swal.fire({
                 position: 'top-centre',
                 icon: 'success',
-                title: 'Added to cart',
+                title: data.message || "Added to the Cart",
                 showConfirmButton: false,
                 timer: 1500
               });
@@ -1516,6 +1516,7 @@
                 title: "Oops...",
                 text: data.error || "Failed to add the product to the cart",
                 footer: '',
+                showConfirmButton: false,
                 timer: 1500
               });
             }
@@ -1527,6 +1528,7 @@
               title: "Oops...",
               text: data.error || "Failed to add the product to the cart",
               footer: '',
+              showConfirmButton: false,
               timer: 1500
             });
             // window.location.href = "/get-login";
