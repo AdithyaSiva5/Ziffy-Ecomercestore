@@ -63,7 +63,8 @@ module.exports.postProduct = async (req, res) => {
       });
 
       const productdata = await productCollection.find();
-      res.render("admin-productlist", { productdata });
+      // res.render("admin-productlist", { productdata });
+       res.status(200).json({ message: "Product Added" });
       console.log(imageIds);
     } else {
       res.status(400).send("No images selected for upload");

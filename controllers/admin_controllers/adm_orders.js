@@ -16,6 +16,7 @@ try {
           .skip(perPage * page - perPage)
           .limit(perPage)
           .exec();
+          orderDetails.reverse();
         const count = await orderCollection.countDocuments({});
         res.render("admin-orderpage", { orderDetails ,current: page, pages: Math.ceil(count / perPage)});
     }else{

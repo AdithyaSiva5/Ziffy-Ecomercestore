@@ -250,47 +250,12 @@
                     
                 </div>
             </div>
-            <!-- print -->
-            <div class="row d-flex align-items-center col-lg-12">
-                <div class="col-md-12 d-flex justify-content-center">
-                    <a href="#" class="btn btn-primary mt-1" style="background-color: brown;" onclick="printTable('printSection')">Print</a>
-                </div>
-            </div>
+       
+            
         </section>
 
         <script>
-            function printTable(sectionId, filter) {
-                // Set the date range based on the selected filter
-                setDateRange(filter);
-        
-                var printWindow = window.open('', '_blank');
-                var tableToPrint = document.getElementById(sectionId).querySelector('.card-body').outerHTML;
-        
-                // Opening the print window
-                printWindow.document.open();
-                printWindow.document.write('<html><head><title>Print</title>');
-        
-                // Including necessary styles (you may need to adjust the paths)
-                printWindow.document.write('<link rel="stylesheet" type="text/css" href="/path/to/your/styles.css">');
-        
-                // Closing the head and opening the body
-                printWindow.document.write('</head><body>');
-        
-                // Writing the table HTML to the print window
-                printWindow.document.write(tableToPrint);
-        
-                // Closing the body and the HTML
-                printWindow.document.write('</body></html>');
-                printWindow.document.close();
-        
-                // Wait for the content to be fully loaded before printing
-                printWindow.onload = function () {
-                    printWindow.print();
-                    printWindow.onafterprint = function () {
-                        printWindow.close();
-                    };
-                };
-            }
+           
         
             function setDateRange(filter) {
                 var endDate = new Date();
@@ -312,32 +277,7 @@
             }
         </script>
 
-<style media="print">
-    h3 { 
-        text-align: center; 
-        margin-bottom: 20px; 
-    }
 
-    #salesReport { 
-        width: 100%; 
-        border-collapse: collapse; 
-        margin-bottom: 20px; 
-    }
-
-    #salesReport th, #salesReport td { 
-        border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; 
-    }
-
-    #salesReport th { 
-        background-color: #f2f2f2; 
-    }
-
-    #print-button { 
-        display: none; /* Hide the print button when printing */
-    }
-</style>
   
 
         <footer class="main-footer font-xs">

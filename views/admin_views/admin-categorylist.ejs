@@ -13,7 +13,7 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link" href="/admin/admin-dashboard"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
@@ -23,7 +23,7 @@
                         <span class="text">Products</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/category-list"> <i class="icon material-icons md-stars"></i>
                         <span class="text">Category</span> </a>
                 </li>
@@ -42,7 +42,7 @@
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/sales-report"> <i class="icon material-icons md-assessment"></i>
                         <span class="text">Sales Report</span>
                     </a>
@@ -236,8 +236,8 @@
                     <thead>
                         <tr>
                             <th class="fs-5" style="width: 30%;">Category Name</th>
-                            <th class="fs-5" style="width: 50%;">Description</th>
-                            <th class="fs-5 text-center" style="width: 20%;">Actions</th>
+                            <th class="fs-5" style="width: 40%;">Description</th>
+                            <th class="fs-5 text-center" style="width: 30%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,17 +246,13 @@
                                 <td style="width: 30%;">
                                     <%= category.catgName %>
                                 </td>
-                                <td style="width: 50%;">
+                                <td style="width: 40%;">
                                     <%= category.catgDiscription %>
                                 </td>
-                                <td style="width: 20%;">
+                                <td style="width: 30%;">
                                     <a href="/admin/edit-category/<%= category._id %>" class="btn btn-primary">Edit</a>
                                     <a href="#" class="btn btn-primary delete-category-btn" data-action="/admin/delete-category/<%= category._id %>">Delete</a>
-                                    <!-- <% if(category.categoryStatus === 'Unblock') {%>
-                                        <a href="#" data-action="/admin/block-category/<%= category._id %>" class="btn btn-primary block-unblock-btn">Block</a>
-                                    <%} else if (category.categoryStatus === 'Block') {%> 
-                                        <a href="#" data-action="/admin/unblock-category/<%= category._id %>" class="btn btn-danger block-unblock-btn">Unblock</a>
-                                    <%} %> -->
+                                   
                                     
                                 </td>
                             </tr>

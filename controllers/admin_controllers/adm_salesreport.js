@@ -10,30 +10,33 @@ module.exports.salesReport = async(req,res) =>{
         next(error);   
     }
 }
-module.exports.filterSales = async(req,res) =>{
-    try {
-        const startDate = new Date(req.body.startDate);
-        let endDate = req.body.endDate ? new Date(req.body.endDate) : null;
-        
-          if (!endDate) {
-            const orderData = await orderCollection.find({
-              orderStatus: "Delivered",
-              orderDate: { $gte: startDate },
-            });
-            res.render("admin-salesReport", { orderData});
+module.exports.filterSales = async (req, res, next) => {
+  try {
+    const startDate = req.body.startDate ? new Date(req.body.startDate) : null;
+    const endDate = req.body.endDate ? new Date(req.body.endDate) : null;
 
-    }else{
-        const orderData = await orderCollection.find({
-          orderStatus: "Delivered",
-          orderDate: { $gte: startDate, $lte: endDate },
-        });
-        res.render("admin-salesReport",{orderData})
-        }
-        
-    } catch (error) {
-        console.log(error)
-        next(error);
-        
+    if (!startDate && !endDate) {
+      const orderData = await orderCollection.find({
+        orderStatus: "Delivered",
+      });
+      res.render("admin-salesReport", { orderData });
+    } else if (!endDate) {
+      const orderData = await orderCollection.find({
+        orderStatus: "Delivered",
+        orderDate: { $gte: startDate },
+      });
+      res.render("admin-salesReport", { orderData });
+    } else {
+      const orderData = await orderCollection.find({
+        orderStatus: "Delivered",
+        orderDate: { $gte: startDate, $lte: endDate },
+      });
+      res.render("admin-salesReport", { orderData });
     }
-}
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 

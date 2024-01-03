@@ -53,6 +53,8 @@ userRouter.get("/stockchecking", userMiddleware.verifyUser,userMiddleware.checkB
 
 //orders
 userRouter.get("/place-order-cod/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.orderViaCod);
+userRouter.get("/place-order-razerpay/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.orderViaOnline);
+userRouter.post("/update-payment-status",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.updatePaymentStatus);
 userRouter.get("/order-placed/:orderId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.getOrderPlaced);
 userRouter.get("/cancel-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.cancelOrder)
 userRouter.get("/return-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.returnOrder)
