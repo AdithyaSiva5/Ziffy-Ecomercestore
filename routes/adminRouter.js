@@ -81,6 +81,8 @@ adminRouter.post("/filter-sales",adminMiddleware.verifyAdmin, salesReport.filter
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 
+
+adminRouter.use(userError.errorHandler);
 adminRouter.get("/*", userError.errorHandler2);
 
 

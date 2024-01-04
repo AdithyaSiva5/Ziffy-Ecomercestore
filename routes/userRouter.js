@@ -58,6 +58,8 @@ userRouter.post("/update-payment-status",userMiddleware.verifyUser,userMiddlewar
 userRouter.get("/order-placed/:orderId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.getOrderPlaced);
 userRouter.get("/cancel-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.cancelOrder)
 userRouter.get("/return-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.returnOrder)
+userRouter.post("/cancelSingle-order", userMiddleware.verifyUser, userMiddleware.checkBlockedStatus , orders.cancelSingleOrder)
+
 
 
 

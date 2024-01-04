@@ -704,7 +704,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="post" action="/post-add-address" id="myForm">
+                                    <form method="post" action="/post-add-address?source=notaccount" id="myForm">
                                         <div class="ship_detail">
                                             <div id="collapseAddress" class="different_address">
                                                 <div class="form-group">
@@ -827,19 +827,19 @@
 
                         </script>
                         <% if (userAddress?.address.length > 0) { %>
-                            <% userAddress.address.forEach(address => { %>
-                                 <div class="addresses">
-                                    <div class="form-check">
-                                        <input class="form-check-input select-address" type="radio" value="<%= address._id %>" name="flexRadioDefault" id="addressInput">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                          <%= address.name %>
-                                          <br>
-                                          <%= address.addressType %>
-                                          <br>
-                                          <%= address.phone %>
-                                        </label>
-                                      </div>
-                                 </div>
+                            <% userAddress.address.forEach((address, index) => { %>
+                                <div class="form-check">
+                                    <input class="form-check-input select-address" type="radio" 
+                                           value="<%= address._id %>" name="flexRadioDefault" 
+                                           id="addressInput_<%= index %>" <% if (index === 0) { %> checked <% } %>>
+                                    <label class="form-check-label" for="addressInput_<%= index %>">
+                                        <%= address.name %>
+                                        <br>
+                                        <%= address.addressType %>
+                                        <br>
+                                        <%= address.phone %>
+                                    </label>
+                                </div>
                             <% }); %>
                         <% }else{ %>
                         <h2>No saved Addresses</h2>
@@ -894,14 +894,15 @@
                                     
                                     <div class="custome-radio">
                                         <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
-                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Cash on Delivery</label>
+                                        <!-- <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Cash on Delivery</label> -->
                                         <div class="form-group collapse in" id="paypal">
                                             <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-30" id="orderButton">Place Order</a>
+                            <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-10" id="orderButton">Cash on Delivery</a>
+                            <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-10" id="rzp-orderButton">RazorPay</a>
                         </div>
                     </div>
                 </div>
@@ -929,7 +930,17 @@
                     })
                     .then(data=>{
                         if(data.backToCart){
-                            window.location.href = '/cart';
+                            Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: "Some of the product are Out of Stock",
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/cart';
+                            }, 1500);
+                            
                         }
                         if(data.error){
                             Swal.fire({
@@ -949,6 +960,7 @@
                 }
             }
             if (selectedAddressValue !== null) {
+            console.log("Selected Address ID:", selectedAddressValue);
             } else {
             Swal.fire({
                 title: 'Oops...',
@@ -958,6 +970,135 @@
             })
 
         })
+
+
+
+        //        RazorPay ------------------
+        const razorpayButton = document.getElementById('rzp-orderButton');
+        razorpayButton.addEventListener("click", (e)=>{
+            e.preventDefault();
+            const radioButtons = document.querySelectorAll('.select-address');
+            let selectedAddressValue = null;
+            for (const radioButton of radioButtons) {
+            if (radioButton.checked) {
+                selectedAddressValue = radioButton.value;
+                console.log(selectedAddressValue);
+                break; 
+            }
+                }
+                if(selectedAddressValue === null){
+                {
+            Swal.fire({
+                title: 'Oops...',
+                text: 'No Address is Selected!',
+            })
+            } }
+                    fetch(`/place-order-razerpay/${selectedAddressValue}`)
+                    .then(response=>{
+                        if(!response.ok){
+                            throw new Error(`HTTP Error! status:${response.status}`)
+                        }
+                        return response.json();
+                    })
+                    .then(data=>{
+                        if(data.backToCart){
+                            Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: "Some of the product are Out of Stock",
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/cart';
+                            }, 1500);
+                            
+                        }if(data.error){
+                            Swal.fire({
+                            position: 'center', 
+                            icon: 'error',
+                            title: data.error,
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                        }else if(data.razorOrderId){
+                            console.log('response received');
+                            var orderId = data.orderId
+                            var razorOrderId = data.razorOrderId
+                            var options = {
+                                key: "rzp_test_R1xiz6qf3oORiT",
+                                order_id: razorOrderId,
+                                handler: (response)=>{
+                                handlePaymentSuccess(razorOrderId, response, orderId)
+                            }
+                            };
+                            console.log(' new razorpay');
+                            var rzp1 = new Razorpay(options);
+                            console.log('razorpay open()');
+                            rzp1.open();
+                            
+                        }
+                    }).catch(error=>{
+                        console.error(error);
+                        console.log('some error');})
+
+                         //function to handle payment success
+        function handlePaymentSuccess(razorOrderId, response, orderId) {
+            updatePaymentStatus("Success", razorOrderId, response, orderId);
+        }
+
+        //function to handle payment failure
+        function handlePaymentFailure(razorOrderId, response, orderId) {
+            updatePaymentStatus("Failed", razorOrderId, response, orderId)
+        }
+
+        // Function to update the payment status in the database
+        function updatePaymentStatus(paymentStatus, razorOrderId, response, orderId) {
+            const url = `/update-payment-status?paymentStatus=${paymentStatus}&razorOrderId=${razorOrderId}&orderId=${orderId}`
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response=>{
+                if(!response.ok){
+                    throw new Error('Failed to update payment status');
+                }
+                return response.json();
+            })
+            .then(data=>{
+                if(data.paymentStatus == "Success"){
+                    window.location.href = `/order-placed/${orderId}`
+                }else{
+                    Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: "Payment Failed",
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/account'
+                            }, 1500);
+                    
+                }
+            })
+            .catch(error=>{
+                console.error('Failed to update payment status', error);
+                window.location.href = '/';
+            })
+        }
+            
+
+
+
+
+        });
+
+
+
     </script>
     <!-- Preloader Start -->
     <div id="preloader-active">
@@ -976,6 +1117,8 @@
     </div>
     <!-- Vendor JS-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script> 
+
 
     <script src="userAssets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="userAssets/js/vendor/jquery-3.6.0.min.js"></script>

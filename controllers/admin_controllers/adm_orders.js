@@ -25,6 +25,7 @@ try {
 
 } catch (error) {
     console.log(error)
+    next(error)
 }
 }
 module.exports.viewOrder = async(req,res) =>{
@@ -41,6 +42,7 @@ module.exports.viewOrder = async(req,res) =>{
 
 } catch (error) {
     console.log(error)
+    next(error);
 }
 }
 

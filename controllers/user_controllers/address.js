@@ -7,7 +7,7 @@ module.exports.postAddAddress = async (req, res) => {
         const {name, addressType, city, landMark, state, pincode, phone, altPhone} = req.body;
         const user = await userCollection.findOne({ email: req.user });
         const useraddress = await addressCollection.findOne({ userId : user._id})
-        if(useraddress){
+        if(useraddress){ 
             useraddress.address.push({addressType,name, city, landMark, state, pincode, phone, altPhone});
             await useraddress.save();
         }

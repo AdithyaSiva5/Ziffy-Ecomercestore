@@ -4,6 +4,8 @@ const addressCollection = require("../../models/address_schema");
 const productCollection = require("../../models/product");
 const orderCollection = require("../../models/order_schema")
 const razorpay = require("razorpay");
+const { v4: uuidv4 } = require("uuid");
+
 const { RAZOR_PAY_key_id, RAZOR_PAY_key_secret } = process.env;
 
 //razorpay instance
@@ -51,6 +53,7 @@ module.exports.orderViaCod = async (req,res)=>{
 
     } catch (error) {
         console.log(error);
+        next(error);
     }
     
 }
@@ -78,7 +81,7 @@ module.exports.viewOrders = async(req,res)=>{
     }
   }
     const orderDetails = await orderCollection.findOne({_id : orderId}).populate({path : "products.productId" , model : productCollection});
-    res.render("view-orders", {cartLength, loggedIn, orderDetails, user });
+    res.render("view-orders", {cartLength, loggedIn, orderDetails, user }); 
 }
 
 module.exports.cancelOrder = async(req,res)=>{
@@ -88,6 +91,7 @@ module.exports.cancelOrder = async(req,res)=>{
     res.redirect(`/view-order?orderId=${orderId}`);
   }catch (error) {
    console.log(error)
+   next(error);
   }
 }
 module.exports.returnOrder = async (req, res, next) => {
@@ -114,28 +118,23 @@ module.exports.orderViaOnline = async(req,res,next)=>{
         return res.status(200).json({backToCart: true})
       }
     });
-    const productArray = [];
-     userCart.products.forEach((product) => {
-       productArray.push({
-         productId: product.productId._id,
-         price: product.productId.sellingPrice,
-         quantity: product.quantity,
-       });
-     });
+    const productArray = userCart.products.map((product) => ({
+      productId: product.productId._id,
+      price: product.productId.sellingPrice,
+      quantity: product.quantity,
+    }));
+     
      userCart.products.forEach((product) => {
       totalAmount += product.productId.sellingPrice * product.quantity;
      });
-
      const paymentMethod = "Online Payment";
 
      var options = {
-       amount: totalAmount,
+       amount: totalAmount*100,
        currency: "INR",
-       receipt: "order_rcptid_11",
+       receipt: uuidv4(),
      };
-
-    const razorOrder = await instance.orders.create(options);
-    console.log(razorOrder.id);
+     const razorOrder = await instance.orders.create(options);
 
     //order creation
     const createdOrder = await orderCollection.create({
@@ -143,7 +142,7 @@ module.exports.orderViaOnline = async(req,res,next)=>{
       products: productArray,
       totalAmount,
       paymentMethod,
-      address: useraddress,
+      address: useraddress, 
     });
 
     for (const product of userCart.products) {
@@ -165,6 +164,7 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
       paymentStatus,
     });
     if (paymentStatus == "Success") {
+      
       return res.status(200).json({ paymentStatus: "Success" });
     } else {
       const order = await orderCollection.findById(orderId);
@@ -182,6 +182,18 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
       return res.status(200).json({ paymentStatus: "Failed" });
     }
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };
+
+module.exports.cancelSingleOrder = async(req,res) =>{
+  try {    
+    const orderId = req.query.orderId;
+    const productId = req.query.productId;
+    console.log(orderId, productId);
+    res.status(200).json({ message: "The order is cancelled" });
+  } catch (error) {
+    
+  }
+}

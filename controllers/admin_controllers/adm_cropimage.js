@@ -1,31 +1,34 @@
 const mongoose = require("mongoose");
-const multer = require("multer");
 const sharp = require("sharp");
 const productCollection = require("../../models/product");
 
 module.exports.cropimage = async(req,res) =>{
     const productId = req.params.productId;
     const productdata = await productCollection.findOne({ _id: productId });
-    console.log(productdata)
     res.render("admin-cropimage", {productdata});
-}
+} 
 module.exports.PostCrop = async(req,res)=>{
     try {
- const { croppedImage } = req.body;
+   const { croppedImage, productId, imageIndex } = req.body;
    const base64Data = croppedImage.replace(/^data:image\/png;base64,/, "");
-   console.log("Base64 data extracted");
+   const buffer = Buffer.from(base64Data, "base64");
 
-   const filename = `cropped_${Date.now()}.png`;
-   console.log("Filename generated:", filename);
+   const resizedImageBuffer = await sharp(buffer)
+     .resize({ width: 500, height: 500, fit: "cover" })
+     .toBuffer();
 
-//    const filePath = path.join(__dirname, "../../uploads", filename);
-//    console.log("File path specified:", filePath);
-
-//    fs.writeFileSync(filePath, base64Data, "base64");
-//    console.log(`Cropped image saved to: ${filePath}`);
-
-    // Respond with success
-    res.status(200).json({ message: "Cropped image received successfully.", filePath });
+   const filename = `cropped_${Date.now()}_${imageIndex}.png`;
+   const filePath = `uploads/${filename}`;
+   await sharp(resizedImageBuffer).toFile(filePath);
+   const updateQuery = {
+     $set: {
+       [`productImg.${imageIndex}`]: filePath,
+     },
+   };
+   await productCollection.findByIdAndUpdate(productId, updateQuery);
+    res.status(200).json({ message: "Image Cropped Successfully." });
   } catch (error) {
+    console.log(error)
+    next(error)
 }
 }

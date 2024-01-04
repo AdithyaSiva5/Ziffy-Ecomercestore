@@ -246,7 +246,7 @@
                                       <% orderDetails.products.forEach((order) => { %>
                                         
                                         <tr>
-                                            <td><%= order.productId.productName %></td>
+                                            <td> <a href="/product-details/<%= order.productId._id %>"><%= order.productId.productName %></a> </td>
                                             <td><%= orderDetails.createdAt.toLocaleDateString() %></td>
                                             <td><%= orderDetails.orderStatus %></td>
                                             <td><%= orderDetails.paymentStatus %></td>

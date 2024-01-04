@@ -72,7 +72,7 @@ const sendOTP = async (email, generatedOTP) => {
     console.log("Email has been sent: " + info.response);
     return true; 
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return false; 
   }
 };
@@ -113,7 +113,7 @@ module.exports.getSendOtp = async (req, res) => {
         }
 
   } catch (error) {
-    console.error(error);
+    console.log(error);
     next(error);
   }
 };
@@ -132,7 +132,7 @@ module.exports.postVerifyOtp = (req, res) => {
       res.status(200).json({ error: "Invalid OTP" });
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
     next(error);
   }
 };

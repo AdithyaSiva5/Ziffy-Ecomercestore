@@ -22,7 +22,7 @@ module.exports.getUserAccount = async(req,res)=>{
             cartLength = 0;
         }
         const userAddress = await addressCollection.findOne({userId : user._id})
-        const userOrders = await orderCollection.find({ userId: user._id });
+        const userOrders = await orderCollection.find({ userId: user._id }).populate('products.productId');
         
         res.render("user-account", { loggedIn, userData ,userCart ,userAddress, userOrders ,cartLength});
         

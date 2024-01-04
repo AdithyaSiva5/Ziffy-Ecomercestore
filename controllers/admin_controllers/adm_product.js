@@ -79,7 +79,6 @@ module.exports.postProduct = async (req, res) => {
 module.exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
-    console.log(productId);
     const result = await productCollection.deleteOne({ _id: productId });
     if (result.deletedCount === 1) {
       res.redirect("/admin/product-list");
@@ -101,6 +100,7 @@ module.exports.editProduct = async (req, res) => {
     res.render("admin-editproduct", { productdata, categorydata });
   } catch (error) {
     console.log(error);
+    next(error);
   }
 };
 
@@ -163,9 +163,7 @@ module.exports.updateProduct = async (req, res) => {
     res.redirect("/admin/product-list");
   } catch (error) {
     console.log(error);
-    res.redirect("/admin/edit-product", {
-      error: "An error occurred while updating the product, please try again",
-    });
+    next(error);
   }
 };
 

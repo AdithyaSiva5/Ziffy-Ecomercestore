@@ -102,6 +102,7 @@ module.exports.updateQuantity = async (req,res) => {
 
   } catch (error) {
     console.log("error in updating quantity", error); 
+    next(error);
   } 
 }
 module.exports.removeFromCart = async(req,res)=>{
