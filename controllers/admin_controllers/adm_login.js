@@ -3,7 +3,6 @@ const multer = require("multer");
 const adminCollection = require("../../models/admin_schema");
 const jwt = require("jsonwebtoken");
 const secretkey = process.env.ADMIN_JWT_KEY;
-// render loging page
 module.exports.getAdminLogin = (req, res) => {
   if (req.cookies.admintoken) {
     res.render("admin-dashboard");
@@ -11,12 +10,7 @@ module.exports.getAdminLogin = (req, res) => {
     res.render("admin-login");
   }
 };
-module.exports.gettoDashboard = (req, res) => {
-    res.render("admin-dashboard");
 
-};
-
-// checking details and loging
 module.exports.getAdminDashboard = async (req, res) => {
   email = req.body.email;
   const admindata = await adminCollection.findOne({ email: req.body.email });

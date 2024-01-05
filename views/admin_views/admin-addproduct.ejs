@@ -4,7 +4,7 @@
         <div class="screen-overlay"></div>
         <aside class="navbar-aside" id="offcanvas_aside">
             <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
+                <a href="/admin" class="brand-wrap">
                     <img src="/adminAssets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
                 </a>
                 <div>
@@ -14,7 +14,7 @@
             <nav>
                 <ul class="menu-aside">
                     <li class="menu-item">
-                        <a class="menu-link" href="index.html"> <i class="icon material-icons md-home"></i>
+                        <a class="menu-link" href="/admin"> <i class="icon material-icons md-home"></i>
                             <span class="text">Dashboard</span>
                         </a>
                     </li>
@@ -340,7 +340,7 @@
 
                                     for (let i = 0; i < checkboxes.length; i++) {
                                         if (!checkboxes[i].checked) {
-                                        imageData.append("productImg", document.getElementById("productImg").files[i]);
+                                        imageData.append("productImg", document.getElementById("productImg").files[i]); 
                                         }
                                     }
                                     

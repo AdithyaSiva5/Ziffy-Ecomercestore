@@ -87,7 +87,24 @@ module.exports.viewOrders = async(req,res)=>{
 module.exports.cancelOrder = async(req,res)=>{
   try{
     const orderId = req.params.orderId;
-    await orderCollection.findByIdAndUpdate(orderId, {orderStatus: 'Cancelled', paymentStatus: 'Failed'});
+    const order = await orderCollection.findById(orderId).populate({path: 'products.productId' , model : productCollection});
+    if (order.orderStatus === "Cancelled") {
+      return res.status(400).json({ error: "The order is already cancelled" });
+    }
+    for (const orderProduct of order.products) {
+      const product = orderProduct.productId;
+
+      if (orderProduct.status !== "Cancelled") {
+        orderProduct.status = "Cancelled";
+        product.productStock += orderProduct.quantity;
+        await product.save();
+      }
+    }
+        order.orderStatus = "Cancelled";
+        order.paymentStatus = "Failed";
+        await order.save();
+
+    // await orderCollection.findByIdAndUpdate(orderId, {orderStatus: 'Cancelled', paymentStatus: 'Failed'});
     res.redirect(`/view-order?orderId=${orderId}`);
   }catch (error) {
    console.log(error)
@@ -145,26 +162,29 @@ module.exports.orderViaOnline = async(req,res,next)=>{
       address: useraddress, 
     });
 
-    for (const product of userCart.products) {
-      await productCollection.updateOne(
-        { _id: product.productId._id },
-        { $inc: { productStock: -product.quantity } }
-      );
-    }
-    await cartCollection.deleteOne({ userId: user._id });
+
     const orderId = createdOrder._id;
     return res.status(200).json({ razorOrderId: razorOrder.id, orderId });
 }
 
 module.exports.updatePaymentStatus = async (req, res, next) => {
   try {
+    user = await userCollection.findOne({ email: req.user });
+    const userCart = await cartCollection.findOne({ userId : user._id }).populate({path : "products.productId" , model : productCollection});
     const paymentStatus = req.query.paymentStatus;
     const orderId = req.query.orderId;
     await orderCollection.findByIdAndUpdate(orderId, {
       paymentStatus,
     });
     if (paymentStatus == "Success") {
-      
+          for (const product of userCart.products) {
+            await productCollection.updateOne(
+              { _id: product.productId._id },
+              { $inc: { productStock: -product.quantity } }
+            );
+          }
+          await cartCollection.deleteOne({ userId: user._id });
+
       return res.status(200).json({ paymentStatus: "Success" });
     } else {
       const order = await orderCollection.findById(orderId);
@@ -187,13 +207,37 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
   }
 };
 
-module.exports.cancelSingleOrder = async(req,res) =>{
-  try {    
-    const orderId = req.query.orderId;
-    const productId = req.query.productId;
-    console.log(orderId, productId);
-    res.status(200).json({ message: "The order is cancelled" });
-  } catch (error) {
-    
+  module.exports.cancelSingleOrder = async(req,res) =>{
+    try {    
+      const orderId = req.query.orderId;
+      const productId = req.query.productId;
+      const orderData = await orderCollection.findById(orderId);
+      const product = orderData.products.find((item) => item.productId.equals(productId));
+
+      if (product.status === "Cancelled") {
+          return res.status(200).json({ error: "The product is already cancelled" });
+      }
+      const productAmount = product.price;
+      const updateStatus = { $set: { "products.$.status": "Cancelled" } };
+      const updatedOrder = await orderCollection.findOneAndUpdate({ _id: orderId, "products.productId": productId},updateStatus,{ new: true });
+
+      orderData.totalAmount -= productAmount;
+      await orderData.save();
+
+      for (const orderProduct of orderData.products) {
+        const product = await productCollection.findById(orderProduct.productId);
+        product.productStock += orderProduct.quantity;
+        await product.save();
+      }
+      const refreshedOrder = await orderCollection.findById(orderId);
+      const allProductsCancelled = refreshedOrder.products.every(product => product.status === "Cancelled");
+      
+      if(allProductsCancelled){
+        await orderCollection.updateOne({ _id: orderId }, { $set: { orderStatus: "Cancelled" } });
+      }
+
+      res.status(200).json({ message: "The order is cancelled" });
+    } catch (error) {
+      
+    }
   }
-}

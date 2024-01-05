@@ -11,6 +11,7 @@ const orders = require("../controllers/admin_controllers/adm_orders")
 const cropImage = require("../controllers/admin_controllers/adm_cropimage")
 const userError = require("../user-midddleware/error_handling");
 const salesReport = require("../controllers/admin_controllers/adm_salesreport");
+const dashboard = require("../controllers/admin_controllers/adm_dashboard")
 
 
 adminRouter.use("/public/uploads", express.static("public/uploads"));
@@ -26,12 +27,8 @@ const storage = multer.diskStorage({
 const uploads = multer({ storage: storage });
 //login
 
-adminRouter.get("/", loginControll.getAdminLogin, adminMiddleware.verifyAdmin);
-adminRouter.get(
-  "/admin-dashboard",
-  adminMiddleware.verifyAdmin,
-  loginControll.gettoDashboard
-);
+adminRouter.get("/", dashboard.gettoDashboard);
+adminRouter.get("/admin-dashboard", adminMiddleware.verifyAdmin, dashboard.gettoDashboard);
 
 //homepage
 adminRouter.post("/admin-dash", loginControll.getAdminDashboard);
