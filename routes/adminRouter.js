@@ -36,7 +36,7 @@ adminRouter.post("/admin-dash", loginControll.getAdminDashboard);
 //category
 adminRouter.get("/category-list",adminMiddleware.verifyAdmin,categoryControll.getCategory);
 adminRouter.post(  "/add-category",  adminMiddleware.verifyAdmin,  categoryControll.postCategory);
-adminRouter.get(  "/edit-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.editCategory);
+adminRouter.get(  "/edit-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.editCategory); 
 adminRouter.post(  "/postEdit-category/:categoryId",  adminMiddleware.verifyAdmin,   categoryControll.updateCategory);
 adminRouter.get(  "/delete-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.deleteCategory);
 adminRouter.post(  "/block-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.blockCategory);

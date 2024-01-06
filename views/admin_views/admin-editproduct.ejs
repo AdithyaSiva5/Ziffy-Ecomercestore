@@ -331,6 +331,7 @@ function validateForm() {
             const productStock = document.getElementById("productStock").value;
             const productImgInput = document.getElementById("productImg");
             const productImgFiles = productImgInput.files;
+            console.log(productImgInput.files.length + " <= imput and files =>"+ productImgFiles.length)
 
             console.log("Inputs captured");
 
@@ -374,17 +375,18 @@ function validateForm() {
                 });
                 return false;
             }
-    if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || productImg.files.length === 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'All fields are required!',
-        });
-        return false;
-    }
+            if (!productName.trim() || !productDescription.trim() || !regularPrice.trim() || !sellingPrice.trim() || !productStatus.trim() || !category.trim() || !productBrand.trim() || !productSize.trim() || !productStock.trim() || productImg.files.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'All fields are required!',
+                });
+                return false;
+            }
+            
     console.log("Validation successful");
         
-                    return true;
+                 return true;
                 }
             });
         </script>

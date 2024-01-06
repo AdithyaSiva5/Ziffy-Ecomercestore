@@ -91,6 +91,7 @@ module.exports.cancelOrder = async(req,res)=>{
     if (order.orderStatus === "Cancelled") {
       return res.status(400).json({ error: "The order is already cancelled" });
     }
+    
     for (const orderProduct of order.products) {
       const product = orderProduct.productId;
 
@@ -111,14 +112,32 @@ module.exports.cancelOrder = async(req,res)=>{
    next(error);
   }
 }
+
 module.exports.returnOrder = async (req, res, next) => {
     try {
+      // let amount = 0;
       const orderId = req.params.orderId;
       await orderCollection.findByIdAndUpdate(orderId, {
         orderStatus: "Returned",
         paymentStatus: "Failed",
       });
-      res.redirect(`/view-order/?orderId=${orderId}`);
+      const order = await orderCollection.findById(orderId).populate({path: 'products.productId' , model : productCollection});
+      for (const orderProduct of order.products) {
+        const product = orderProduct.productId;
+
+        if (orderProduct.status !== "Cancelled") {
+          orderProduct.status = "Returned";
+          product.productStock += orderProduct.quantity;
+          // console.log(orderProduct.quantity + " === " + orderProduct.price);
+          // amount = orderProduct.quantity * orderProduct.price + amount;
+          await product.save();
+        }
+      }
+      // order.totalAmount = amount;
+      order.totalAmount = 0;
+      await order.save();
+
+      res.redirect(`/view-order?orderId=${orderId}`);
     } catch (error) {
       console.log(error);
       next(error);
@@ -214,8 +233,13 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
       const orderData = await orderCollection.findById(orderId);
       const product = orderData.products.find((item) => item.productId.equals(productId));
 
-      if (product.status === "Cancelled") {
+      if (product.status === "Cancelled") { 
           return res.status(200).json({ error: "The product is already cancelled" });
+      }else if (product.status === "Delivered") {
+          return res.status(200).json({ error: "Single Order Returning Currently Not Available" });
+      }else if(product.status === "Returned"){
+          return res.status(200).json({ error: "Item Already Returned" });
+
       }
       const productAmount = product.price;
       const updateStatus = { $set: { "products.$.status": "Cancelled" } };

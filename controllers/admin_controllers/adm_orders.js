@@ -52,6 +52,18 @@ module.exports.dispatchOrder = async (req, res) => {
       await orderCollection.findByIdAndUpdate(orderId, {
         orderStatus: "Shipped",
       });
+      //for single order
+      const order = await orderCollection.findById(orderId).populate({path: 'products.productId' , model : productCollection});
+      for (const orderProduct of order.products) {
+        const product = orderProduct.productId;
+
+        if (orderProduct.status !== "Cancelled") {
+          orderProduct.status = "Shipped";
+          await product.save();
+        }
+      }
+      await order.save();
+
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
@@ -65,6 +77,20 @@ module.exports.cancelOrder = async (req, res) => {
         orderStatus: "Cancelled",
         paymentStatus: "Failed",
       });
+      //for single products 
+      const order = await orderCollection.findById(orderId).populate({path: 'products.productId' , model : productCollection});
+      for (const orderProduct of order.products) {
+        const product = orderProduct.productId;
+
+        if (orderProduct.status !== "Cancelled") {
+          orderProduct.status = "Cancelled";
+          product.productStock += orderProduct.quantity;
+          await product.save();
+        }
+      }
+      order.totalAmount = 0;
+      await order.save();
+
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
@@ -78,6 +104,17 @@ module.exports.deliverOrder = async (req, res) => {
         orderStatus: "Delivered",
         paymentStatus: "Success",
       });
+      //for single product 
+      const order = await orderCollection.findById(orderId).populate({path: 'products.productId' , model : productCollection});
+      for (const orderProduct of order.products) {
+        const product = orderProduct.productId;
+
+        if (orderProduct.status !== "Cancelled") {
+          orderProduct.status = "Delivered";
+          await product.save();
+        }
+      }
+      await order.save();
       res.redirect(`/admin/view-order/${orderId}`);
     } catch (error) {
       console.error(error);
