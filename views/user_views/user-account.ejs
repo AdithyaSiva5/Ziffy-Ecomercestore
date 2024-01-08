@@ -359,7 +359,7 @@
                                                             <% } %>
                                                         </tbody>                                                        
                                                     </table>
-                                                    <div id="hiddenOrders" style="display: none;"><%= JSON.stringify(userOrders.slice(5).reverse()) %></div>
+                                                    <div id="hiddenOrders" style="display: none;"><%= JSON.stringify(userOrders.slice(5)) %></div>
                                                     <script>
                                                         document.getElementById('showMoreBtn').addEventListener('click', function() {
                                                             const hiddenOrdersData = JSON.parse(document.getElementById('hiddenOrders').textContent);

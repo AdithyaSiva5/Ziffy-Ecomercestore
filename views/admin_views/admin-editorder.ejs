@@ -225,7 +225,7 @@
                                   <tr>
                                       <th>Product</th>
                                       <th>Date</th>
-                                      <th>OrderStatus</th>
+                                      <th>ProductStatus</th>
                                       <th>PaymentStatus</th>
                                       <th>PaymentMethod</th>
                                       <th>Total</th>
@@ -240,7 +240,7 @@
                                         <tr>
                                             <td> <a href="/product-details/<%= order.productId._id %>"><%= order.productId.productName %></a> </td>
                                             <td><%= orderDetails.createdAt.toLocaleDateString() %></td>
-                                            <td><%= orderDetails.orderStatus %></td>
+                                            <td><%= order.status %></td>
                                             <td><%= orderDetails.paymentStatus %></td>
                                             <td><%= orderDetails.paymentMethod %></td>
                                             <td>₹<%= order.price * order.quantity %> for <%= order.quantity%> item</td>
