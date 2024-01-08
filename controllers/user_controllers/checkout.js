@@ -3,6 +3,7 @@ const productCollection = require("../../models/product");
 const cartCollection = require("../../models/cart_schema");
 const mongoose = require("mongoose");
 const addressCollection = require("../../models/address_schema");
+const couponCollection = require("../../models/coupon_schema")
  
 const calculateTotalPrice = (cart) => {
   let total = 0;
@@ -25,9 +26,10 @@ module.exports.getcheckout = async (req, res) => {
       return res.redirect("/cart")
     }
      grandTotal = calculateTotalPrice(userCart);
-    res.render("user-checkout", { loggedIn, userCart, grandTotal ,userAddress});
-    
-  } catch (error) {
+     const coupons = await couponCollection.find({status: { $ne: "Inactive" }, expiryDate: { $gte: new Date() },
+     });
+    res.render("user-checkout", { loggedIn, userCart, grandTotal ,userAddress , coupons});    
+  } catch (error) { 
     console.log(error)
     next(error);
   }
@@ -54,4 +56,36 @@ module.exports.stockchecking = async(req,res) =>{
     console.log(error);
     next(error);
   }
+}
+
+module.exports.applyCoupon = async(req,res)=>{
+  try {
+    let grandTotal = 0;
+    let couponDiscount = 0;
+    const couponCode = req.query.couponCode;
+    const coupon = await couponCollection.findOne({couponCode});
+    if(!coupon){
+      return res.status(200).json({error: "Invalid Coupon"});
+    }
+    if(coupon.status != 'Active'){
+      return res.status(200).json({error: "Coupon is blocked"});
+    }
+    if(coupon.expiryDate < new Date()){
+      return res.status(200).json({error: "Coupon is expired"});
+    }
+    if(coupon.minimumPurchase > grandTotal){
+      return res.status(200).json({error: `Minimum Purchase Amount is ₹${coupon.minimumPurchase}`});
+    }
+    if (coupon.redeemedUsers.includes(user._id)) {
+      return res.status(200).json({ error: "Coupon has already been redeemed" });
+    }
+    
+    let updatedTotal = grandTotal - coupon.discountAmount;
+    couponDiscount = coupon.discountAmount;
+    return res.status(200).json({message: "Coupon has been applied", updatedTotal, couponCode, grandTotal, couponDiscount});
+    
+  } catch (error) {
+    console.log(error)
+  }
+
 }

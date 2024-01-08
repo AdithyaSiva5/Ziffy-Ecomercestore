@@ -9,10 +9,10 @@ secretkey = process.env.JWT_KEY;
 
 //getting login page
 module.exports.getLogin=(req,res)=>{
-    if(req.cookies.logindata){
-         res.render("/") 
-    }else{
-        res.render("user-login")
+    if (req.cookies.loggedIn) {
+      res.redirect("/");
+    } else {
+      res.render("user-login");
     }
 }
 

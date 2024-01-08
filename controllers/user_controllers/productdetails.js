@@ -18,3 +18,14 @@ module.exports.productDetails = async(req,res)=>{
         next(error);
     }
 }
+module.exports.productFulldetails = async(req,res)=>{
+    try {
+        const loggedIn = req.cookies.loggedIn;
+        const productdata = await productCollection.find();
+        const unblockedProducts = productdata.filter(product => product.productStatus !== 'Block');
+        res.render("products-page", { loggedIn, productdata: unblockedProducts });
+        
+    } catch (error) {
+        
+    }
+}

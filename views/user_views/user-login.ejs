@@ -84,24 +84,18 @@
                 // Handle the response from the server
                 if (data.error) {
                     // Display error using Swal
-                    Swal.fire({
-                        position: 'top-center',
-                        icon: 'error',
-                        title: data.error,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    showError('passwordError', 'Wrong Password'); 
                 } else {
                     // If successful, you can redirect or perform other actions
                     Swal.fire({
-                        position: 'top-center',
-                        icon: 'success',
-                        title: "Login successfull",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    // Example: Redirect to the homepage
+                    position: 'top-center',
+                    icon: 'success',
+                    title: "Login successful",
+                    showConfirmButton: false,
+                    timer: 500
+                }).then(() => {
                     window.location.href = "/";
+                });
                 }
             })
             .catch(error => {
@@ -118,24 +112,24 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Validate email
             const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
             if (!email.match(emailPattern)) {
                 showError('emailError', 'Invalid email address');
                 
             }
-
-            // Validate password length
-            if (password.length < 6) {
-                showError('passwordError', 'Password must be at least 6 characters');
-               
+            if(password.length < 6) {
+                showError('passwordError', 'Wrong Password');               
             }
+            if(!password){
+                showError('passwordError', 'Enter Password');
+            }
+
             const errorElements = document.querySelectorAll('.error-message');
-    for (const element of errorElements) {
-        if (element.textContent !== '') {
-            return false; // There are errors, prevent form submission
-        }
-    }
+            for (const element of errorElements) {
+                if (element.textContent !== '') {
+                    return false; // There are errors, prevent form submission
+                }
+            }
 
             return true; // Placeholder, replace with your actual validation logic
         }

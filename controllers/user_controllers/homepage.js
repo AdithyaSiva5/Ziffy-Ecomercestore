@@ -4,7 +4,7 @@ const productCollection = require("../../models/product")
 module.exports.getUserRoute = async (req,res) => {
     try{
         const loggedIn = req.cookies.loggedIn;
-        const productdata = await productCollection.find()
+        const productdata = await productCollection.find().limit(6)
         const unblockedProducts = productdata.filter(product => product.productStatus !== 'Block');
         res.render("userIndex",{loggedIn,productdata : unblockedProducts});
     }catch(error){

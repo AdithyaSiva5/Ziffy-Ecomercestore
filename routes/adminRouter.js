@@ -12,19 +12,14 @@ const cropImage = require("../controllers/admin_controllers/adm_cropimage")
 const userError = require("../user-midddleware/error_handling");
 const salesReport = require("../controllers/admin_controllers/adm_salesreport");
 const dashboard = require("../controllers/admin_controllers/adm_dashboard")
-
+const uploads = require("../user-midddleware/multer")
+const coupons = require("../controllers/admin_controllers/adm_coupon")
 
 adminRouter.use("/public/uploads", express.static("public/uploads"));
 adminRouter.use("/uploads", express.static("uploads"));
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const uploads = multer({ storage: storage });
+
+
+
 //login
 
 adminRouter.get("/", dashboard.gettoDashboard);
@@ -75,12 +70,24 @@ adminRouter.post("/croppedimage",adminMiddleware.verifyAdmin, cropImage.PostCrop
 adminRouter.get("/sales-report", adminMiddleware.verifyAdmin, salesReport.salesReport);
 adminRouter.post("/filter-sales",adminMiddleware.verifyAdmin, salesReport.filterSales )
 
+//coupons
+adminRouter.get("/add-coupon", adminMiddleware.verifyAdmin, coupons.getAddCoupon);
+adminRouter.get("/coupons", adminMiddleware.verifyAdmin, coupons.getCoupons);
+adminRouter.post("/post-add-coupon", adminMiddleware.verifyAdmin, coupons.postAddCoupon )
+adminRouter.get("/edit-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.getEditCoupon)
+adminRouter.post("/post-edit-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.postEditCoupon)
+adminRouter.get("/block-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.blockCoupon)
+adminRouter.get("/unblock-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.unblockCoupon)
+
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 
 
 adminRouter.use(userError.errorHandler);
 adminRouter.get("/*", userError.errorHandler2);
+
+
+
 
 
 module.exports = adminRouter;

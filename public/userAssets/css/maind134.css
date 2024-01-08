@@ -3405,7 +3405,7 @@ table .product-thumbnail img {
 
 .product-cart-wrap .product-img-action-wrap {
   position: relative;
-  background-color: #fff;
+  background-color: aliceblue;
   padding: 10px 12px;
   overflow: hidden;
   max-height: 320px;
@@ -3611,6 +3611,7 @@ table .product-thumbnail img {
 
 .product-cart-wrap .product-content-wrap {
   padding: 0 20px 15px 20px;
+  background-color: aliceblue;
 }
 
 .product-cart-wrap .product-content-wrap .product-category {

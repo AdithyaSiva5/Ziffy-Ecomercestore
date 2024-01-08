@@ -33,6 +33,7 @@ userRouter.post("/verify-otp", signupControll.postVerifyOtp);
 
 //products
 userRouter.get("/product-details/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productDetails);
+userRouter.get("/products",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productFulldetails)
 
 //forgetpassword
 userRouter.get("/forgetpassword", forgetpassword.forgetpass);
@@ -49,6 +50,7 @@ userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,userMid
 //checkout
 userRouter.get("/checkout", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,checkoutpage.getcheckout);
 userRouter.get("/stockchecking", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,checkoutpage.stockchecking);
+userRouter.get("/apply-coupon", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , checkoutpage.applyCoupon);
 
 
 //orders

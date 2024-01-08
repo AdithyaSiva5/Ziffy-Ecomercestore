@@ -235,7 +235,7 @@
                                   <% if (!orderDetails || orderDetails.length === 0) { %>
                                       <h6>No orders</h6>
                                   <% } else { %>
-                                      <% orderDetails.products.forEach((order) => { %>
+                                      <% orderDetails.products.forEach((order) => { %> 
                                         
                                         <tr>
                                             <td> <a href="/product-details/<%= order.productId._id %>"><%= order.productId.productName %></a> </td>
