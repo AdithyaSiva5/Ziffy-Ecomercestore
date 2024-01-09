@@ -697,14 +697,14 @@
                                         <th scope="col">Subtotal</th>
                                         <th scope="col">Remove</th>
                                     </tr>
-                                </thead>
+                                </thead> 
                                 <tbody>
                                     <tr>
                                         <% if (userCart && userCart.products.length > 0) { %>
                                         <% userCart.products.forEach(product => { %>
                                         <td class="image product-thumbnail"><img src="<%= product.productId?.productImg[0]%>" alt="#"></td>
                                         <td class="product-des product-name">
-                                            <h5 class="product-name"><a href="shop-product-right.html"><%= product.productId?.productName %></a></h5>
+                                            <h5 class="product-name"><a href="/product-details/<%= product.productId._id%>"><%= product.productId?.productName %></a></h5>
                                             <p class="font-xs"><%= product.productId?.productDiscription %>
                                             </p>
                                         </td>

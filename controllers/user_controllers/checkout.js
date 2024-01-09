@@ -18,6 +18,7 @@ const calculateTotalPrice = (cart) => {
 module.exports.getcheckout = async (req, res) => {
   try {
     let grandTotal = 0;
+    let couponDiscount = 0;
     const loggedIn = req.cookies.loggedIn;
     const userData = await userCollection.findOne({ email: req.user });
     const userCart = await cartCollection.findOne({ userId: userData._id }).populate({ path: "products.productId", model: productCollection });
@@ -28,7 +29,7 @@ module.exports.getcheckout = async (req, res) => {
      grandTotal = calculateTotalPrice(userCart);
      const coupons = await couponCollection.find({status: { $ne: "Inactive" }, expiryDate: { $gte: new Date() },
      });
-    res.render("user-checkout", { loggedIn, userCart, grandTotal ,userAddress , coupons});    
+    res.render("user-checkout", { loggedIn, userCart, grandTotal ,userAddress , coupons , couponDiscount});    
   } catch (error) { 
     console.log(error)
     next(error);

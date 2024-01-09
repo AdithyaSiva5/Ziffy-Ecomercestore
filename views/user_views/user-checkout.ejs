@@ -842,18 +842,18 @@
                         </div>
                         <script>
                             function copyToClipboard(code) {
-            navigator.clipboard.writeText(code).then(()=> {
-                Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: "Coupon Code copied to Clipboard",
-                showConfirmButton: false,
-                timer: 1500
-                });
-            }).catch(err=>{
-                console.error('Unable to copy to clipboard', error);
-            });
-        }
+                            navigator.clipboard.writeText(code).then(()=> {
+                                Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: "Coupon Code copied to Clipboard",
+                                showConfirmButton: false,
+                                timer: 1500
+                                });
+                            }).catch(err=>{
+                                console.error('Unable to copy to clipboard', error);
+                            });
+                        }
                         </script>
                        
                         </div>
@@ -895,6 +895,7 @@
         removeButton.style.display = 'none';
         
         applyButton.addEventListener("click", function (e) {
+            console.log("Hey"); 
             e.preventDefault();
             if(validateCode()){
                 fetch(`/apply-coupon?couponCode=${couponInput.value}&grandTotal=${grandTotalValue}`, {
@@ -944,6 +945,7 @@
             }
         });
         removeButton.addEventListener("click", ()=>{
+            console.log("Hello")
             couponInput.value = "";
             removeButton.style.display = 'none';
             applyButton.style.display = 'inline';
@@ -976,6 +978,7 @@
             return isValid;
         }
 
+    })
 
             const codeOrderButton = document.getElementById('orderButton')
             var radioButtons = document.querySelectorAll('.select-address');
@@ -1035,7 +1038,7 @@
             }
             })
 
-        })
+        
 
 
 

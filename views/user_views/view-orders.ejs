@@ -404,7 +404,6 @@
                                       <th>Product</th>
                                       <th>Image</th>
                                       <th>Date</th>
-                                      <th>OrderStatus</th>
                                       <th>PaymentStatus</th>
                                       <th>PaymentMethod</th>
                                       <th>Total</th>
@@ -422,7 +421,6 @@
                                       <td> <a href="/product-details/<%= item?.productId?._id %>"><%= item?.productId?.productName %></a> </td>
                                       <td><a href="/product-details/<%= item?.productId?._id %>"><img src="/<%= item?.productId?.productImg[0] %>" class="img-sm " alt="Item" height="68" width="68"></a></td>
                                       <td><%= moment(orderDetails.createdAt).format("MMM Do YY") %></td>
-                                      <td><%= orderDetails.orderStatus %></td>
                                       <td><%= item.status %></td>
                                       <td><%= orderDetails.paymentMethod %></td>
                                       <td>₹<%= item.price * item?.quantity %> for <%= item?.quantity%> item</td>

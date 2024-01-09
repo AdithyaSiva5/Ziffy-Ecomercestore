@@ -570,9 +570,16 @@
                                         </div>
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
+
+                                                <% if (productdata.discountStatus === 'Active' && typeof productdata.discountPercent === 'number') { %>
+                                                    <ins><span class="text-brand">₹<%= productdata.sellingPrice - (productdata.sellingPrice * productdata.discountPercent) / 100 %></span> </ins>                                                 
+                                                    <ins><span class="old-price">₹<%= productdata.sellingPrice %></span></ins>
+                                                    <span class="save-price font-md color3 ml-5 text-danger" style="font-size: small;"> - <%= productdata.discountPercent %>% </span>
+                                                <% } else { %>
                                                 <ins><span class="text-brand">₹<%= productdata.sellingPrice %></span></ins>
                                                 <ins><span class="old-price font-md ml-15">₹<%= productdata.regularPrice %></span></ins>
-                                                <!-- <span class="save-price  font-md color3 ml-15">25% Off</span> -->
+                                                <% } %>
+
                                             </div>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-15 mb-15"></div>
@@ -661,6 +668,60 @@
                             
                         </div>
                     </div>
+                    <div class="container wow fadeIn animated">
+                        <h3 class="section-title mb-20"><span>Related</span> Products</h3>
+                        <div class="carausel-6-columns-cover position-relative">
+                            <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows"></div>
+                            <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
+                                
+                                <% relatedProducts.forEach(product => {%>
+                                <div class="product-cart-wrap small hover-up ">
+                                    <div class="product-img-action-wrap">
+                                        <div class="product-img product-img-zoom">
+                                            <a href="/product-details/<%= product._id %>">
+                                                <img class="default-img" src="/<%= product.productImg[0] %>" alt="">
+                                                <img class="hover-img" src="/<%= product.productImg[1] %>" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="product-action-1">                                           
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up addingwhishlist-btn" data-product-id="<%= product._id %>" id="addingwhishlist">
+                                                    <i class="fi-rs-heart"></i>
+                                                </a>                                    
+                                                <% if(product.productStock >0 ){%> 
+                                                <a aria-label="Add To Cart" class="action-btn hover-up addToCartButton" data-product-id="<%= product._id %>" id="addingcart">
+                                                    <i class="fi-rs-shopping-bag-add"></i>
+                                                </a>
+                                                <%} else {%>
+                                                    <span class="badge text-white" style="background-color: rgb(247, 58, 58); border-radius: 7px;" >Out of Stock</span>
+                                            <%} %>
+                                        </div>
+                                        <!-- <div class="product-badges product-badges-position product-badges-mrg">
+                                            <span class="hot">Hot</span>
+                                        </div> -->
+                                    </div>
+                                    <div class="product-content-wrap">
+                                        <h2><a href="/product-details/<%= product._id %>"><%= product.productBrand %></a></h2>
+                                        <div class="rating-result" title="90%">
+                                            <span>
+                                            </span>
+                                        </div>
+                                        <div class="product-price">
+                                            <% if (product.discountStatus === 'Active' && typeof product.discountPercent === 'number') { %>
+                                                <span>₹<%= product.sellingPrice - (product.sellingPrice * product.discountPercent) / 100 %></span>
+                                                <span class="old-price">₹<%= product.sellingPrice %></span>
+                                                <!-- <span class="save-price font-md color3 ml-5 text-danger" style="font-size: small;"> - <%= product.discountPercent %>% </span> -->
+                                            <% } else { %>
+                                                <span>₹<%= product.sellingPrice %></span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%}) %>
+                                
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>

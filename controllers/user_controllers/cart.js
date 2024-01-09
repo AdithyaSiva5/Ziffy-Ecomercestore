@@ -2,6 +2,7 @@ const userCollection = require("../../models/user_schema");
 const productCollection = require("../../models/product");
 const cartCollection = require("../../models/cart_schema");
 const mongoose = require("mongoose");
+const offerController = require("../../controllers/admin_controllers/adm_offers")
 
 module.exports.gettocart = async(req,res)=>{
     try{
@@ -41,29 +42,40 @@ module.exports.gettocart = async(req,res)=>{
     }
 }
 const calculateTotalPrice = (cart) => {
-  let total = 0;
+  let total = 0, newprice , subtotal;
   for (const items of cart.products) {
-    const subtotal = items.quantity * items.productId.sellingPrice;
-    total += subtotal;
+    if ( items.productId.discountStatus === 'Active' && typeof items.productId.discountPercent === 'number'){
+      newprice = items.productId.sellingPrice - (items.productId.sellingPrice * items.productId.discountPercent) / 100;
+      subtotal = items.quantity * newprice;
+      total += subtotal;  
+    }else{
+      subtotal = items.quantity * items.productId.sellingPrice;
+      total += subtotal;    
+    }
+
   }
 
   return total;
 };
+//if (product.discountStatus === 'Active' && typeof product.discountPercent === 'number') {
+//<%= product.sellingPrice - (product.sellingPrice * product.discountPercent) / 100 %>
  
 module.exports.getcart = async (req, res,next) => {
   try {
     const loggedIn = req.cookies.loggedIn;
+    await offerController.deactivateExpiredOffers(); 
     const userData = await userCollection.findOne({ email: req.user });
+    const productOffers = await productCollection.find({discountStatus: "Active", });
     const userCart = await cartCollection.findOne({ userId: userData.id }).populate({path: "products.productId",model: productCollection,});
       if (!userCart || userCart.products.length === 0) {
         return res.render("user-cart", {loggedIn, userCart: null,grandtotal: 0, error: "Your cart is empty."});
       }
       grandtotal = calculateTotalPrice(userCart);
-    res.render("user-cart", { loggedIn,userCart,grandtotal, error: null   });
+    res.render("user-cart", { loggedIn, userCart, grandtotal, productOffers ,error: null   });
   } catch (error) {
     console.log(error);
     next(error);
-  }
+  } 
 };
 
 module.exports.updateQuantity = async (req,res) => {

@@ -4,7 +4,7 @@ const categorySchema = new mongoose.Schema({
     require: true,
     type: String,
     unique: true,
-  }, 
+  },
   catgDiscription: {
     require: true,
     type: String,
@@ -12,6 +12,13 @@ const categorySchema = new mongoose.Schema({
   categoryStatus: {
     require: true,
     type: String,
+  },
+  offerStart: Date,
+  offerEnd: Date,
+  discountPercent: Number,
+  discountStatus: {
+    type: String,
+    default: "Active",
   },
 });
 

@@ -1,12 +1,16 @@
 const productCollection = require("../../models/product")
+const offerController = require("../../controllers/admin_controllers/adm_offers")
 
 //homepage
 module.exports.getUserRoute = async (req,res) => {
     try{
         const loggedIn = req.cookies.loggedIn;
+        await offerController.deactivateExpiredOffers();
         const productdata = await productCollection.find().limit(6)
         const unblockedProducts = productdata.filter(product => product.productStatus !== 'Block');
-        res.render("userIndex",{loggedIn,productdata : unblockedProducts});
+        const productOffers = await productCollection.find({discountStatus: "Active"});
+
+        res.render("userIndex",{loggedIn,productdata : unblockedProducts });
     }catch(error){
         console.error(error);
         next(error);

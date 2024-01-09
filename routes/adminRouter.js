@@ -14,6 +14,7 @@ const salesReport = require("../controllers/admin_controllers/adm_salesreport");
 const dashboard = require("../controllers/admin_controllers/adm_dashboard")
 const uploads = require("../user-midddleware/multer")
 const coupons = require("../controllers/admin_controllers/adm_coupon")
+const offers = require("../controllers/admin_controllers/adm_offers")
 
 adminRouter.use("/public/uploads", express.static("public/uploads"));
 adminRouter.use("/uploads", express.static("uploads"));
@@ -79,6 +80,15 @@ adminRouter.post("/post-edit-coupon/:coupon_id", adminMiddleware.verifyAdmin, co
 adminRouter.get("/block-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.blockCoupon)
 adminRouter.get("/unblock-coupon/:coupon_id", adminMiddleware.verifyAdmin, coupons.unblockCoupon)
 
+
+//offers
+adminRouter.get("/offer-list", adminMiddleware.verifyAdmin, offers.getOfferlist);
+adminRouter.get("/add-offer", adminMiddleware.verifyAdmin, offers.addOffer);
+adminRouter.post("/postadd-offer", adminMiddleware.verifyAdmin, offers.postOffer)
+adminRouter.get("/edit-offer/:offerId", adminMiddleware.verifyAdmin, offers.editOffer)
+adminRouter.post("/postEdit-offer", adminMiddleware.verifyAdmin, offers.postEditOffer)
+adminRouter.get("/block-offer/:offerId", adminMiddleware.verifyAdmin, offers.blockOffer)
+adminRouter.get("/Unblock-offer/:offerId", adminMiddleware.verifyAdmin, offers.unblockOffer)
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 

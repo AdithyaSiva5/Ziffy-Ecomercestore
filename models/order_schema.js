@@ -36,6 +36,9 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    payableAmount: {
+      type: Number,
+    },
     orderStatus: {
       type: String,
       enum: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"],

@@ -521,8 +521,13 @@
                                                         </span>
                                                     </div>
                                                     <div class="product-price">
-                                                        <span>₹<%= product.sellingPrice %></span>
-                                                        <!-- <span class="old-price">$245.8</span> -->
+                                                        <% if (product.discountStatus === 'Active' && typeof product.discountPercent === 'number') { %>
+                                                            <span>₹<%= product.sellingPrice - (product.sellingPrice * product.discountPercent) / 100 %></span>
+                                                            <span class="old-price">₹<%= product.sellingPrice %></span>
+                                                            <span class="save-price font-md color3 ml-5 text-danger" style="font-size: small;"> - <%= product.discountPercent %>% </span>
+                                                        <% } else { %>
+                                                            <span>₹<%= product.sellingPrice %></span>
+                                                        <% } %>
                                                     </div>
                                                     <div class="product-action-1 show">
                                                         <a aria-label="Add To Cart" class="addToCartButton action-btn hover-up" data-product-id="<%= product._id %>" href="cart"><i class="fi-rs-shopping-bag-add"></i></a>
