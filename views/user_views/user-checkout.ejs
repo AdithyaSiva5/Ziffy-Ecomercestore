@@ -761,9 +761,13 @@
                                             <th>Shipping</th>
                                             <td colspan="2"><em>Free Shipping</em></td>
                                         </tr>
+                                        <tr class="coupon-discount-tr hidden"> 
+                                            <th>Coupon Discount</th>
+                                            <td colspan="2"> - <span>₹</span> <em class="coupon-discount" ><%= couponDiscount %></em></td>
+                                          </tr>
                                         <tr>
                                             <th>Total</th>
-                                            <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%= grandTotal  %></span></td>
+                                            <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900 grand-total">₹<%= grandTotal  %></span></td>
                                         </tr>                                   
                                    </tbody>
                                 </table>
@@ -895,10 +899,9 @@
         removeButton.style.display = 'none';
         
         applyButton.addEventListener("click", function (e) {
-            console.log("Hey"); 
             e.preventDefault();
             if(validateCode()){
-                fetch(`/apply-coupon?couponCode=${couponInput.value}&grandTotal=${grandTotalValue}`, {
+                fetch(`/apply-coupon?couponCode=${couponInput.value}`, { 
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -978,19 +981,22 @@
             return isValid;
         }
 
-    })
+   
+       
 
             const codeOrderButton = document.getElementById('orderButton')
             var radioButtons = document.querySelectorAll('.select-address');
             let selectedAddressValue = null;
             codeOrderButton.addEventListener("click",(e)=>{
                 e.preventDefault();
+                const couponCode = couponInput.value.trim();
                 
                 let selectedAddressValue = null;
                 for(radioButton of radioButtons){
                     if(radioButton.checked){
                     selectedAddressValue = radioButton.value;
-                    fetch(`/place-order-cod/${selectedAddressValue}`)
+                    const url = `/place-order-cod/${selectedAddressValue}?coupon=${encodeURIComponent(couponCode)}`;
+                    fetch(url)
                     .then(response=>{
                         if(!response.ok){
                             throw new Error(`HTTP Error! status:${response.status}`)
@@ -1042,7 +1048,7 @@
 
 
 
-        //        RazorPay ------------------
+        //        RazorPay ------------------\
         const razorpayButton = document.getElementById('rzp-orderButton');
         razorpayButton.addEventListener("click", (e)=>{
             e.preventDefault();
@@ -1062,7 +1068,7 @@
                 text: 'No Address is Selected!',
             })
             } }
-                    fetch(`/place-order-razerpay/${selectedAddressValue}`)
+                    fetch(`/place-order-razerpay/${selectedAddressValue}?coupon=${encodeURIComponent(couponCode)}`)
                     .then(response=>{
                         if(!response.ok){
                             throw new Error(`HTTP Error! status:${response.status}`)
@@ -1166,7 +1172,7 @@
 
         });
 
-
+    })
 
     </script>
     <!-- Preloader Start -->

@@ -5,6 +5,7 @@ const productCollection = require("../../models/product");
 const orderCollection = require("../../models/order_schema")
 const razorpay = require("razorpay");
 const { v4: uuidv4 } = require("uuid");
+const couponCollection = require("../../models/coupon_schema");
 
 const { RAZOR_PAY_key_id, RAZOR_PAY_key_secret } = process.env;
 
@@ -14,8 +15,32 @@ var instance = new razorpay({
   key_secret: RAZOR_PAY_key_secret,
 });
 
+const calculateTotalPrice = (cart) => {
+  let total = 0,
+    newprice,
+    subtotal;
+  for (const items of cart.products) {
+    if (
+      items.productId.discountStatus === "Active" &&
+      typeof items.productId.discountPercent === "number"
+    ) {
+      newprice =
+        items.productId.sellingPrice -
+        (items.productId.sellingPrice * items.productId.discountPercent) / 100;
+      subtotal = items.quantity * newprice;
+      total += subtotal;
+    } else {
+      subtotal = items.quantity * items.productId.sellingPrice;
+      total += subtotal;
+    }
+  }
+
+  return total;
+};
+
 module.exports.orderViaCod = async (req,res)=>{
     try {
+        const couponCode = req.query.coupon;
         user = await userCollection.findOne({email : req.user})
         const userCart = await cartCollection.findOne({ userId : user._id }).populate({path : "products.productId" , model : productCollection});
         const useraddress = await addressCollection.findOne({"address._id": req.params.addressId}, { "address.$": 1 });
@@ -27,14 +52,15 @@ module.exports.orderViaCod = async (req,res)=>{
         const productArray = userCart.products.map((product) => ({
               productId: product.productId._id,
               price: product.productId.sellingPrice,
-              quantity: product.quantity,
-            }));
+              quantity: product.quantity, 
+            })); 
         
-        let totalAmount = userCart.products.reduce(
-          (total, product) =>
-            total + product.quantity * product.productId.sellingPrice,
-          0
-        );
+        let totalAmount = calculateTotalPrice(userCart);
+        
+        if(couponCode){
+          const reduced = await couponCollection.findOne({ couponCode : couponCode });
+          totalAmount = totalAmount - reduced.discountAmount;
+        }
          const paymentMethod = "Cash on Delivery";
          const createdOrder = await orderCollection.create({
            userId: user._id,
@@ -44,12 +70,12 @@ module.exports.orderViaCod = async (req,res)=>{
            address: useraddress,
          });
 
-         for (const product of userCart.products){
-            await productCollection.updateOne({_id : product.productId._id},{$inc : { productStock : -product.quantity}});
-         }
-         await cartCollection.deleteOne({ userId: user._id });
-        const orderId = createdOrder._id;
-        return res.status(200).json({ orderId });   
+        //  for (const product of userCart.products){
+        //     await productCollection.updateOne({_id : product.productId._id},{$inc : { productStock : -product.quantity}});
+        //  }
+        //  await cartCollection.deleteOne({ userId: user._id });
+        // const orderId = createdOrder._id;
+        // return res.status(200).json({ orderId });   
 
     } catch (error) {
         console.log(error);
@@ -146,6 +172,7 @@ module.exports.returnOrder = async (req, res, next) => {
 
 module.exports.orderViaOnline = async(req,res,next)=>{
       let totalAmount = 0;
+        const couponCode = req.query.coupon;
       user = await userCollection.findOne({ email: req.user });
       const userCart = await cartCollection.findOne({ userId : user._id }).populate({path : "products.productId" , model : productCollection});
       const useraddress = await addressCollection.findOne({"address._id": req.params.addressId}, { "address.$": 1 });
@@ -160,9 +187,14 @@ module.exports.orderViaOnline = async(req,res,next)=>{
       quantity: product.quantity,
     }));
      
-     userCart.products.forEach((product) => {
-      totalAmount += product.productId.sellingPrice * product.quantity;
-     });
+     totalAmount = calculateTotalPrice(userCart);
+      console.log(totalAmount);
+        if (couponCode) {
+          const reduced = await couponCollection.findOne({
+            couponCode: couponCode,
+          });
+          totalAmount = totalAmount - reduced.discountAmount;
+        }
      const paymentMethod = "Online Payment";
 
      var options = {

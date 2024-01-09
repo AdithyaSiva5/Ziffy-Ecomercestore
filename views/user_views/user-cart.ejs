@@ -708,7 +708,12 @@
                                             <p class="font-xs"><%= product.productId?.productDiscription %>
                                             </p>
                                         </td>
+                                        <% if(product.productId?.discountStatus === 'Active' && typeof product.productId?.discountPercent === 'number'){ %>
+                                        <td class="price" data-title="Price"><span><%= product.productId?.sellingPrice - (product.productId?.sellingPrice * product.productId?.discountPercent) / 100 %> </span></td>
+                                        <% }else{ %>
                                         <td class="price" data-title="Price"><span><%= product.productId?.sellingPrice%> </span></td>
+                                        
+                                            <% } %>
                                         <td class="text-center" data-title="Stock">
                                             <% if (product.productId?.productStock <= 0) { %>
                                                 <span class="text-danger">Out of Stock</span>

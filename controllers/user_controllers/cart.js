@@ -41,7 +41,7 @@ module.exports.gettocart = async(req,res)=>{
         });
     }
 }
-const calculateTotalPrice = (cart) => {
+const calculateTotalPrice = (cart) => { 
   let total = 0, newprice , subtotal;
   for (const items of cart.products) {
     if ( items.productId.discountStatus === 'Active' && typeof items.productId.discountPercent === 'number'){

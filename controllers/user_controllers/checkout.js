@@ -6,10 +6,23 @@ const addressCollection = require("../../models/address_schema");
 const couponCollection = require("../../models/coupon_schema")
  
 const calculateTotalPrice = (cart) => {
-  let total = 0;
+  let total = 0,
+    newprice,
+    subtotal;
   for (const items of cart.products) {
-    const subtotal = items.quantity * items.productId.sellingPrice;
-    total += subtotal;
+    if (
+      items.productId.discountStatus === "Active" &&
+      typeof items.productId.discountPercent === "number"
+    ) {
+      newprice =
+        items.productId.sellingPrice -
+        (items.productId.sellingPrice * items.productId.discountPercent) / 100;
+      subtotal = items.quantity * newprice;
+      total += subtotal;
+    } else {
+      subtotal = items.quantity * items.productId.sellingPrice;
+      total += subtotal;
+    }
   }
 
   return total;
@@ -35,7 +48,7 @@ module.exports.getcheckout = async (req, res) => {
     next(error);
   }
 };
-
+ 
 module.exports.stockchecking = async(req,res) =>{
   try {
     const userData = await userCollection.findOne({ email: req.user });
@@ -61,7 +74,9 @@ module.exports.stockchecking = async(req,res) =>{
 
 module.exports.applyCoupon = async(req,res)=>{
   try {
-    let grandTotal = 0;
+    user = await userCollection.findOne({ email: req.user });
+    const userCart = await cartCollection.findOne({ userId : user._id }).populate({path : "products.productId" , model : productCollection});
+    let grandTotal = calculateTotalPrice(userCart);
     let couponDiscount = 0;
     const couponCode = req.query.couponCode;
     const coupon = await couponCollection.findOne({couponCode});

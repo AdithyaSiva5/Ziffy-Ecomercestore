@@ -12,7 +12,9 @@ const cropImage = require("../controllers/admin_controllers/adm_cropimage")
 const userError = require("../user-midddleware/error_handling");
 const salesReport = require("../controllers/admin_controllers/adm_salesreport");
 const dashboard = require("../controllers/admin_controllers/adm_dashboard")
-const uploads = require("../user-midddleware/multer")
+const { uploads } = require("../user-midddleware/multer");
+const { bannerImage } = require("../user-midddleware/multer");
+
 const coupons = require("../controllers/admin_controllers/adm_coupon")
 const offers = require("../controllers/admin_controllers/adm_offers")
 
@@ -89,13 +91,14 @@ adminRouter.get("/edit-offer/:offerId", adminMiddleware.verifyAdmin, offers.edit
 adminRouter.post("/postEdit-offer", adminMiddleware.verifyAdmin, offers.postEditOffer)
 adminRouter.get("/block-offer/:offerId", adminMiddleware.verifyAdmin, offers.blockOffer)
 adminRouter.get("/Unblock-offer/:offerId", adminMiddleware.verifyAdmin, offers.unblockOffer)
-
+ 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 
 
 adminRouter.use(userError.errorHandler);
 adminRouter.get("/*", userError.errorHandler2);
 
+//banners
 
 
 
