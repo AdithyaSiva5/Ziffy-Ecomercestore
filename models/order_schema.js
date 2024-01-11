@@ -60,6 +60,9 @@ const orderSchema = new mongoose.Schema(
     cancelReason: {
       type: String,
     },
+    couponDiscount: {
+      type: Number,
+    }
   },
   { timestamps: true }
 );

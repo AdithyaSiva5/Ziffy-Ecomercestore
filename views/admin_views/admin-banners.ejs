@@ -1,6 +1,5 @@
 <%- include("../partials/admin-header")%>
-<!-- <body>  -->
-
+<body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
@@ -43,25 +42,25 @@
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu active">
+                <li class="menu-item has-submenu ">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-local_offer"></i>
                         <span class="text">Coupons</span>
                     </a>
                     <div class="submenu ">
-                        <a class = "active" href="/admin/coupons">Coupon View</a>
-                        <a  href="/admin/add-coupon">Add Coupon</a>
+                        <a href="/admin/coupons">Coupon View</a>
+                        <a class="active" href="/admin/add-coupon">Add Coupon</a>
                     </div>
                 </li>  
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu ">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-request_quote"></i>
                         <span class="text">Offers</span>
                     </a>
-                    <div class="submenu">
-                        <a href="/admin/offer-list">Offer View</a>
+                    <div class="submenu active">
+                        <a href="/admin/offer-list active">Offer View</a>
                         <a href="/admin/add-offer">Add Offer</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu active">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-image"></i>
                         <span class="text">Banners</span>
                     </a>
@@ -178,68 +177,47 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Coupons View</h2>
-                    <p>Add, edit or block a coupon</p>
+                    <h2 class="content-title card-title">Banners View</h2>
+                    <p>Add, edit or block a banner</p>
                 </div>
                 <div>
-                    <a href="/admin/add-coupon" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <a href="/admin/add-banner" class="btn btn-primary btn-sm rounded">Create new</a>
                 </div>
             </div>
             <div class="card mb-4">
                 
+                 <!-- card-header end -->
                 <div class="card-body">
                     <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
-                     <% coupons.forEach(coupon => { %>
-                        <div class="col" style="margin-bottom: 20px;">
-                            <div class="coupon-card">
-
-
-                                <div class="text-center">
-                    
-                                    <div class="d-flex flex-row text-center">
-                    
-                                    <img src="https://icon-library.com/images/coupon-icon-png/coupon-icon-png-21.jpg" width="70">
-                                    
-                                    <div class="d-flex flex-column ml-1">
-                    
-                                        <h1 class="mb-0 amount"> ₹<%= coupon.discountAmount %> </h1>
-                                        <span class="discount">OFFER</span>
-                                        
-                                    </div>
-                                </div>
-                                    
-                                </div>
-
-                                <hr class="line">
-
+                     <% banners.forEach(banner => { %>
+                        <div class="col">
+                          <div class="card card-banner-grid">
+                                <% if (banner.image && banner.image.length > 0) { %>
+                                <a href="#" class="img-wrap">
+                                    <img src="<%= banner.image %>" alt="<%= banner.title %>">
+                                </a>
+                                <% } %>
                                 <div class="info-wrap">
-                                    <h4 class="mb-0"> <%= coupon.couponCode %> </h4>
-                                    <p class="text-truncate"> <%= coupon.description %></p>
+                                  <div class="title mb-5 ml-5">
+                                    <h6 class="title text-truncate"><%= banner.title %></h6>
+                                  </div>
+                                  <div class="buttons mb-5 ml-5">
+                                    <!-- Edit and Block/Unblock buttons -->
+                                    <a href="/admin/edit-banner/<%= banner._id %>" class="btn btn-sm font-sm rounded btn-dark" style="margin-right: 10px;">
+                                      Edit
+                                  </a>
+                                  <% if (banner.status == 'Inactive') { %>
+                                      <a  class="btn btn-sm font-sm btn-success rounded block-unblock-button" data-action="/admin/unblock-banner/<%= banner._id %>">
+                                          Unblock
+                                      </a>
+                                  <% } else { %>
+                                      <a class="btn btn-sm font-sm btn-danger rounded block-unblock-button" data-action="/admin/block-banner/<%= banner._id %>">
+                                      Block
+                                      </a>
+                                  <% } %>
+                                  </div>
                                 </div>
-
-                    
-                                <div class="d-flex justify-content-between align-items-center mt-4">
-
-                                    <a href="/admin/edit-coupon/<%= coupon._id %>" class="btn btn-sm font-sm rounded btn-dark edit-button">
-                                        Edit
-                                    </a>
-
-                                    <div class="actions" >
-                                        <% if (coupon.status == 'Inactive') { %>
-                                            <a  style="background-color: #b61c1c; color: #ffffff;" class="btn btn-sm font-sm btn-success rounded block-unblock-button" data-action="/admin/unblock-coupon/<%= coupon._id %>">
-                                                Unblock
-                                            </a>
-                                        <% } else { %>
-                                            <a class="btn btn-sm font-sm btn-danger rounded block-unblock-button" data-action="/admin/block-coupon/<%= coupon._id %>">
-                                            Block
-                                            </a>
-                                        <% } %>
-                                    </div>
-                                    
-                                </div>
-                                 
-                    
-                             </div>
+                          </div>
                         </div>
                       <% }) %>
                     </div>
@@ -280,25 +258,14 @@
                   
                    <!-- card-body end// -->
             </div> <!-- card end// -->
-            <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
+
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
                     <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
+                    </script> ©, heeder.
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">
@@ -308,45 +275,6 @@
             </div>
         </footer>
     </main>
-
-    <style>
-
-.coupon-card{
-
-width: 100%;
-border:none;
-height: 100%;
-border-radius: 15px;
-padding: 20px;
-background-color: #f0f0f0;
-color: #000000;
-}
-
-.amount{
-
-font-size: 2rem;
-color: #000000;
-}
-
-.discount{
-
-font-size: 1.5rem;
-color: #000000;
-}
-
-
-.line{
-
-color: #000000;
-}
-
-.info-wrap{
-    /* overflow: hidden; */
-    text-overflow: ellipsis;
-}
-
-    </style>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>

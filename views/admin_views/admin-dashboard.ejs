@@ -44,22 +44,21 @@
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu ">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-local_offer"></i>
                         <span class="text">Coupons</span>
                     </a>
-                    <div class="submenu">
+                    <div class="submenu ">
                         <a href="/admin/coupons">Coupon View</a>
-                        <a href="/admin/add-coupon">Add Coupon</a>
+                        <a class="active" href="/admin/add-coupon">Add Coupon</a>
                     </div>
                 </li>  
-                
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-request_quote"></i>
                         <span class="text">Offers</span>
                     </a>
                     <div class="submenu">
-                        <a href="/admin/offers">Offer View</a>
+                        <a href="/admin/offer-list">Offer View</a>
                         <a href="/admin/add-offer">Add Offer</a>
                     </div>
                 </li>
@@ -77,7 +76,6 @@
                         <span class="text">Sales Report</span>
                     </a>
                 </li>
-                 
                 <!-- <li class="menu-item">
                     <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add product</span>
@@ -176,7 +174,7 @@
                     </li>
                 </ul>
             </div>
-        </header>
+        </header> 
         <section class="content-main">
             <div class="content-header">
                 <div>
@@ -256,40 +254,38 @@
                         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
                         
                         <script>
-                            (function ($) {
+                            document.addEventListener("DOMContentLoaded", () => {
                                 "use strict";
-                        
+                            
                                 var chartFeederData = $('#chartFeederData').val();
                                 var chartFeeder = JSON.parse(chartFeederData);
-                                console.log('chartFeeder:', chartFeeder);
-
+                        
                                 /* Sale statistics Chart */
                                 if (chartFeeder && chartFeeder.orderData) {
                                     var orderData = chartFeeder.orderData;
                                     var cancelData = chartFeeder.cancelData;
                                     var returnData = chartFeeder.returnData;
-
-
+                        
                                     const startIndex = orderData.findIndex(item => item._id === 7);
-
+                        
                                     const orderDataStart = orderData.slice(startIndex);
                                     const orderDataEnd = orderData.slice(0, startIndex);
-
+                        
                                     const cancelDataStart = cancelData.slice(startIndex);
                                     const cancelDataEnd = cancelData.slice(0, startIndex);
-
+                        
                                     const returnDataStart = returnData.slice(startIndex);
                                     const returnDataEnd = returnData.slice(0, startIndex);
-
+                        
                                     const continuousOrderData = orderDataStart.concat(orderDataEnd);
                                     const continuousCancelData = cancelDataStart.concat(cancelDataEnd);
                                     const continuousReturnData = returnDataStart.concat(returnDataEnd);
-
+                        
                                     console.log('continuousOrderData:', continuousOrderData);
                                     console.log('continuousCancelData:', continuousCancelData);
                                     console.log('continuousReturnData:', continuousReturnData);
-
-                                    var ctx = document.getElementById('salesStatsChart1').getContext('2d');
+                        
+                                    var ctx = document.getElementById('salesStatsChart1');
                                     var chart = new Chart(ctx, {
                                         type: 'line',
                                         data: {
@@ -329,186 +325,59 @@
                                             }
                                         }
                                     });
+                        
+                                    var ctx2 = document.getElementById('salesStatsChart2');
+                                    var chart2 = new Chart(ctx2, {
+                                        type: 'pie',
+                                        data: {
+                                            labels: ['Sales', 'Cancels', 'Returns'],
+                                            datasets: [{
+                                                hoverBackgroundColor: "#fa0728",
+                                                backgroundColor: ['rgba(44, 120, 220, 0.8)', 'rgba(4, 209, 130, 0.8)', 'rgba(380, 200, 230, 0.8)'],
+                                                data: [
+                                                    continuousOrderData.reduce((sum, item) => sum + item.count, 0),
+                                                    continuousCancelData.reduce((sum, item) => sum + item.count, 0),
+                                                    continuousReturnData.reduce((sum, item) => sum + item.count, 0),
+                                                ]
+                                            }]
+                                        },
+                                        options: {
+                                            plugins: {
+                                                legend: {
+                                                    labels: {
+                                                        usePointStyle: true,
+                                                    },
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
-
                         
                                 /* Sale statistics Chart */                        
                                 function getMonthLabel(month) {
                                     const monthNames = ['Jan 24', 'Feb 24', 'Mar 24', 'Apr 24', 'May 24', 'Jun 24', 'Jul 23', 'Aug 23', 'Sep 23', 'Oct 23', 'Nov 23', 'Dec 23'];
                                     return monthNames[(month - 1) % 12];
                                 }
-
-                        
-                            })(jQuery);
+                            });
                         </script>
+                        
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-lg-5">
-                            <div class="card mb-4">
-                                <article class="card-body">
-                                    <h5 class="card-title">New Members</h5>
-                                    <div class="new-member-list">
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar4.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Patric Adams</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Dilan Specter</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/adminAssets/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Tomas Baker</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="card mb-4">
-                                <article class="card-body">
-                                    <h5 class="card-title">Recent activities</h5>
-                                    <ul class="verti-timeline list-unstyled font-sm">
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>Today</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Lorem ipsum dolor sit amet consectetur
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list active">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>17 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Debitis nesciunt voluptatum dicta reprehenderit
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>13 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Accusamus voluptatibus voluptas.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>05 April</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        At vero eos et accusamus et iusto odio dignissi
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>26 Mar</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Responded to need “Volunteer Activities
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </article>
-                            </div>
-                        </div>
-                    </div> -->
+
 
                 </div>
-                <!-- <div class="col-xl-4 col-lg-12">
+                <div class="col-xl-4 col-lg-12">
                     <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Revenue Base on Area</h5>
-                            <canvas id="myChart2" height="217"></canvas>
+                            <canvas id="salesStatsChart2"  height="217"></canvas>
                         </article>
-                    </div> -->
-                    <!-- <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Marketing Chanel</h5>
-                            <span class="text-muted font-xs">Facebook</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
-                            </div>
-                            <span class="text-muted font-xs">Instagram</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 65%">65% </div>
-                            </div>
-                            <span class="text-muted font-xs">Google</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 51%"> 51% </div>
-                            </div>
-                            <span class="text-muted font-xs">Twitter</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
-                            <span class="text-muted font-xs">Other</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
-                        </article>
-                    </div> -->
+                    </div> 
                 </div>
             </div>
+            <script>
+
+            </script>
+            
             <!-- <div class="card mb-4">
                 <header class="card-header">
                     <h4 class="card-title">Latest orders</h4>

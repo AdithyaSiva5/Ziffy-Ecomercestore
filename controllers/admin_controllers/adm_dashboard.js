@@ -43,7 +43,9 @@ try {
     orderData: filledOrderData,
     cancelData: filledCancelData,
     returnData: filledReturnData,
+
     };
+
      res.render("admin-dashboard", { orderDetails, statistics, chartFeeder: JSON.stringify(chartFeeder) });
      }else {
        res.render("admin-login");

@@ -33,7 +33,7 @@ userRouter.post("/verify-otp", signupControll.postVerifyOtp);
 
 //products
 userRouter.get("/product-details/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productDetails);
-userRouter.get("/products",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productFulldetails)
+userRouter.get("/products",productControll.productFulldetails)
 
 //forgetpassword
 userRouter.get("/forgetpassword", forgetpassword.forgetpass);
@@ -56,11 +56,13 @@ userRouter.get("/apply-coupon", userMiddleware.verifyUser,userMiddleware.checkBl
 //orders
 userRouter.get("/place-order-cod/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.orderViaCod);
 userRouter.get("/place-order-razerpay/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.orderViaOnline);
+userRouter.get("/place-order-walletpay/:addressId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.wallet);
 userRouter.post("/update-payment-status",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus , orders.updatePaymentStatus);
 userRouter.get("/order-placed/:orderId", userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.getOrderPlaced);
 userRouter.get("/cancel-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.cancelOrder)
 userRouter.get("/return-order/:orderId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,orders.returnOrder)
 userRouter.post("/cancelSingle-order", userMiddleware.verifyUser, userMiddleware.checkBlockedStatus , orders.cancelSingleOrder)
+userRouter.get("/view-order",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.viewOrders);
 
 
 
@@ -68,13 +70,16 @@ userRouter.post("/cancelSingle-order", userMiddleware.verifyUser, userMiddleware
 
 //User account
 userRouter.get("/user-account",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,account.getUserAccount);
-userRouter.get("/view-order",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, orders.viewOrders);
+userRouter.post("/applyreferel" ,userMiddleware.verifyUser,userMiddleware.checkBlockedStatus, account.applyReferelOffers);
 
 
 //address 
 userRouter.post("/post-add-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postAddAddress);
 userRouter.post("/post-edit-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postEditAddress);
 userRouter.get('/delete-address',userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.deleteAddress);
+
+//filter
+
 
 
 //error handling

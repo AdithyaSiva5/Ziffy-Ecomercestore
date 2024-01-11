@@ -52,8 +52,8 @@
 
     /*Sale statistics Chart*/
     if ($('#myChart2').length) {
-        var ctx = document.getElementById("myChart2");
-        var myChart = new Chart(ctx, {
+        var cty = document.getElementById("myChart2");
+        var myChart = new Chart(cty, {
             type: 'bar',
             data: {
             labels: ["900", "1200", "1400", "1600"],

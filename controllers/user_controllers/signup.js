@@ -1,5 +1,7 @@
 const nodemailer = require("nodemailer");
 const userCollection = require("../../models/user_schema");
+const walletCollection = require("../../models/wallet_schema")
+var randomstring = require("randomstring");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 let generatedOTP;
@@ -15,6 +17,8 @@ module.exports.postUserSignup = async (req, res) => {
       phoneNumber: req.body.phoneNumber,
     });
     const password = req.body.password;
+    let codeId = randomstring.generate(12);
+
 
     if (email) {
       res.status(200).json({ error: "Email already Exist" });
@@ -25,14 +29,20 @@ module.exports.postUserSignup = async (req, res) => {
         if (err) {
           console.error("Error hashing password:", err);
           return;
-        }
+        } 
         await userCollection.create({
           username: req.body.username,
           password: hash,
           email: req.body.email,
           phoneNumber: req.body.phoneNumber,
           status: "Unblock",
+          referelId: codeId
         });
+      const currUser = await userCollection.findOne({ email: req.body.email });
+      await walletCollection.create({
+        userId: currUser._id,
+        amount: 0,
+      });
         res.render("user-login", { message: "User sign up successfully" });
       });
     }
@@ -89,7 +99,6 @@ module.exports.getSendOtp = async (req, res) => {
         clearTimeout(otpTimer);
          otpTimer = setTimeout(() => {
            generatedOTP = null; 
-           console.log(generatedOTP);
          }, 30000);
         const email1 = req.query.email;
         const email= await userCollection.findOne({ email: req.query.email });

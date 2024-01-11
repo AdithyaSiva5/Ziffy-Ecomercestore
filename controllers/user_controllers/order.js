@@ -6,6 +6,7 @@ const orderCollection = require("../../models/order_schema")
 const razorpay = require("razorpay");
 const { v4: uuidv4 } = require("uuid");
 const couponCollection = require("../../models/coupon_schema");
+const walletCollection = require("../../models/wallet_schema");
 
 const { RAZOR_PAY_key_id, RAZOR_PAY_key_secret } = process.env;
 
@@ -49,12 +50,31 @@ module.exports.orderViaCod = async (req,res)=>{
                 return res.status(200).json({ backToCart: true });
             }
         };
-        const productArray = userCart.products.map((product) => ({
-              productId: product.productId._id,
-              price: product.productId.sellingPrice,
-              quantity: product.quantity, 
-            })); 
-        
+        // const productArray = userCart.products.map((product) => ({
+        //       productId: product.productId._id,
+        //       price: product.productId.sellingPrice,
+        //       quantity: product.quantity, 
+        //     })); 
+
+            const productArray = userCart.products.map((product) => {
+              let price;
+              if (product.productId.discountStatus === "Active" && typeof product.productId.discountPercent === "number") {
+                price =product.productId.sellingPrice -(product.productId.sellingPrice *product.productId.discountPercent) /100;
+              } else {
+                price = product.productId.sellingPrice;
+              }
+
+              return {
+                productId: product.productId._id,
+                price: price,
+                quantity: product.quantity,
+              };
+            });
+
+
+
+
+            
         let totalAmount = calculateTotalPrice(userCart);
         
         if(couponCode){
@@ -69,13 +89,18 @@ module.exports.orderViaCod = async (req,res)=>{
            paymentMethod,
            address: useraddress,
          });
+         if (couponCode) {
+          const reduced = await couponCollection.findOne({ couponCode: couponCode });
+          createdOrder.couponDiscount = reduced.discountAmount;
+          await createdOrder.save();
+         }
 
-        //  for (const product of userCart.products){
-        //     await productCollection.updateOne({_id : product.productId._id},{$inc : { productStock : -product.quantity}});
-        //  }
-        //  await cartCollection.deleteOne({ userId: user._id });
-        // const orderId = createdOrder._id;
-        // return res.status(200).json({ orderId });   
+         for (const product of userCart.products){
+            await productCollection.updateOne({_id : product.productId._id},{$inc : { productStock : -product.quantity}});
+         }
+         await cartCollection.deleteOne({ userId: user._id });
+        const orderId = createdOrder._id;
+        return res.status(200).json({ orderId });   
 
     } catch (error) {
         console.log(error);
@@ -141,7 +166,9 @@ module.exports.cancelOrder = async(req,res)=>{
 
 module.exports.returnOrder = async (req, res, next) => {
     try {
-      // let amount = 0;
+      let walletAmount = 0;
+      let refundAmount = 0;
+      let num = 0;
       const orderId = req.params.orderId;
       await orderCollection.findByIdAndUpdate(orderId, {
         orderStatus: "Returned",
@@ -154,13 +181,31 @@ module.exports.returnOrder = async (req, res, next) => {
         if (orderProduct.status !== "Cancelled") {
           orderProduct.status = "Returned";
           product.productStock += orderProduct.quantity;
-          // console.log(orderProduct.quantity + " === " + orderProduct.price);
-          // amount = orderProduct.quantity * orderProduct.price + amount;
+          refundAmount += orderProduct.quantity * orderProduct.price;
+          num++;
           await product.save();
         }
       }
-      // order.totalAmount = amount;
-      order.totalAmount = 0;
+        order.totalAmount = 0;
+        if (order.paymentMethod == "Wallet") {
+          let couponreduce = 0;
+          console.log("came inside wallet : ");
+
+          if (order.couponDiscount) {
+            couponreduce = order.couponDiscount / num;
+          }
+
+          console.log(`Coupon amount to reduce: ${couponreduce}`);
+          const user = await userCollection.findOne({ email: req.user });
+          const walletData = await walletCollection.findOne({
+            userId: user._id,
+          });
+          console.log(`Price to give back : ${refundAmount}`);
+          console.log(`num : ${num}`);
+            walletAmount = walletData.amount + refundAmount - couponreduce;
+          await walletData.updateOne({ $set: { amount: walletAmount } });
+        }     
+     
       await order.save();
 
       res.redirect(`/view-order?orderId=${orderId}`);
@@ -168,6 +213,71 @@ module.exports.returnOrder = async (req, res, next) => {
       console.log(error);
       next(error);
     }
+  };
+
+  module.exports.wallet = async (req, res) => {
+      let walletAmount = 0;
+      let totalAmount = 0;
+      const couponCode = req.query.coupon;
+      user = await userCollection.findOne({ email: req.user });
+      const userCart = await cartCollection.findOne({ userId : user._id }).populate({path : "products.productId" , model : productCollection});
+      const useraddress = await addressCollection.findOne({"address._id": req.params.addressId}, { "address.$": 1 });
+         const walletData = await walletCollection.findOne({ userId: user._id });
+         if(walletData){
+            walletAmount = walletData.amount;
+          }
+
+      userCart.products.forEach(product=>{
+      if(product.quantity > product.productId.productStock || product.productId.productStock == 0){
+        return res.status(200).json({backToCart: true})
+      }
+    });
+    const productArray = userCart.products.map((product) => {
+      let price;
+      if (product.productId.discountStatus === "Active" && typeof product.productId.discountPercent === "number") {
+        price =product.productId.sellingPrice -(product.productId.sellingPrice *product.productId.discountPercent) /100;
+      } else {
+        price = product.productId.sellingPrice;
+      }
+        return {
+        productId: product.productId._id,
+        price: price,
+        quantity: product.quantity,
+      };
+    });
+     
+    totalAmount = calculateTotalPrice(userCart);
+      if (couponCode) {
+        const reduced = await couponCollection.findOne({couponCode: couponCode});
+        if(reduced){
+          totalAmount = totalAmount - reduced.discountAmount;
+        }
+      }
+      if(walletAmount < totalAmount){
+         return res.status(200).json({ error: "No Amount in Wallet" });
+      }
+      walletAmount -= totalAmount;
+      await walletData.updateOne({ $set: { amount: walletAmount } });
+           
+    const paymentMethod = "Wallet";
+    const createdOrder = await orderCollection.create({
+      userId: user._id,
+      products: productArray,
+      totalAmount,
+      paymentMethod,
+      address: useraddress,
+    });
+
+    if (couponCode) {
+      const reduced = await couponCollection.findOne({
+        couponCode: couponCode,
+      });
+      createdOrder.couponDiscount = reduced.discountAmount;
+      await createdOrder.save();
+    }
+
+    const orderId = createdOrder._id;
+    return res.status(200).json({ orderId });
   };
 
 module.exports.orderViaOnline = async(req,res,next)=>{
@@ -181,14 +291,21 @@ module.exports.orderViaOnline = async(req,res,next)=>{
         return res.status(200).json({backToCart: true})
       }
     });
-    const productArray = userCart.products.map((product) => ({
-      productId: product.productId._id,
-      price: product.productId.sellingPrice,
-      quantity: product.quantity,
-    }));
+    const productArray = userCart.products.map((product) => {
+      let price;
+      if (product.productId.discountStatus === "Active" && typeof product.productId.discountPercent === "number") {
+        price =product.productId.sellingPrice -(product.productId.sellingPrice *product.productId.discountPercent) /100;
+      } else {
+        price = product.productId.sellingPrice;
+      }
+            return {
+        productId: product.productId._id,
+        price: price,
+        quantity: product.quantity,
+      };
+    });
      
      totalAmount = calculateTotalPrice(userCart);
-      console.log(totalAmount);
         if (couponCode) {
           const reduced = await couponCollection.findOne({
             couponCode: couponCode,
@@ -210,8 +327,17 @@ module.exports.orderViaOnline = async(req,res,next)=>{
       products: productArray,
       totalAmount,
       paymentMethod,
-      address: useraddress, 
+      address: useraddress,
     });
+
+    if (couponCode) {
+      const reduced = await couponCollection.findOne({
+        couponCode: couponCode,
+      });
+      createdOrder.couponDiscount = reduced.discountAmount;
+      await createdOrder.save();
+    }
+
 
 
     const orderId = createdOrder._id;
@@ -297,3 +423,4 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
       
     }
   }
+

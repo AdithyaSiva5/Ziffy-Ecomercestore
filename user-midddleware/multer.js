@@ -1,9 +1,10 @@
 const multer = require("multer");
+const path = require("path");
 
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads");
+    cb(null, path.join(__dirname, "../uploads")); 
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -13,8 +14,8 @@ const uploads = multer({ storage: storage });
 
 
 const bannerImage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./uploads/banners");
+  destination: (req, file, cb) => { 
+    cb(null, path.join(__dirname, "../uploads/banners"));
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));

@@ -43,11 +43,9 @@ module.exports.postProduct = async (req, res) => {
           .resize({ width: 500, height: 500, fit: "cover" })
           .toFile(filePath);
         arr.push({ path: filePath });
-        console.log(filePath);
       }
 
       const imageIds = arr.map((productImg) => productImg.path);
-      console.log("IMAGE ID" + imageIds);
 
       await productCollection.create({
         productName: req.body.productName,

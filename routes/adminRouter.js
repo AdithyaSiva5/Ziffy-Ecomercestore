@@ -13,7 +13,8 @@ const userError = require("../user-midddleware/error_handling");
 const salesReport = require("../controllers/admin_controllers/adm_salesreport");
 const dashboard = require("../controllers/admin_controllers/adm_dashboard")
 const { uploads } = require("../user-midddleware/multer");
-const { bannerImage } = require("../user-midddleware/multer");
+const { bannerUpload } = require("../user-midddleware/multer");
+const banner = require("../controllers/admin_controllers/adm_banner")
 
 const coupons = require("../controllers/admin_controllers/adm_coupon")
 const offers = require("../controllers/admin_controllers/adm_offers")
@@ -42,7 +43,7 @@ adminRouter.post(  "/unblock-category/:categoryId",  adminMiddleware.verifyAdmin
 
 //product
 
-adminRouter.get(  "/product-list",  adminMiddleware.verifyAdmin,  adminMiddleware.verifyAdmin,  productControll.getProductList);
+adminRouter.get(  "/product-list",  adminMiddleware.verifyAdmin,  productControll.getProductList);
 adminRouter.get(  "/add-product",  adminMiddleware.verifyAdmin,  productControll.getAddProduct);
 adminRouter.post(  "/postadd-product",  uploads.array("productImg"),  adminMiddleware.verifyAdmin,  productControll.postProduct);
 adminRouter.get(  "/delete-product/:productId",  adminMiddleware.verifyAdmin,  productControll.deleteProduct);
@@ -92,13 +93,20 @@ adminRouter.post("/postEdit-offer", adminMiddleware.verifyAdmin, offers.postEdit
 adminRouter.get("/block-offer/:offerId", adminMiddleware.verifyAdmin, offers.blockOffer)
 adminRouter.get("/Unblock-offer/:offerId", adminMiddleware.verifyAdmin, offers.unblockOffer)
  
+//banners
+adminRouter.get("/banners", adminMiddleware.verifyAdmin, banner.getBanners); 
+adminRouter.get("/add-banner", adminMiddleware.verifyAdmin, banner.getAddBanner);
+adminRouter.post('/post-add-banner', adminMiddleware.verifyAdmin, bannerUpload.single('image'), banner.postAddBanner);
+adminRouter.get('/edit-banner/:bannerId',adminMiddleware.verifyAdmin, banner.getEditBanner);
+adminRouter.post('/post-edit-banner/:bannerId', adminMiddleware.verifyAdmin, bannerUpload.single('image'), banner.postEditBanner);
+adminRouter.get('/block-banner/:bannerId', adminMiddleware.verifyAdmin, banner.blockBanner);
+adminRouter.get('/unblock-banner/:bannerId', adminMiddleware.verifyAdmin, banner.unblockBanner);
+
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 
 
 adminRouter.use(userError.errorHandler);
 adminRouter.get("/*", userError.errorHandler2);
-
-//banners
 
 
 

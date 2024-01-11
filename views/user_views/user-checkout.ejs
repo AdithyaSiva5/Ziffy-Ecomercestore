@@ -880,6 +880,7 @@
                             </div>
                             <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-10" id="orderButton">Cash on Delivery</a>
                             <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-10" id="rzp-orderButton">RazorPay</a>
+                            <a href="javascript:void(0)" class="btn btn-fill-out btn-block mt-10" id="walletPayBtn">Pay from Wallet</a>
                         </div>
                     </div>
                 </div>
@@ -895,6 +896,7 @@
         const grandTotalValue = document.querySelector('.grand-total').textContent.trim();
         const grandTotal = document.querySelector('.grand-total');
         const removeButton = document.getElementById('remove-button');
+        const walletPayBtn = document.getElementById("walletPayBtn");
         let couponCode = null;
         removeButton.style.display = 'none';
         
@@ -1044,7 +1046,71 @@
             }
             })
 
-        
+
+        //WALLET STARTS HERE
+        walletPayBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            const couponCode = couponInput.value.trim();
+                
+                let selectedAddressValue = null;
+                for(radioButton of radioButtons){
+                    if(radioButton.checked){
+                    selectedAddressValue = radioButton.value;
+                    const url = `/place-order-walletpay/${selectedAddressValue}?coupon=${encodeURIComponent(couponCode)}`;
+                    fetch(url)
+                    .then(response=>{
+                        if(!response.ok){
+                            throw new Error(`HTTP Error! status:${response.status}`)
+                        }
+                        return response.json();
+                    })
+                    .then(data=>{
+                        if(data.backToCart){
+                            Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: "Some of the product are Out of Stock",
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/cart';
+                            }, 1500);
+                            
+                        }
+                        if(data.error){
+                            Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: data.error,
+                            showConfirmButton: false,
+                            timer: 1500
+                            });
+                        }else if(data.orderId){
+                            window.location.href = `/order-placed/${data.orderId}`
+                        }
+                    }).catch(error=>{
+                        console.error(error);
+                    })
+                    break;                    
+                }
+            }
+            if (selectedAddressValue !== null) {
+            console.log("Selected Address ID:", selectedAddressValue);
+            } else {
+            Swal.fire({
+                title: 'Oops...',
+                text: 'No Address is Selected!',
+            })
+            }
+            
+
+           
+
+        })
+
+
+        //WALLET SHOULD END HERE
 
 
 
@@ -1118,61 +1184,61 @@
                         console.log('some error');})
 
                          //function to handle payment success
-        function handlePaymentSuccess(razorOrderId, response, orderId) {
-            updatePaymentStatus("Success", razorOrderId, response, orderId);
-        }
+                        function handlePaymentSuccess(razorOrderId, response, orderId) {
+                            updatePaymentStatus("Success", razorOrderId, response, orderId);
+                        }
 
-        //function to handle payment failure
-        function handlePaymentFailure(razorOrderId, response, orderId) {
-            updatePaymentStatus("Failed", razorOrderId, response, orderId)
-        }
+                        //function to handle payment failure
+                        function handlePaymentFailure(razorOrderId, response, orderId) {
+                            updatePaymentStatus("Failed", razorOrderId, response, orderId)
+                        }
 
-        // Function to update the payment status in the database
-        function updatePaymentStatus(paymentStatus, razorOrderId, response, orderId) {
-            const url = `/update-payment-status?paymentStatus=${paymentStatus}&razorOrderId=${razorOrderId}&orderId=${orderId}`
+                        // Function to update the payment status in the database
+                        function updatePaymentStatus(paymentStatus, razorOrderId, response, orderId) {
+                            const url = `/update-payment-status?paymentStatus=${paymentStatus}&razorOrderId=${razorOrderId}&orderId=${orderId}`
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response=>{
-                if(!response.ok){
-                    throw new Error('Failed to update payment status');
-                }
-                return response.json();
-            })
-            .then(data=>{
-                if(data.paymentStatus == "Success"){
-                    window.location.href = `/order-placed/${orderId}`
-                }else{
-                    Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: "Payment Failed",
-                            showConfirmButton: false,
-                            timer: 1500
-                            });
-                            setTimeout(() => {
-                                window.location.href = '/account'
-                            }, 1500);
-                    
-                }
-            })
-            .catch(error=>{
-                console.error('Failed to update payment status', error);
-                window.location.href = '/';
-            })
-        }
+                            fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                            .then(response=>{
+                                if(!response.ok){
+                                    throw new Error('Failed to update payment status');
+                                }
+                                return response.json();
+                            })
+                            .then(data=>{
+                                if(data.paymentStatus == "Success"){
+                                    window.location.href = `/order-placed/${orderId}`
+                                }else{
+                                    Swal.fire({
+                                            position: 'center',
+                                            icon: 'error',
+                                            title: "Payment Failed",
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                            });
+                                            setTimeout(() => {
+                                                window.location.href = '/account'
+                                            }, 1500);
+                                    
+                                }
+                            })
+                            .catch(error=>{
+                                console.error('Failed to update payment status', error);
+                                window.location.href = '/';
+                            })
+                        }
             
 
 
 
 
-        });
+                     });
 
-    })
+     })
 
     </script>
     <!-- Preloader Start -->

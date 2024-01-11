@@ -1,6 +1,5 @@
 <%- include("../partials/admin-header")%>
-<!-- <body>  -->
-
+<body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
@@ -43,7 +42,7 @@
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu active">
+                <li class="menu-item has-submenu ">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-local_offer"></i>
                         <span class="text">Coupons</span>
                     </a>
@@ -52,7 +51,7 @@
                         <a class="active" href="/admin/add-coupon">Add Coupon</a>
                     </div>
                 </li>  
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu ">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-request_quote"></i>
                         <span class="text">Offers</span>
                     </a>
@@ -136,13 +135,50 @@
                     </datalist>
                 </form>
             </div>
-                
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="/adminAssets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="/adminAssets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/adminAssets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </header>
         <section class="content-main">
           <div class="row">
               <div class="col-9">
                   <div class="content-header">
-                      <h3 class="content-title">Add Coupon</h3>
+                      <h3 class="content-title">Edit Banner</h3>
                       <!-- <div>
                           <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
                           <button class="btn btn-md rounded font-sm hover-up">Publich</button>
@@ -155,46 +191,41 @@
                           <h4>Basic</h4>
                       </div> -->
                       <div class="card-body">
-                          <form  id="coupon-form" method="post">
+                          <form action="/admin/post-edit-banner/<%= banner._id %>" name="enq" id="banner-form" method="post" enctype="multipart/form-data">
                               <div class="mb-4">
-                                  <label for="couponCode" class="form-label">Coupon Code</label>
-                                  <input type="text" placeholder="Type here" class="form-control" name="couponCode" id="couponCode">
-                                  <div id="couponCodeError" class="error-message"></div>
+                                  <label for="title" class="form-label">Banner Title</label>
+                                  <input value="<%= banner.title %>" type="text" placeholder="Enter banner title" class="form-control" name="title" id="title">
+                                  <div id="titleError" class="error-message"></div>
                               </div>
                               <div class="mb-4">
-                                  <label class="form-label">Coupon description</label>
-                                  <textarea placeholder="Type here" class="form-control" rows="3" name="description" id="description"></textarea>
-                                  <div id="descriptionError" class="error-message"></div>
+                                <label for="subtitle" class="form-label">Banner Subtitle</label>
+                                <input value="<%= banner.subtitle %>" type="text" placeholder="Enter banner subtitle" class="form-control" name="subtitle" id="subtitle">
+                                <div id="subtitleError" class="error-message"></div>
+                            </div>
+                            <div class="row d-flex">
+                              <div class="col-lg-6 mb-4">
+                                <label class="form-label" for="image">Banner Image:</label>
+                                <input class="form-control" type="file" name="image" id="image" />
                               </div>
-                              <div class="row">
-                                  <div class="col-lg-4">
-                                      <div class="mb-4">
-                                          <label class="form-label">Discount Amount</label>
-                                          <div class="row gx-2">
-                                              <input placeholder="₹" type="number" class="form-control" name="discountAmount" id="discountAmount">
-                                              <div id="discountAmountError" class="error-message"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="col-lg-4">
-                                      <div class="mb-4">
-                                          <label class="form-label">Minimum purchase</label>
-                                          <input placeholder="₹" type="number" class="form-control" name="minimumPurchase" id="minimumPurchase">
-                                          <div id="minimumPurchaseError" class="error-message"></div>
-                                      </div>
-                                  </div>
-                                  <div class="col-lg-4">
+                              <div id="existingImagesContainer" class="col-lg-6 mb-4">
+                                <div class="image-container existing-image" style=" width: 100px; height: 70px;">
+                                  <figure class="border-radius-10">
+                                    <img src="/<%= banner.image %>" alt="<%= banner.title %>" class="img-fluid" loading="lazy" style="max-width: 100%; max-height: 100%;">
+                                  </figure>
+                                </div>
+                              </div>
+                              </div>
+                                  <div class="col-lg-6 mb-4">
                                       <label class="form-label">Status</label>
                                       <select class="form-select" name="status" id="status">
-                                          <option> Active</option>
-                                          <option> Inactive </option>
+                                        <option <%= banner.status === 'Active' ? 'selected' : '' %>>Active</option>
+                                        <option <%= banner.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
                                       </select>
                                       <div id="statusError" class="error-message"></div>
                                   </div>
-                              </div>
                               <div class="mb-4">
                                   <label class="form-label">Expiry Date</label>
-                                  <input type="date" placeholder="%" class="form-control" name="expiryDate" id="expiryDate">
+                                  <input type="date" placeholder="%" class="form-control" name="expiryDate" id="expiryDate" value="<%= banner.expiryDate.toISOString().split('T')[0] %>">
                                   <div id="expiryDateError" class="error-message"></div>
                               </div>
                               <div>
@@ -213,149 +244,66 @@
       <!-- coupon additon form validation -->
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById('coupon-form').addEventListener('submit', function (event) {
-                event.preventDefault();
-    
-                if (validateForm()) {
-                    const couponCode = document.getElementById('couponCode').value.trim();
-                    const description = document.getElementById('description').value.trim();
-                    const discountAmount = document.getElementById('discountAmount').value.trim();
-                    const minimumPurchase = document.getElementById('minimumPurchase').value.trim();
-                    const status = document.getElementById('status').value.trim();
-                    const expiryDate = document.getElementById('expiryDate').value.trim();
-    
-                    const data = {
-                        couponCode,
-                        description,
-                        discountAmount,
-                        minimumPurchase,
-                        status,
-                        expiryDate,
-                    };
-    
-                    fetchData(data);
-                }
+          const submitButton = document.getElementById('submitButton');
+            submitButton.addEventListener("click", (e)=>{
+              if(!validateForm()){
+                e.preventDefault();
+              }
             });
-    
-            function validateForm() {
-                resetErrorMessages();
-                const inputFields = [
-                    { id: 'couponCode', name: 'Coupon Code' },
-                    { id: 'description', name: 'Coupon Description' },
-                    { id: 'discountAmount', name: 'Discount Amount' },
-                    { id: 'minimumPurchase', name: 'Minimum Purchase' },
-                    { id: 'status', name: 'Coupon Status' },
+
+            function validateForm(){
+              resetErrorMessages();
+              const inputFields = [
+                    { id: 'title', name: 'Banner Title' },
+                    { id: 'subtitle', name: 'Banner Subtitle' },
+                    { id: 'status', name: 'Banner Status' },
                     { id: 'expiryDate', name: 'Expiry Date' },
                 ];
-    
+
                 let isValid = true;
-    
+
                 inputFields.forEach((field) => {
                     const originalValue = document.getElementById(field.id).value;
                     const trimmedValue = originalValue.trim();
-    
+
                     if (trimmedValue.length === 0) {
                         showError(`${field.id}Error`, `${field.name} cannot be empty`);
                         isValid = false;
                     }
-    
+
                     if (originalValue !== trimmedValue) {
                         showError(`${field.id}Error`, `${field.name} cannot have whitespaces`);
                         isValid = false;
                     }
                 });
-    
-                // Validations for stock and prices
-                const discountAmount = parseFloat(document.getElementById('discountAmount').value);
-                const minimumPurchase = parseFloat(document.getElementById('minimumPurchase').value);
+
                 const expiryDateInput = document.getElementById('expiryDate');
                 const expiryDate = new Date(expiryDateInput.value);
-    
-                if (isNaN(discountAmount) || discountAmount <= 0) {
-                    showError('discountAmountError', 'Discount Amount must be a number and greater than 0');
-                    isValid = false;
+
+                if (expiryDate < new Date()) {
+                showError('expiryDateError', 'Expiry Date must be in the future');
+                isValid = false;
                 }
-    
-                if (isNaN(minimumPurchase) || minimumPurchase <= 0) {
-                    showError('minimumPurchaseError', 'Minimum Purchase must be a number and greater than 0');
-                    isValid = false;
-                }
-    
-                if (discountAmount >= minimumPurchase) {
-                    showError('discountAmountError', 'Discount Amount must be less than Minimum Purchase');
-                    isValid = false;
-                }
-    
-                if (expiryDate <= Date.now()) {
-                    showError('expiryDateError', 'Expiry Date must be in the future');
-                    isValid = false;
-                }
-    
+
                 return isValid;
             }
-    
+
             function showError(elementId, message) {
-                const errorElement = document.getElementById(elementId);
-                errorElement.textContent = message;
-                errorElement.style.color = 'red';
-            }
-    
-            function resetErrorMessages() {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.color = 'red';
+            }   
+
+        
+            function resetErrorMessages() { 
                 const errorElements = document.querySelectorAll('.error-message');
                 errorElements.forEach((element) => {
                     element.textContent = '';
                 });
             }
-    
-            const fetchData = async (data) => {
-                try {
-                    const response = await fetch('/admin/post-add-coupon', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
-    
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const responseData = await response.json();
-                    if (responseData.success) {
-                        Swal.fire({
-                            position: 'top-center',
-                            icon: 'success',
-                            title: 'Coupon created successfully!',
-                            showConfirmButton: false,
-                            timer: 1500,
-                        });
-                    } else if (responseData.error) {
-                        Swal.fire({
-                            position: 'top-center',
-                            icon: 'error',
-                            title: 'Error creating coupon',
-                            text: "Coupon Already Exist",
-                            showConfirmButton: false,
-                            timer: 1500,
-                        });
-                    }
-    
-                } catch (error) {
-                    Swal.fire({
-                        position: 'top-center',
-                        icon: 'error',
-                        title: 'Error creating coupon',
-                        text: "Coupon Already Exist",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-    
-                    console.error('Error creating coupon:', error);
-                }
-            };
+
         });
     </script>
-    
 
 
         <footer class="main-footer font-xs">
@@ -373,9 +321,6 @@
             </div>
         </footer>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>
@@ -386,5 +331,6 @@
 </body>
 
 
-<%- include("../partials/admin-footer")%>
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-form-product-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:32 GMT -->
+</html>
 
