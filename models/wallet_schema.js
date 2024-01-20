@@ -13,3 +13,4 @@ const walletSchema = new mongoose.Schema({
 
 const walletCollection = mongoose.model("walletCollection", walletSchema);
 module.exports = walletCollection;
+ 

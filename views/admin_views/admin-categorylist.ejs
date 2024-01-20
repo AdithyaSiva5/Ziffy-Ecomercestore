@@ -263,8 +263,8 @@
                     <thead>
                         <tr>
                             <th class="fs-5" style="width: 30%;">Category Name</th>
-                            <th class="fs-5" style="width: 40%;">Description</th>
-                            <th class="fs-5 text-center" style="width: 30%;">Actions</th>
+                            <th class="fs-5" style="width: 30%;">Description</th>
+                            <th class="fs-5 text-center" style="width: 40%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -273,13 +273,17 @@
                                 <td style="width: 30%;">
                                     <%= category.catgName %>
                                 </td>
-                                <td style="width: 40%;">
+                                <td style="width: 30%;">
                                     <%= category.catgDiscription %>
                                 </td>
-                                <td style="width: 30%;">
+                                <td style="width: 40%;">
                                     <a href="/admin/edit-category/<%= category._id %>" class="btn btn-primary">Edit</a>
                                     <a href="#" class="btn btn-primary delete-category-btn" data-action="/admin/delete-category/<%= category._id %>">Delete</a>
-                                   
+                                     <% if(category.categoryStatus === 'Unblock') {%>
+                                        <a href="/admin/block-category/<%= category._id %>" class="btn btn-primary block-unblock-btn" style="background-color: rgb(196, 53, 25);">Block</a>
+                                        <%} else if (category.categoryStatus === 'Block') {%> 
+                                            <a href="/admin/unblock-category/<%= category._id %>" class="btn btn-danger block-unblock-btn">Unblock</a>
+                                        <%} %>
                                     
                                 </td>
                             </tr>

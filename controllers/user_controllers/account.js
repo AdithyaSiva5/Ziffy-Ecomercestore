@@ -4,6 +4,8 @@ const userCollection = require("../../models/user_schema");
 const productCollection = require("../../models/product");
 const cartCollection = require("../../models/cart_schema");
 const walletCollection  = require("../../models/wallet_schema")
+const walletHistoryCollection = require("../../models/wallethistory_schema");
+
 
 
 module.exports.getUserAccount = async(req,res)=>{
@@ -12,6 +14,7 @@ module.exports.getUserAccount = async(req,res)=>{
         const user = await userCollection.findOne({email : req.user})
         const userData = await userCollection.findOne({ email: req.user });
         const userCart = await cartCollection.findOne({ userId : user._id})
+        const referels = await userCollection.find({_id: { $ne: user._id }},{_id : 0,referelId : 1});
         let cartLength;
         if(userCart && userCart.products){
             cartLength = userCart.products.length;
@@ -21,8 +24,10 @@ module.exports.getUserAccount = async(req,res)=>{
         const userAddress = await addressCollection.findOne({userId : user._id})
         const userOrders = await orderCollection.find({ userId: user._id }).populate('products.productId');
         const wallet = await walletCollection.findOne({ userId: user._id });
+
+        const walletHistory = await walletHistoryCollection.find({ userId: user._id }).sort({ transactionDate: -1 });
         
-        res.render("user-account", { loggedIn, userData ,userCart ,userAddress, userOrders ,cartLength , wallet});
+        res.render("user-account", { loggedIn, userData ,userCart ,userAddress, userOrders ,cartLength , wallet , referels ,walletHistory});
         
         
     } catch (error) {
@@ -32,7 +37,7 @@ module.exports.getUserAccount = async(req,res)=>{
     }
     
 }
-
+ 
 
 module.exports.applyReferelOffers = async (req, res) => {
   try {
@@ -67,6 +72,27 @@ module.exports.applyReferelOffers = async (req, res) => {
         });
         referedUserWallet.amount += 200;
         await referedUserWallet.save();
+
+        //wallet history creation
+        const referringUserHistoryEntry = new walletHistoryCollection({
+          userId: userData._id,
+          walletId: userWallet._id,
+          type: "Referral Bonus",
+          amount: 100,
+          description: "Referral bonus for inviting a friend",
+        });
+        await referringUserHistoryEntry.save();
+
+        // Add wallet history entry for referred user
+        const referredUserHistoryEntry = new walletHistoryCollection({
+          userId: usedReferel._id,
+          walletId: referedUserWallet._id,
+          type: "Referral Bonus",
+          amount: 200,
+          description: "Referral bonus for being referred by a friend",
+        });
+        await referredUserHistoryEntry.save();
+
 
         res.status(200).send({ success: "Offer redeemed successfully" });
       }

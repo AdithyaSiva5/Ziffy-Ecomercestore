@@ -182,34 +182,43 @@
                 
             </div>
             <div class="card mb-4">
-                <header class="card-header" style="background-color: white;">
+                <form action="/admin/filter-sales" id="excelForm" method="post" class="text-end">
+                    <!-- Your other form fields -->
+                    <input type="hidden" name="generateExcel" value="false">
+                    <button type="submit" class="btn "  id="generateExcelBtn" style="background-color: green; ">Generate Excel</button>
+                    <button type="button" class="btn " id="printBtn" style="background-color: rgb(211, 10, 10);">Print as PDF</button>
+                  </form>
+
+                  
+                <header class="card-header" style="background-color: white;"> 
                     
-                    <form id="dateFilterForm" method="post" action="/admin/filter-sales">
-                    <div class="row d-flex align-items-center col-lg-12">
-                        <div class="col-md-5   justify-content-center">
-                            <label for="startDate">Start Date:</label>
-                            <input class="form-control " type="date" id="startDate" name="startDate">
-                        </div>
+                    <form id="filterForm" method="post" action="/admin/filter-sales" class="text-end">
+                        <div class="row d-flex align-items-center col-lg-12">
+                            <div class="col-md-5 justify-content-center">
+                                <label for="startDate">Start Date:</label>
+                                <input class="form-control" type="date" id="startDate" name="startDate">
+                            </div>
                     
-                        <div class="col-md-5 justify-content-center">
-                            <label for="endDate">End Date:</label>
-                            <input class="form-control" type="date" id="endDate" name="endDate">
-                        </div>
+                            <div class="col-md-5 justify-content-center">
+                                <label for="endDate">End Date:</label>
+                                <input class="form-control" type="date" id="endDate" name="endDate">
+                            </div>
                     
-                        <div class="col-md-2 d-flex justify-content-end">
-                            <button class="btn btn-sm mt-30"  type="submit">Apply Filter</button>
+                            <div class="col-md-2 d-flex justify-content-end">
+                                <button class="btn btn-sm mt-30" type="submit">Apply Filter</button>
+                            </div>
+                            <div class="col-md-1 d-flex justify-content-end">
+                                <button class="btn btn-sm mt-30" onclick="setDateRange('daily')">Daily</button>
+                            </div>
+                            <div class="col-md-1 d-flex justify-content-end">
+                                <button class="btn btn-sm mt-30" onclick="setDateRange('weekly')">Weekly</button>
+                            </div>
+                            <div class="col-md-1 d-flex justify-content-end">
+                                <button class="btn btn-sm mt-30" onclick="setDateRange('yearly')">Yearly</button>
+                            </div>
                         </div>
-                        <div class="col-md-1 d-flex justify-content-end">
-                            <button class="btn btn-sm mt-30" onclick="setDateRange('daily')">Daily</button>
-                        </div>
-                        <div class="col-md-1 d-flex justify-content-end">
-                            <button class="btn btn-sm mt-30" onclick="setDateRange('weekly')">Weekly</button>
-                        </div>
-                        <div class="col-md-1 d-flex justify-content-end">
-                            <button class="btn btn-sm mt-30" onclick="setDateRange('yearly')">Yearly</button>
-                        </div>
-                    </div> 
                     </form>
+                    
 
                 </header>
                 <div class="card-body col-12">
@@ -220,58 +229,35 @@
                     margin-bottom: 20px; ">
                         <thead>
                             <tr>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Order ID</th>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Ordered At</th>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Delivery Date</th>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Payment Status</th>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Order Status</th>
-                                <th style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">Total Amount</th>
-                                
+                                <th style="border: 1px solid #cccccc;  padding: 8px;   text-align: center; ">Order ID</th>
+                                <th style="border: 1px solid #cccccc;    padding: 8px;     text-align: center; ">Ordered At</th>
+                                <th style="border: 1px solid #cccccc;  padding: 8px;     text-align: center; ">Delivery Date</th>
+                                <th style="border: 1px solid #cccccc;   padding: 8px;   text-align: center; ">Payment Status</th>
+                                <th style="border: 1px solid #cccccc;  padding: 8px;  text-align: center; ">Order Status</th>
+                                <th style="border: 1px solid #cccccc;  padding: 8px;  text-align: center; ">Total Amount</th>                                
                                 
                             </tr>
                         </thead>
                         <tbody>
-                            <% if (orderData && orderData.length > 0) { %>
-                            <% orderData.forEach(order => { %>
-                                <tr>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; "><%= order._id %></td>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; "><%= order.createdAt.toLocaleDateString() %></td>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; "><%= order.deliveryDate ? order.deliveryDate.toLocaleDateString() : 'Not delivered' %></td>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; "><%= order.paymentStatus %></td>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; "><%= order.orderStatus %></td>
-                                <td style="border: 1px solid #cccccc; 
-        padding: 8px; 
-        text-align: center; ">₹ <%= order.totalAmount.toFixed(0) %></td>
+                         
                                 
+                                <% if (orderData && orderData.length > 0) { %>
+                                <% orderData.forEach(order => { %>
+                                    <tr>
+                                    <td style="border: 1px solid #cccccc;   padding: 8px;    text-align: center; "><%= order._id %></td>
+                                    <td style="border: 1px solid #cccccc;     padding: 8px;   text-align: center; "><%= order.createdAt.toLocaleDateString() %></td>
+                                    <td style="border: 1px solid #cccccc;      padding: 8px;    text-align: center; "><%= order.orderDate != order.updatedAt ? order.updatedAt.toLocaleDateString() : 'Not delivered' %></td>
+                                    <td style="border: 1px solid #cccccc;   padding: 8px;    text-align: center; "><%= order.paymentStatus %></td>
+                                    <td style="border: 1px solid #cccccc;     padding: 8px;     text-align: center; "><%= order.orderStatus %></td>
+                                    <td style="border: 1px solid #cccccc;     padding: 8px;     text-align: center; ">₹ <%= order.totalAmount.toFixed(0) %></td>
+                                    </tr>
+                                <% }); %>
+                                <% }  else { %>
+                                <tr>
+                                    <td colspan="6"><h6 class="text-center p-3" >No orders available</h6></td>
                                 </tr>
-                            <% }); %>
-                            <% }  else { %>
-                            <tr>
-                                <td colspan="6"><h6 class="text-center p-3" >No orders available</h6></td>
-                            </tr>
-                            <% } %>
+                                <% } %>
+                        
                         </tbody>  
                     </table>
                     
@@ -281,28 +267,100 @@
             
         </section>
 
+
         <script>
-           
-        
-            function setDateRange(filter) {
-                var endDate = new Date();
-                var startDate;
-        
-                if (filter === 'daily') {
-                    startDate = new Date(endDate);
-                } else if (filter === 'weekly') {
-                    startDate = new Date(endDate);
-                    startDate.setDate(endDate.getDate() - 7);
-                } else if (filter === 'yearly') {
-                    startDate = new Date(endDate);
-                    startDate.setFullYear(endDate.getFullYear() - 1);
-                }
-        
-                // Set the values of date inputs
-                document.getElementById('startDate').valueAsDate = startDate;
-                document.getElementById('endDate').valueAsDate = '';
-            }
+            document.getElementById('printBtn').addEventListener('click', function () {
+            window.print();
+        });
+
         </script>
+     
+        <script>
+            document.getElementById('filterForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            console.log("Start Date:", startDate);
+            console.log("End Date:", endDate);
+            
+            fetch('/admin/filter-sales', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ startDate, endDate }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data)
+               const tbodyContainer = document.querySelector('table#salesReport tbody');
+                tbodyContainer.innerHTML = ""; 
+                console.log('Type of data:', typeof data);
+                // data && data.length > 0
+                if (data && data.orderData && data.orderData.length > 0) {
+        console.log("orderdata : ", data.orderData);
+        data.orderData.forEach(order => {
+            tbodyContainer.innerHTML += `
+            <tr>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">${order._id}</td>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">${moment(order.createdAt).format('YYYY-MM-DD')}</td>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">${order.orderDate != order.updatedAt ? moment(order.updatedAt).format('YYYY-MM-DD') : 'Not delivered'}</td>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">${order.paymentStatus}</td>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">${order.orderStatus}</td>
+                    <td style="border: 1px solid #cccccc; padding: 8px; text-align: center;">₹ ${order.totalAmount.toFixed(0)}</td>
+                </tr>
+            `;
+        });
+    } else {
+        tbodyContainer.innerHTML += `<tr><td colspan="6"><h6 class="text-center p-3">No orders available</h6></td></tr>`;
+    }              
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function setDateRange(filter) {
+            var endDate = new Date();
+            var startDate;
+
+            if (filter === 'daily') {
+                startDate = new Date(endDate);
+            } else if (filter === 'weekly') {
+                startDate = new Date(endDate);
+                startDate.setDate(endDate.getDate() - 7);
+            } else if (filter === 'yearly') {
+                startDate = new Date(endDate);
+                startDate.setFullYear(endDate.getFullYear() - 1);
+            }
+            endDate.setDate(endDate.getDate() + 1);
+
+            // Set the values of date inputs
+            document.getElementById('startDate').valueAsDate = startDate;
+            document.getElementById('endDate').valueAsDate = endDate;
+        }
+
+
+        document.getElementById('generateExcelBtn').addEventListener('click', function () {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        // Set the start and end date values
+        document.getElementById('excelForm').innerHTML += `
+            <input type="hidden" name="startDate" value="${startDate}">
+            <input type="hidden" name="endDate" value="${endDate}">
+            <input type="hidden" name="generateExcel" value="true">
+        `;
+
+        // Submit the form
+        document.getElementById('excelForm').submit();
+    });
+
+        
+
+        </script>
+        
+          
 
 
   
@@ -322,6 +380,8 @@
             </div>
         </footer>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
     <script src="/adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/js/vendors/select2.min.js"></script>

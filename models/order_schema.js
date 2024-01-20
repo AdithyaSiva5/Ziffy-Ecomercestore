@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-    orderDate: {
+    orderDate: { 
       type: Date,
       default: Date.now,
     },
@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"],
+      enum: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned" , "Order Failed"],
       default: "Order Placed",
     },
     paymentStatus: {
@@ -59,7 +59,7 @@ const orderSchema = new mongoose.Schema(
     },
     cancelReason: {
       type: String,
-    },
+    }, 
     couponDiscount: {
       type: Number,
     }

@@ -14,6 +14,7 @@ const checkoutpage = require("../controllers/user_controllers/checkout")
 const address = require("../controllers/user_controllers/address")
 const orders = require("../controllers/user_controllers/order")
 const userError = require("../user-midddleware/error_handling")
+const invoice = require("../controllers/user_controllers/invoice")
 
 userRouter.use(cookieparser());
 
@@ -34,6 +35,7 @@ userRouter.post("/verify-otp", signupControll.postVerifyOtp);
 //products
 userRouter.get("/product-details/:productId",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus,productControll.productDetails);
 userRouter.get("/products",productControll.productFulldetails)
+userRouter.get("/search-and-filter", productControll.searchandfilter);
 
 //forgetpassword
 userRouter.get("/forgetpassword", forgetpassword.forgetpass);
@@ -78,7 +80,10 @@ userRouter.post("/post-add-address",userMiddleware.verifyUser,userMiddleware.che
 userRouter.post("/post-edit-address",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.postEditAddress);
 userRouter.get('/delete-address',userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,address.deleteAddress);
 
-//filter
+
+//download Invoice
+userRouter.get("/get-Invoice",userMiddleware.verifyUser,userMiddleware.checkBlockedStatus ,invoice.invoice)
+
 
 
 

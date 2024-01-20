@@ -66,17 +66,15 @@ module.exports.postforget = async (req, res) => {
       res.status(200).json({ error: "Both passwords are not the same" });
     } else if (isSameAsPrevious) {
       res.status(200).json({ error: "This is the old password" });
-    }{    
-                generatedOTP = generateOTP();
-                console.log(`the otp is ${generatedOTP}`);
-                const success = sendOTP(email, generatedOTP);
-                if (success) {
-                  res
-                    .status(200)
-                    .json({ message: "OTP sent to email successfully" });
-                } else {
-                  res.status(500).json({ error: "Failed to send OTP email" });
-                }
+    }else {    
+      generatedOTP = generateOTP(); 
+      console.log(`the otp is ${generatedOTP}`);
+      const success = await sendOTP(email, generatedOTP);
+     if ( success) {
+       res.status(200).json({ message: "OTP sent to email successfully" });
+     } else {
+       res.status(500).json({ error: "Failed to send OTP email" });
+     }
       
     }
   } catch (error) {

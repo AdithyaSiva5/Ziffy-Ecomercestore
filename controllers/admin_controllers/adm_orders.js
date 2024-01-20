@@ -9,7 +9,7 @@ try {
     const loggedIn = req.cookies.admintoken;
     if(loggedIn){
 
-        const orderDetails = await orderCollection
+        const orderDetails = await orderCollection 
           .find()
           .populate({ path: "userId", model: userCollection })
           .sort({ createdAt: -1 })

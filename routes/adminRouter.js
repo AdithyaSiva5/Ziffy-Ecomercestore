@@ -38,8 +38,8 @@ adminRouter.post(  "/add-category",  adminMiddleware.verifyAdmin,  categoryContr
 adminRouter.get(  "/edit-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.editCategory); 
 adminRouter.post(  "/postEdit-category/:categoryId",  adminMiddleware.verifyAdmin,   categoryControll.updateCategory);
 adminRouter.get(  "/delete-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.deleteCategory);
-adminRouter.post(  "/block-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.blockCategory);
-adminRouter.post(  "/unblock-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.unblockCategory);
+adminRouter.get(  "/block-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.blockCategory);
+adminRouter.get(  "/unblock-category/:categoryId",  adminMiddleware.verifyAdmin,  categoryControll.unblockCategory);
 
 //product
 
@@ -101,6 +101,7 @@ adminRouter.get('/edit-banner/:bannerId',adminMiddleware.verifyAdmin, banner.get
 adminRouter.post('/post-edit-banner/:bannerId', adminMiddleware.verifyAdmin, bannerUpload.single('image'), banner.postEditBanner);
 adminRouter.get('/block-banner/:bannerId', adminMiddleware.verifyAdmin, banner.blockBanner);
 adminRouter.get('/unblock-banner/:bannerId', adminMiddleware.verifyAdmin, banner.unblockBanner);
+
 
 //logout
 adminRouter.get("/logout", usermanageControll.getlogout); 

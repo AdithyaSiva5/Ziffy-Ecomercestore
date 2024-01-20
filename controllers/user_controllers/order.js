@@ -7,6 +7,7 @@ const razorpay = require("razorpay");
 const { v4: uuidv4 } = require("uuid");
 const couponCollection = require("../../models/coupon_schema");
 const walletCollection = require("../../models/wallet_schema");
+const walletHistoryCollection = require("../../models/wallethistory_schema")
 
 const { RAZOR_PAY_key_id, RAZOR_PAY_key_secret } = process.env;
 
@@ -79,7 +80,9 @@ module.exports.orderViaCod = async (req,res)=>{
         
         if(couponCode){
           const reduced = await couponCollection.findOne({ couponCode : couponCode });
-          totalAmount = totalAmount - reduced.discountAmount;
+          if (reduced) {
+            totalAmount = totalAmount - reduced.discountAmount;
+          }
         }
          const paymentMethod = "Cash on Delivery";
          const createdOrder = await orderCollection.create({
@@ -187,24 +190,30 @@ module.exports.returnOrder = async (req, res, next) => {
         }
       }
         order.totalAmount = 0;
-        if (order.paymentMethod == "Wallet") {
+        
           let couponreduce = 0;
-          console.log("came inside wallet : ");
 
           if (order.couponDiscount) {
             couponreduce = order.couponDiscount / num;
           }
-
-          console.log(`Coupon amount to reduce: ${couponreduce}`);
           const user = await userCollection.findOne({ email: req.user });
           const walletData = await walletCollection.findOne({
             userId: user._id,
           });
-          console.log(`Price to give back : ${refundAmount}`);
-          console.log(`num : ${num}`);
             walletAmount = walletData.amount + refundAmount - couponreduce;
           await walletData.updateOne({ $set: { amount: walletAmount } });
-        }     
+
+          //wallethistory
+              const walletHistoryEntry = new walletHistoryCollection({
+                userId: user._id,
+                walletId: walletData._id,
+                type: "Return",
+                amount: refundAmount - couponreduce,
+                description: `Order #${orderId} returned`,
+              });
+              await walletHistoryEntry.save();
+
+             
      
       await order.save();
 
@@ -258,6 +267,20 @@ module.exports.returnOrder = async (req, res, next) => {
       }
       walletAmount -= totalAmount;
       await walletData.updateOne({ $set: { amount: walletAmount } });
+
+      //wallet history
+      const walletHistoryEntry = new walletHistoryCollection({
+        userId: user._id,
+        walletId: walletData._id,
+        type: "Purchase",
+        amount: -totalAmount,
+        description: "Amount deducted for a purchase",
+      });
+      await walletHistoryEntry.save();
+
+
+
+      //wallet creation
            
     const paymentMethod = "Wallet";
     const createdOrder = await orderCollection.create({
@@ -310,7 +333,9 @@ module.exports.orderViaOnline = async(req,res,next)=>{
           const reduced = await couponCollection.findOne({
             couponCode: couponCode,
           });
-          totalAmount = totalAmount - reduced.discountAmount;
+          if (reduced) {
+            totalAmount = totalAmount - reduced.discountAmount;
+          }
         }
      const paymentMethod = "Online Payment";
 
@@ -325,6 +350,8 @@ module.exports.orderViaOnline = async(req,res,next)=>{
     const createdOrder = await orderCollection.create({
       userId: user._id,
       products: productArray,
+      orderStatus: "Order Failed",
+      paymentStatus: "Failed",
       totalAmount,
       paymentMethod,
       address: useraddress,
@@ -334,7 +361,10 @@ module.exports.orderViaOnline = async(req,res,next)=>{
       const reduced = await couponCollection.findOne({
         couponCode: couponCode,
       });
-      createdOrder.couponDiscount = reduced.discountAmount;
+      if (reduced){
+        createdOrder.couponDiscount = reduced.discountAmount;
+      }  
+
       await createdOrder.save();
     }
 
@@ -354,6 +384,10 @@ module.exports.updatePaymentStatus = async (req, res, next) => {
       paymentStatus,
     });
     if (paymentStatus == "Success") {
+       await orderCollection.findByIdAndUpdate(orderId, {
+         orderStatus: "Order Placed",
+         paymentStatus: "Success",
+       });
           for (const product of userCart.products) {
             await productCollection.updateOne(
               { _id: product.productId._id },
